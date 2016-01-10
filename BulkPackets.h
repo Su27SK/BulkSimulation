@@ -10,7 +10,6 @@ class BulkPackets
 		BulkPackets(double size);
 		void destroy();
 		BulkPackets* getBulkPackets(int size);
-		
 		virtual ~BulkPackets();
 };
 

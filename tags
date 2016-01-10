@@ -1,0 +1,267 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BULKNETWORK_H_	BulkNetwork.h	2;"	d
+BULKPACKET_H_	BulkPacket.h	2;"	d
+BULKSESSION_H_	BulkSession.cpp	2;"	d	file:
+BULKSESSION_H_	BulkSession.h	2;"	d
+BulkLink	BulkLink.h	/^		BulkLink()$/;"	f	class:BulkLink	access:public	signature:()
+BulkLink	BulkLink.h	/^		BulkLink(int from, int to, bool isTerminal = false):$/;"	f	class:BulkLink	access:public	signature:(int from, int to, bool isTerminal = false)
+BulkLink	BulkLink.h	/^class BulkLink$/;"	c
+BulkLink::BulkLink	BulkLink.h	/^		BulkLink()$/;"	f	class:BulkLink	access:public	signature:()
+BulkLink::BulkLink	BulkLink.h	/^		BulkLink(int from, int to, bool isTerminal = false):$/;"	f	class:BulkLink	access:public	signature:(int from, int to, bool isTerminal = false)
+BulkLink::_from	BulkLink.h	/^		int _from;$/;"	m	class:BulkLink	access:private
+BulkLink::_headQueue	BulkLink.h	/^		queue<BulkPackets>* _headQueue;$/;"	m	class:BulkLink	access:private
+BulkLink::_isToTerminal	BulkLink.h	/^		bool _isToTerminal; \/\/_to是否通向终止点$/;"	m	class:BulkLink	access:private
+BulkLink::_numPacketsHead	BulkLink.h	/^		int _numPacketsHead; \/\/edge边头的队列$/;"	m	class:BulkLink	access:private
+BulkLink::_numPacketsTail	BulkLink.h	/^		int _numPacketsTail; \/\/edge边尾的队列$/;"	m	class:BulkLink	access:private
+BulkLink::_tailQueue	BulkLink.h	/^		queue<BulkPackets>* _tailQueue;$/;"	m	class:BulkLink	access:private
+BulkLink::_to	BulkLink.h	/^		int _to;$/;"	m	class:BulkLink	access:private
+BulkLink::addNumPacketsHead	BulkLink.cpp	/^bool BulkLink::addNumPacketsHead(bool isAdd, int numPackets = 1)$/;"	f	class:BulkLink	signature:(bool isAdd, int numPackets = 1)
+BulkLink::addNumPacketsHead	BulkLink.h	/^		bool addNumPacketsHead(bool isAdd, int numPackets = 1);$/;"	p	class:BulkLink	access:public	signature:(bool isAdd, int numPackets = 1)
+BulkLink::addNumPacketsTail	BulkLink.cpp	/^bool BulkLink::addNumPacketsTail(bool isAdd, int numPackets = 1)$/;"	f	class:BulkLink	signature:(bool isAdd, int numPackets = 1)
+BulkLink::addNumPacketsTail	BulkLink.h	/^		bool addNumPacketsTail(bool isAdd, int numPackets = 1);$/;"	p	class:BulkLink	access:public	signature:(bool isAdd, int numPackets = 1)
+BulkNetwork	BulkNetwork.h	/^		BulkNetwork():_nSource(0), _nSink(0){}$/;"	f	class:BulkNetwork	access:public	signature:()
+BulkNetwork	BulkNetwork.h	/^		BulkNetwork(int nSour, int nSink, Graph& graph = NULL):_nSource(0), _nSink(0)$/;"	f	class:BulkNetwork	access:public	signature:(int nSour, int nSink, Graph& graph = NULL)
+BulkNetwork	BulkNetwork.h	/^class BulkNetwork$/;"	c
+BulkNetwork::BulkNetwork	BulkNetwork.h	/^		BulkNetwork():_nSource(0), _nSink(0){}$/;"	f	class:BulkNetwork	access:public	signature:()
+BulkNetwork::BulkNetwork	BulkNetwork.h	/^		BulkNetwork(int nSour, int nSink, Graph& graph = NULL):_nSource(0), _nSink(0)$/;"	f	class:BulkNetwork	access:public	signature:(int nSour, int nSink, Graph& graph = NULL)
+BulkNetwork::_lSinkList	BulkNetwork.h	/^		slist<GraphNode>* _lSinkList;$/;"	m	class:BulkNetwork	access:private
+BulkNetwork::_lSourceList	BulkNetwork.h	/^		slist<GNraphNode>* _lSourceList;$/;"	m	class:BulkNetwork	access:private
+BulkNetwork::_nSink	BulkNetwork.h	/^		int _nSink;   \/\/有几个Sink流出点$/;"	m	class:BulkNetwork	access:private
+BulkNetwork::_nSource	BulkNetwork.h	/^		int _nSource; \/\/有几个Source流入点$/;"	m	class:BulkNetwork	access:private
+BulkNetwork::_topology	BulkNetwork.h	/^		Graph* _topology;$/;"	m	class:BulkNetwork	access:private
+BulkNetwork::getSinkNodeById	BulkNetwork.cpp	/^slist<GraphNode>* BulkNetwork::getSinkNodeById(int id) const$/;"	f	class:BulkNetwork	signature:(int id) const
+BulkNetwork::getSinkNodeById	BulkNetwork.h	/^		slist<GraphNode>* getSinkNodeById(int id) const;$/;"	p	class:BulkNetwork	access:public	signature:(int id) const
+BulkNetwork::getSourceNodeById	BulkNetwork.cpp	/^slist<GraphNode>* BulkNetwork::getSourceNodeById(int id) const$/;"	f	class:BulkNetwork	signature:(int id) const
+BulkNetwork::getSourceNodeById	BulkNetwork.h	/^		slist<GraphNode>* getSourceNodeById(int id) const;$/;"	p	class:BulkNetwork	access:public	signature:(int id) const
+BulkNetwork::setSinkNodeById	BulkNetwork.cpp	/^BulkNetwork& BulkNetwork::setSinkNodeById(int id)$/;"	f	class:BulkNetwork	signature:(int id)
+BulkNetwork::setSinkNodeById	BulkNetwork.h	/^		BulkNetwork& setSinkNodeById(int id);$/;"	p	class:BulkNetwork	access:public	signature:(int id)
+BulkNetwork::setSourceNodeById	BulkNetwork.cpp	/^BulkNetwork& BulkNetwork::setSourceNodeById(int id)$/;"	f	class:BulkNetwork	signature:(int id)
+BulkNetwork::setSourceNodeById	BulkNetwork.h	/^		BulkNetwork& setSourceNodeById(int id);$/;"	p	class:BulkNetwork	access:public	signature:(int id)
+BulkNetwork::~BulkNetwork	BulkNetwork.h	/^		virtual ~BulkNetwork();$/;"	p	class:BulkNetwork	access:public	signature:()
+BulkPacket	BulkPacket.cpp	/^BulkPacket::BulkPacket(double size, unit type)$/;"	f	class:BulkPacket	signature:(double size, unit type)
+BulkPacket	BulkPacket.h	/^		BulkPacket():_size(0), _type(Mb){}$/;"	f	class:BulkPacket	access:public	signature:()
+BulkPacket	BulkPacket.h	/^		BulkPacket(double size, unit type);$/;"	p	class:BulkPacket	access:public	signature:(double size, unit type)
+BulkPacket	BulkPacket.h	/^class BulkPacket$/;"	c
+BulkPacket::BulkPacket	BulkPacket.cpp	/^BulkPacket::BulkPacket(double size, unit type)$/;"	f	class:BulkPacket	signature:(double size, unit type)
+BulkPacket::BulkPacket	BulkPacket.h	/^		BulkPacket():_size(0), _type(Mb){}$/;"	f	class:BulkPacket	access:public	signature:()
+BulkPacket::BulkPacket	BulkPacket.h	/^		BulkPacket(double size, unit type);$/;"	p	class:BulkPacket	access:public	signature:(double size, unit type)
+BulkPacket::ConvertToType	BulkPacket.cpp	/^bool BulkPacket::ConvertToType(int degree, bool isLarge)$/;"	f	class:BulkPacket	signature:(int degree, bool isLarge)
+BulkPacket::ConvertToType	BulkPacket.h	/^		bool ConvertToType(int degree, bool isLarge = true);$/;"	p	class:BulkPacket	access:public	signature:(int degree, bool isLarge = true)
+BulkPacket::_size	BulkPacket.h	/^		double _size;$/;"	m	class:BulkPacket	access:private
+BulkPacket::_type	BulkPacket.h	/^		unit _type;$/;"	m	class:BulkPacket	access:private
+BulkPacket::getPacketInfo	BulkPacket.cpp	/^string BulkPacket::getPacketInfo()$/;"	f	class:BulkPacket	signature:()
+BulkPacket::getPacketInfo	BulkPacket.h	/^		string getPacketInfo();$/;"	p	class:BulkPacket	access:public	signature:()
+BulkPacket::getPacketSize	BulkPacket.cpp	/^double BulkPacket::getPacketSize()$/;"	f	class:BulkPacket	signature:()
+BulkPacket::getPacketSize	BulkPacket.h	/^		double getPacketSize();$/;"	p	class:BulkPacket	access:public	signature:()
+BulkPacket::getPacketUnit	BulkPacket.cpp	/^unit BulkPacket::getPacketUnit()$/;"	f	class:BulkPacket	signature:()
+BulkPacket::getPacketUnit	BulkPacket.h	/^		unit getPacketUnit();$/;"	p	class:BulkPacket	access:public	signature:()
+BulkPacket::setPacketSize	BulkPacket.cpp	/^BulkPacket&BulkPacket::setPacketSize(double size)$/;"	f	class:BulkPacket	signature:(double size)
+BulkPacket::setPacketSize	BulkPacket.h	/^		BulkPacket& setPacketSize(double size);$/;"	p	class:BulkPacket	access:public	signature:(double size)
+BulkPacket::setPacketType	BulkPacket.cpp	/^BulkPacket&BulkPacket::setPacketType(unit type)$/;"	f	class:BulkPacket	signature:(unit type)
+BulkPacket::setPacketType	BulkPacket.h	/^		BulkPacket& setPacketType(unit type);$/;"	p	class:BulkPacket	access:public	signature:(unit type)
+BulkPackets	BulkPackets.cpp	/^BulkPackets::BulkPackets():_packetsPool(new slist<BulkPackets*>(1))$/;"	f	class:BulkPackets	signature:()
+BulkPackets	BulkPackets.cpp	/^BulkPackets::BulkPackets(double size)$/;"	f	class:BulkPackets	signature:(double size)
+BulkPackets	BulkPackets.h	/^		BulkPackets();$/;"	p	class:BulkPackets	access:public	signature:()
+BulkPackets	BulkPackets.h	/^		BulkPackets(double size);$/;"	p	class:BulkPackets	access:public	signature:(double size)
+BulkPackets	BulkPackets.h	/^class BulkPackets$/;"	c
+BulkPackets::BulkPackets	BulkPackets.cpp	/^BulkPackets::BulkPackets():_packetsPool(new slist<BulkPackets*>(1))$/;"	f	class:BulkPackets	signature:()
+BulkPackets::BulkPackets	BulkPackets.cpp	/^BulkPackets::BulkPackets(double size)$/;"	f	class:BulkPackets	signature:(double size)
+BulkPackets::BulkPackets	BulkPackets.h	/^		BulkPackets();$/;"	p	class:BulkPackets	access:public	signature:()
+BulkPackets::BulkPackets	BulkPackets.h	/^		BulkPackets(double size);$/;"	p	class:BulkPackets	access:public	signature:(double size)
+BulkPackets::_packetsPool	BulkPackets.h	/^		static slit<BulkPackets*> _packetsPool;$/;"	m	class:BulkPackets	access:private
+BulkPackets::destroy	BulkPackets.h	/^		void destroy();$/;"	p	class:BulkPackets	access:public	signature:()
+BulkPackets::getBulkPackets	BulkPackets.h	/^		BulkPackets* getBulkPackets(int size);$/;"	p	class:BulkPackets	access:public	signature:(int size)
+BulkPackets::~BulkPackets	BulkPackets.cpp	/^BulkPackets::~BulkPackets()$/;"	f	class:BulkPackets	signature:()
+BulkPackets::~BulkPackets	BulkPackets.h	/^		virtual ~BulkPackets();$/;"	p	class:BulkPackets	access:public	signature:()
+BulkSession	BulkSession.h	/^		BulkSession():_sourceNode(NULL), _sinkNode(NULL) {$/;"	f	class:BulkSession	access:public	signature:()
+BulkSession	BulkSession.h	/^		BulkSession(GraphNode* source, GraphNode* sink) {$/;"	f	class:BulkSession	access:public	signature:(GraphNode* source, GraphNode* sink)
+BulkSession	BulkSession.h	/^class BulkSession$/;"	c
+BulkSession::BulkSession	BulkSession.h	/^		BulkSession():_sourceNode(NULL), _sinkNode(NULL) {$/;"	f	class:BulkSession	access:public	signature:()
+BulkSession::BulkSession	BulkSession.h	/^		BulkSession(GraphNode* source, GraphNode* sink) {$/;"	f	class:BulkSession	access:public	signature:(GraphNode* source, GraphNode* sink)
+BulkSession::_sinkNode	BulkSession.h	/^		GraphNode* _sinkNode;$/;"	m	class:BulkSession	access:private
+BulkSession::_sourceNode	BulkSession.h	/^		GraphNode* _sourceNode;$/;"	m	class:BulkSession	access:private
+Byte	BulkPacket.h	/^	Byte = 1,$/;"	e	enum:unit
+ConvertToType	BulkPacket.cpp	/^bool BulkPacket::ConvertToType(int degree, bool isLarge)$/;"	f	class:BulkPacket	signature:(int degree, bool isLarge)
+ConvertToType	BulkPacket.h	/^		bool ConvertToType(int degree, bool isLarge = true);$/;"	p	class:BulkPacket	access:public	signature:(int degree, bool isLarge = true)
+Graph	Graph.cpp	/^Graph::Graph(int _n)$/;"	f	class:Graph	signature:(int _n)
+Graph	Graph.h	/^	Graph(int _n);$/;"	p	class:Graph	access:public	signature:(int _n)
+Graph	Graph.h	/^class Graph  $/;"	c
+Graph::Graph	Graph.cpp	/^Graph::Graph(int _n)$/;"	f	class:Graph	signature:(int _n)
+Graph::Graph	Graph.h	/^	Graph(int _n);$/;"	p	class:Graph	access:public	signature:(int _n)
+Graph::aList	Graph.h	/^	slist<GraphNode>* aList = null;		\/\/ adjacency lists$/;"	m	class:Graph	access:public
+Graph::capacity	Graph.cpp	/^Graph::capacity(int v1, int v2) const$/;"	f	class:Graph	signature:(int v1, int v2) const
+Graph::capacity	Graph.h	/^	double capacity(int v1, int v2) const;			\/\/return capcity of edge (v1, v2)$/;"	p	class:Graph	access:public	signature:(int v1, int v2) const
+Graph::clearEdges	Graph.cpp	/^Graph::clearEdges()$/;"	f	class:Graph	signature:()
+Graph::clearEdges	Graph.h	/^	void clearEdges();$/;"	p	class:Graph	access:public	signature:()
+Graph::connected	Graph.cpp	/^Graph::connected() const$/;"	f	class:Graph	signature:() const
+Graph::connected	Graph.h	/^	bool connected() const;$/;"	p	class:Graph	access:public	signature:() const
+Graph::e	Graph.h	/^	int e = 0;							\/\/ number of edges, one edge counts two times, since later one edge has two opposite direction flow$/;"	m	class:Graph	access:public
+Graph::edges	Graph.cpp	/^Graph::edges() const$/;"	f	class:Graph	signature:() const
+Graph::edges	Graph.h	/^	int edges() const;					    \/\/return the number of directed edges$/;"	p	class:Graph	access:public	signature:() const
+Graph::exportGraph	Graph.cpp	/^Graph::exportGraph(string cfilename) const$/;"	f	class:Graph	signature:(string cfilename) const
+Graph::exportGraph	Graph.h	/^	void exportGraph(string cfilename) const;$/;"	p	class:Graph	access:public	signature:(string cfilename) const
+Graph::genRandomGraph	Graph.cpp	/^Graph::genRandomGraph(int numNodes, int numEdges, double minCapacity, double maxCapacity)$/;"	f	class:Graph	signature:(int numNodes, int numEdges, double minCapacity, double maxCapacity)
+Graph::genRandomGraph	Graph.h	/^	static Graph* genRandomGraph(int numNodes, int numEdges, double minCapacity, double maxCapacity);$/;"	p	class:Graph	access:public	signature:(int numNodes, int numEdges, double minCapacity, double maxCapacity)
+Graph::importGraph	Graph.cpp	/^Graph::importGraph(string cfilename)$/;"	f	class:Graph	signature:(string cfilename)
+Graph::importGraph	Graph.h	/^	static Graph* importGraph(string cfilename);$/;"	p	class:Graph	access:public	signature:(string cfilename)
+Graph::n	Graph.h	/^	int n;							\/\/ number of vertices$/;"	m	class:Graph	access:public
+Graph::operator =	Graph.h	/^	Graph& operator=(const Graph &graph)$/;"	f	class:Graph	access:public	signature:(const Graph &graph)
+Graph::putEdge	Graph.cpp	/^Graph::putEdge(int v1, int v2, double weight, double capacity)$/;"	f	class:Graph	signature:(int v1, int v2, double weight, double capacity)
+Graph::putEdge	Graph.h	/^	void putEdge(int v1, int v2, double weight, double capacity);		$/;"	p	class:Graph	access:public	signature:(int v1, int v2, double weight, double capacity)
+Graph::rDfs	Graph.cpp	/^Graph::rDfs(int v, bool* reach) const$/;"	f	class:Graph	signature:(int v, bool* reach) const
+Graph::rDfs	Graph.h	/^	void rDfs(int v, bool* reach) const;$/;"	p	class:Graph	access:private	signature:(int v, bool* reach) const
+Graph::removeEdge	Graph.cpp	/^Graph::removeEdge(int v1, int v2)$/;"	f	class:Graph	signature:(int v1, int v2)
+Graph::removeEdge	Graph.h	/^	void removeEdge(int v1, int v2);$/;"	p	class:Graph	access:public	signature:(int v1, int v2)
+Graph::shortestPaths	Graph.cpp	/^Graph::shortestPaths(int sourceVertex, double* distanceFromSource, int* predecessor) const$/;"	f	class:Graph	signature:(int sourceVertex, double* distanceFromSource, int* predecessor) const
+Graph::shortestPaths	Graph.h	/^	void shortestPaths(int sourceVertex, double* distanceFromSource, int* predecessor) const;$/;"	p	class:Graph	access:public	signature:(int sourceVertex, double* distanceFromSource, int* predecessor) const
+Graph::vertices	Graph.cpp	/^Graph::vertices() const$/;"	f	class:Graph	signature:() const
+Graph::vertices	Graph.h	/^	int vertices() const;					\/\/return the number of nodes$/;"	p	class:Graph	access:public	signature:() const
+Graph::weight	Graph.cpp	/^Graph::weight(int v1, int v2) const$/;"	f	class:Graph	signature:(int v1, int v2) const
+Graph::weight	Graph.h	/^	double weight(int v1, int v2) const;			\/\/return weight of edge (v1, v2)$/;"	p	class:Graph	access:public	signature:(int v1, int v2) const
+Graph::~Graph	Graph.cpp	/^Graph::~Graph()$/;"	f	class:Graph	signature:()
+Graph::~Graph	Graph.h	/^	virtual ~Graph();$/;"	p	class:Graph	access:public	signature:()
+GraphEdge	Graph.h	/^	GraphEdge():numPacketHead(0), numPacketTail(0)$/;"	f	class:GraphEdge	access:public	signature:()
+GraphEdge	Graph.h	/^	GraphEdge(int _v1, int _v2)$/;"	f	class:GraphEdge	access:public	signature:(int _v1, int _v2)
+GraphEdge	Graph.h	/^class GraphEdge$/;"	c
+GraphEdge::GraphEdge	Graph.h	/^	GraphEdge():numPacketHead(0), numPacketTail(0)$/;"	f	class:GraphEdge	access:public	signature:()
+GraphEdge::GraphEdge	Graph.h	/^	GraphEdge(int _v1, int _v2)$/;"	f	class:GraphEdge	access:public	signature:(int _v1, int _v2)
+GraphEdge::addNumPacketHead	Graph.h	/^	bool addNumPacketHead(bool isAdd, int numPackets = 1)$/;"	f	class:GraphEdge	access:public	signature:(bool isAdd, int numPackets = 1)
+GraphEdge::addNumPacketTail	Graph.h	/^	bool addNumPacketTail(bool isAdd, int numPackets = 1)$/;"	f	class:GraphEdge	access:public	signature:(bool isAdd, int numPackets = 1)
+GraphEdge::numPacketHead	Graph.h	/^	int numPacketHead; \/\/edge边头的队列$/;"	m	class:GraphEdge	access:public
+GraphEdge::numPacketTail	Graph.h	/^	int numPacketTail; \/\/edge边尾的队列$/;"	m	class:GraphEdge	access:public
+GraphEdge::operator ==	Graph.h	/^	bool operator == (const GraphEdge& edge)$/;"	f	class:GraphEdge	access:public	signature:(const GraphEdge& edge)
+GraphEdge::v1	Graph.h	/^	int v1;		\/\/node id of the origin$/;"	m	class:GraphEdge	access:public
+GraphEdge::v2	Graph.h	/^	int v2;		\/\/node id of the end$/;"	m	class:GraphEdge	access:public
+GraphEdge::~GraphEdge	Graph.h	/^	virtual ~GraphEdge()$/;"	f	class:GraphEdge	access:public	signature:()
+GraphNode	Graph.h	/^	GraphNode():numHeadQueue(0), numTailQueue(0)$/;"	f	class:GraphNode	access:public	signature:()
+GraphNode	Graph.h	/^	GraphNode(int _id, double _weight, double _capacity)$/;"	f	class:GraphNode	access:public	signature:(int _id, double _weight, double _capacity)
+GraphNode	Graph.h	/^class GraphNode$/;"	c
+GraphNode::GraphNode	Graph.h	/^	GraphNode():numHeadQueue(0), numTailQueue(0)$/;"	f	class:GraphNode	access:public	signature:()
+GraphNode::GraphNode	Graph.h	/^	GraphNode(int _id, double _weight, double _capacity)$/;"	f	class:GraphNode	access:public	signature:(int _id, double _weight, double _capacity)
+GraphNode::capacity	Graph.h	/^	double capacity;		\/\/capacity of the edge$/;"	m	class:GraphNode	access:public
+GraphNode::getNumHeadQueue	Graph.h	/^	int getNumHeadQueue()$/;"	f	class:GraphNode	access:public	signature:()
+GraphNode::getNumTailQueue	Graph.h	/^	int getNumTailQueue()$/;"	f	class:GraphNode	access:public	signature:()
+GraphNode::id	Graph.h	/^	int id;				    \/\/id of the end node of the edge$/;"	m	class:GraphNode	access:public
+GraphNode::numHeadQueue	Graph.h	/^	int numHeadQueue;       \/\/number of the head queues$/;"	m	class:GraphNode	access:public
+GraphNode::numTailQueue	Graph.h	/^	int numTailQueue;       \/\/number of the tail queues$/;"	m	class:GraphNode	access:public
+GraphNode::operator ++	Graph.h	/^	GraphNode& operator++()$/;"	f	class:GraphNode	access:public	signature:()
+GraphNode::operator ++	Graph.h	/^	GraphNode& operator++(int)$/;"	f	class:GraphNode	access:public	signature:(int)
+GraphNode::operator --	Graph.h	/^	GraphNode& operator--()$/;"	f	class:GraphNode	access:public	signature:()
+GraphNode::operator --	Graph.h	/^	GraphNode& operator--(int)$/;"	f	class:GraphNode	access:public	signature:(int)
+GraphNode::operator ==	Graph.h	/^	bool operator == (const GraphNode& node)$/;"	f	class:GraphNode	access:public	signature:(const GraphNode& node)
+GraphNode::weight	Graph.h	/^	double weight;			\/\/weight of the edge, used to compute the shoretest path$/;"	m	class:GraphNode	access:public
+GraphNode::~GraphNode	Graph.h	/^	virtual ~GraphNode()$/;"	f	class:GraphNode	access:public	signature:()
+Kb	BulkPacket.h	/^	Kb = 2,$/;"	e	enum:unit
+Mb	BulkPacket.h	/^	Mb = 3$/;"	e	enum:unit
+_BULKCONTROLNET_H_	BulkControlNet.h	2;"	d
+_BULKLINK_H_	BulkLink.h	2;"	d
+_BULKPACKETS_H_	BulkPackets.h	2;"	d
+_from	BulkLink.h	/^		int _from;$/;"	m	class:BulkLink	access:private
+_headQueue	BulkLink.h	/^		queue<BulkPackets>* _headQueue;$/;"	m	class:BulkLink	access:private
+_isToTerminal	BulkLink.h	/^		bool _isToTerminal; \/\/_to是否通向终止点$/;"	m	class:BulkLink	access:private
+_lSinkList	BulkNetwork.h	/^		slist<GraphNode>* _lSinkList;$/;"	m	class:BulkNetwork	access:private
+_lSourceList	BulkNetwork.h	/^		slist<GNraphNode>* _lSourceList;$/;"	m	class:BulkNetwork	access:private
+_nSink	BulkNetwork.h	/^		int _nSink;   \/\/有几个Sink流出点$/;"	m	class:BulkNetwork	access:private
+_nSource	BulkNetwork.h	/^		int _nSource; \/\/有几个Source流入点$/;"	m	class:BulkNetwork	access:private
+_numPacketsHead	BulkLink.h	/^		int _numPacketsHead; \/\/edge边头的队列$/;"	m	class:BulkLink	access:private
+_numPacketsTail	BulkLink.h	/^		int _numPacketsTail; \/\/edge边尾的队列$/;"	m	class:BulkLink	access:private
+_packetsPool	BulkPackets.h	/^		static slit<BulkPackets*> _packetsPool;$/;"	m	class:BulkPackets	access:private
+_sinkNode	BulkSession.h	/^		GraphNode* _sinkNode;$/;"	m	class:BulkSession	access:private
+_size	BulkPacket.h	/^		double _size;$/;"	m	class:BulkPacket	access:private
+_sourceNode	BulkSession.h	/^		GraphNode* _sourceNode;$/;"	m	class:BulkSession	access:private
+_tailQueue	BulkLink.h	/^		queue<BulkPackets>* _tailQueue;$/;"	m	class:BulkLink	access:private
+_to	BulkLink.h	/^		int _to;$/;"	m	class:BulkLink	access:private
+_topology	BulkNetwork.h	/^		Graph* _topology;$/;"	m	class:BulkNetwork	access:private
+_type	BulkPacket.h	/^		unit _type;$/;"	m	class:BulkPacket	access:private
+aList	Graph.h	/^	slist<GraphNode>* aList = null;		\/\/ adjacency lists$/;"	m	class:Graph	access:public
+addNumPacketHead	Graph.h	/^	bool addNumPacketHead(bool isAdd, int numPackets = 1)$/;"	f	class:GraphEdge	access:public	signature:(bool isAdd, int numPackets = 1)
+addNumPacketTail	Graph.h	/^	bool addNumPacketTail(bool isAdd, int numPackets = 1)$/;"	f	class:GraphEdge	access:public	signature:(bool isAdd, int numPackets = 1)
+addNumPacketsHead	BulkLink.cpp	/^bool BulkLink::addNumPacketsHead(bool isAdd, int numPackets = 1)$/;"	f	class:BulkLink	signature:(bool isAdd, int numPackets = 1)
+addNumPacketsHead	BulkLink.h	/^		bool addNumPacketsHead(bool isAdd, int numPackets = 1);$/;"	p	class:BulkLink	access:public	signature:(bool isAdd, int numPackets = 1)
+addNumPacketsTail	BulkLink.cpp	/^bool BulkLink::addNumPacketsTail(bool isAdd, int numPackets = 1)$/;"	f	class:BulkLink	signature:(bool isAdd, int numPackets = 1)
+addNumPacketsTail	BulkLink.h	/^		bool addNumPacketsTail(bool isAdd, int numPackets = 1);$/;"	p	class:BulkLink	access:public	signature:(bool isAdd, int numPackets = 1)
+capacity	Graph.cpp	/^Graph::capacity(int v1, int v2) const$/;"	f	class:Graph	signature:(int v1, int v2) const
+capacity	Graph.h	/^	double capacity(int v1, int v2) const;			\/\/return capcity of edge (v1, v2)$/;"	p	class:Graph	access:public	signature:(int v1, int v2) const
+capacity	Graph.h	/^	double capacity;		\/\/capacity of the edge$/;"	m	class:GraphNode	access:public
+clearEdges	Graph.cpp	/^Graph::clearEdges()$/;"	f	class:Graph	signature:()
+clearEdges	Graph.h	/^	void clearEdges();$/;"	p	class:Graph	access:public	signature:()
+connected	Graph.cpp	/^Graph::connected() const$/;"	f	class:Graph	signature:() const
+connected	Graph.h	/^	bool connected() const;$/;"	p	class:Graph	access:public	signature:() const
+destroy	BulkPackets.h	/^		void destroy();$/;"	p	class:BulkPackets	access:public	signature:()
+e	Graph.h	/^	int e = 0;							\/\/ number of edges, one edge counts two times, since later one edge has two opposite direction flow$/;"	m	class:Graph	access:public
+edges	Graph.cpp	/^Graph::edges() const$/;"	f	class:Graph	signature:() const
+edges	Graph.h	/^	int edges() const;					    \/\/return the number of directed edges$/;"	p	class:Graph	access:public	signature:() const
+exportGraph	Graph.cpp	/^Graph::exportGraph(string cfilename) const$/;"	f	class:Graph	signature:(string cfilename) const
+exportGraph	Graph.h	/^	void exportGraph(string cfilename) const;$/;"	p	class:Graph	access:public	signature:(string cfilename) const
+genRandomGraph	Graph.cpp	/^Graph::genRandomGraph(int numNodes, int numEdges, double minCapacity, double maxCapacity)$/;"	f	class:Graph	signature:(int numNodes, int numEdges, double minCapacity, double maxCapacity)
+genRandomGraph	Graph.h	/^	static Graph* genRandomGraph(int numNodes, int numEdges, double minCapacity, double maxCapacity);$/;"	p	class:Graph	access:public	signature:(int numNodes, int numEdges, double minCapacity, double maxCapacity)
+getBulkPackets	BulkPackets.h	/^		BulkPackets* getBulkPackets(int size);$/;"	p	class:BulkPackets	access:public	signature:(int size)
+getNumHeadQueue	Graph.h	/^	int getNumHeadQueue()$/;"	f	class:GraphNode	access:public	signature:()
+getNumTailQueue	Graph.h	/^	int getNumTailQueue()$/;"	f	class:GraphNode	access:public	signature:()
+getPacketInfo	BulkPacket.cpp	/^string BulkPacket::getPacketInfo()$/;"	f	class:BulkPacket	signature:()
+getPacketInfo	BulkPacket.h	/^		string getPacketInfo();$/;"	p	class:BulkPacket	access:public	signature:()
+getPacketSize	BulkPacket.cpp	/^double BulkPacket::getPacketSize()$/;"	f	class:BulkPacket	signature:()
+getPacketSize	BulkPacket.h	/^		double getPacketSize();$/;"	p	class:BulkPacket	access:public	signature:()
+getPacketUnit	BulkPacket.cpp	/^unit BulkPacket::getPacketUnit()$/;"	f	class:BulkPacket	signature:()
+getPacketUnit	BulkPacket.h	/^		unit getPacketUnit();$/;"	p	class:BulkPacket	access:public	signature:()
+getSinkNodeById	BulkNetwork.cpp	/^slist<GraphNode>* BulkNetwork::getSinkNodeById(int id) const$/;"	f	class:BulkNetwork	signature:(int id) const
+getSinkNodeById	BulkNetwork.h	/^		slist<GraphNode>* getSinkNodeById(int id) const;$/;"	p	class:BulkNetwork	access:public	signature:(int id) const
+getSourceNodeById	BulkNetwork.cpp	/^slist<GraphNode>* BulkNetwork::getSourceNodeById(int id) const$/;"	f	class:BulkNetwork	signature:(int id) const
+getSourceNodeById	BulkNetwork.h	/^		slist<GraphNode>* getSourceNodeById(int id) const;$/;"	p	class:BulkNetwork	access:public	signature:(int id) const
+id	Graph.h	/^	int id;				    \/\/id of the end node of the edge$/;"	m	class:GraphNode	access:public
+importGraph	Graph.cpp	/^Graph::importGraph(string cfilename)$/;"	f	class:Graph	signature:(string cfilename)
+importGraph	Graph.h	/^	static Graph* importGraph(string cfilename);$/;"	p	class:Graph	access:public	signature:(string cfilename)
+ltedge	Graph.h	/^struct ltedge$/;"	s
+ltedge::operator ()	Graph.h	/^	bool operator()(const GraphEdge edge1, const GraphEdge edge2) const$/;"	f	struct:ltedge	access:public	signature:(const GraphEdge edge1, const GraphEdge edge2) const
+ltstr	Graph.h	/^struct ltstr$/;"	s
+ltstr::operator ()	Graph.h	/^	bool operator()(const char* s1, const char* s2) const$/;"	f	struct:ltstr	access:public	signature:(const char* s1, const char* s2) const
+n	Graph.h	/^	int n;							\/\/ number of vertices$/;"	m	class:Graph	access:public
+numHeadQueue	Graph.h	/^	int numHeadQueue;       \/\/number of the head queues$/;"	m	class:GraphNode	access:public
+numPacketHead	Graph.h	/^	int numPacketHead; \/\/edge边头的队列$/;"	m	class:GraphEdge	access:public
+numPacketTail	Graph.h	/^	int numPacketTail; \/\/edge边尾的队列$/;"	m	class:GraphEdge	access:public
+numTailQueue	Graph.h	/^	int numTailQueue;       \/\/number of the tail queues$/;"	m	class:GraphNode	access:public
+operator ()	Graph.h	/^	bool operator()(const GraphEdge edge1, const GraphEdge edge2) const$/;"	f	struct:ltedge	access:public	signature:(const GraphEdge edge1, const GraphEdge edge2) const
+operator ()	Graph.h	/^	bool operator()(const char* s1, const char* s2) const$/;"	f	struct:ltstr	access:public	signature:(const char* s1, const char* s2) const
+operator ++	Graph.h	/^	GraphNode& operator++()$/;"	f	class:GraphNode	access:public	signature:()
+operator ++	Graph.h	/^	GraphNode& operator++(int)$/;"	f	class:GraphNode	access:public	signature:(int)
+operator --	Graph.h	/^	GraphNode& operator--()$/;"	f	class:GraphNode	access:public	signature:()
+operator --	Graph.h	/^	GraphNode& operator--(int)$/;"	f	class:GraphNode	access:public	signature:(int)
+operator =	Graph.h	/^	Graph& operator=(const Graph &graph)$/;"	f	class:Graph	access:public	signature:(const Graph &graph)
+operator ==	Graph.h	/^	bool operator == (const GraphEdge& edge)$/;"	f	class:GraphEdge	access:public	signature:(const GraphEdge& edge)
+operator ==	Graph.h	/^	bool operator == (const GraphNode& node)$/;"	f	class:GraphNode	access:public	signature:(const GraphNode& node)
+putEdge	Graph.cpp	/^Graph::putEdge(int v1, int v2, double weight, double capacity)$/;"	f	class:Graph	signature:(int v1, int v2, double weight, double capacity)
+putEdge	Graph.h	/^	void putEdge(int v1, int v2, double weight, double capacity);		$/;"	p	class:Graph	access:public	signature:(int v1, int v2, double weight, double capacity)
+rDfs	Graph.cpp	/^Graph::rDfs(int v, bool* reach) const$/;"	f	class:Graph	signature:(int v, bool* reach) const
+rDfs	Graph.h	/^	void rDfs(int v, bool* reach) const;$/;"	p	class:Graph	access:private	signature:(int v, bool* reach) const
+removeEdge	Graph.cpp	/^Graph::removeEdge(int v1, int v2)$/;"	f	class:Graph	signature:(int v1, int v2)
+removeEdge	Graph.h	/^	void removeEdge(int v1, int v2);$/;"	p	class:Graph	access:public	signature:(int v1, int v2)
+setPacketSize	BulkPacket.cpp	/^BulkPacket&BulkPacket::setPacketSize(double size)$/;"	f	class:BulkPacket	signature:(double size)
+setPacketSize	BulkPacket.h	/^		BulkPacket& setPacketSize(double size);$/;"	p	class:BulkPacket	access:public	signature:(double size)
+setPacketType	BulkPacket.cpp	/^BulkPacket&BulkPacket::setPacketType(unit type)$/;"	f	class:BulkPacket	signature:(unit type)
+setPacketType	BulkPacket.h	/^		BulkPacket& setPacketType(unit type);$/;"	p	class:BulkPacket	access:public	signature:(unit type)
+setSinkNodeById	BulkNetwork.cpp	/^BulkNetwork& BulkNetwork::setSinkNodeById(int id)$/;"	f	class:BulkNetwork	signature:(int id)
+setSinkNodeById	BulkNetwork.h	/^		BulkNetwork& setSinkNodeById(int id);$/;"	p	class:BulkNetwork	access:public	signature:(int id)
+setSourceNodeById	BulkNetwork.cpp	/^BulkNetwork& BulkNetwork::setSourceNodeById(int id)$/;"	f	class:BulkNetwork	signature:(int id)
+setSourceNodeById	BulkNetwork.h	/^		BulkNetwork& setSourceNodeById(int id);$/;"	p	class:BulkNetwork	access:public	signature:(int id)
+shortestPaths	Graph.cpp	/^Graph::shortestPaths(int sourceVertex, double* distanceFromSource, int* predecessor) const$/;"	f	class:Graph	signature:(int sourceVertex, double* distanceFromSource, int* predecessor) const
+shortestPaths	Graph.h	/^	void shortestPaths(int sourceVertex, double* distanceFromSource, int* predecessor) const;$/;"	p	class:Graph	access:public	signature:(int sourceVertex, double* distanceFromSource, int* predecessor) const
+unit	BulkPacket.h	/^enum unit{$/;"	g
+v1	Graph.h	/^	int v1;		\/\/node id of the origin$/;"	m	class:GraphEdge	access:public
+v2	Graph.h	/^	int v2;		\/\/node id of the end$/;"	m	class:GraphEdge	access:public
+vertices	Graph.cpp	/^Graph::vertices() const$/;"	f	class:Graph	signature:() const
+vertices	Graph.h	/^	int vertices() const;					\/\/return the number of nodes$/;"	p	class:Graph	access:public	signature:() const
+weight	Graph.cpp	/^Graph::weight(int v1, int v2) const$/;"	f	class:Graph	signature:(int v1, int v2) const
+weight	Graph.h	/^	double weight(int v1, int v2) const;			\/\/return weight of edge (v1, v2)$/;"	p	class:Graph	access:public	signature:(int v1, int v2) const
+weight	Graph.h	/^	double weight;			\/\/weight of the edge, used to compute the shoretest path$/;"	m	class:GraphNode	access:public
+~BulkNetwork	BulkNetwork.h	/^		virtual ~BulkNetwork();$/;"	p	class:BulkNetwork	access:public	signature:()
+~BulkPackets	BulkPackets.cpp	/^BulkPackets::~BulkPackets()$/;"	f	class:BulkPackets	signature:()
+~BulkPackets	BulkPackets.h	/^		virtual ~BulkPackets();$/;"	p	class:BulkPackets	access:public	signature:()
+~Graph	Graph.cpp	/^Graph::~Graph()$/;"	f	class:Graph	signature:()
+~Graph	Graph.h	/^	virtual ~Graph();$/;"	p	class:Graph	access:public	signature:()
+~GraphEdge	Graph.h	/^	virtual ~GraphEdge()$/;"	f	class:GraphEdge	access:public	signature:()
+~GraphNode	Graph.h	/^	virtual ~GraphNode()$/;"	f	class:GraphNode	access:public	signature:()
