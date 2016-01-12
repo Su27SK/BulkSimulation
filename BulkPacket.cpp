@@ -39,16 +39,7 @@ string BulkPacket::getPacketInfo()
 	ss<<this->_size;
 	value<<ss;
 	ss.clear();
-	switch (this->_type) {
-		case 1:
-			return value + string("Byte");
-		case 2:
-			return value + string("Kb");
-		case 3:
-			return value + string("Mb");
-		case 4:
-			return value + string("Gb");
-	}
+	return value + this->getPacketUnit();
 }
 
 /**
@@ -64,11 +55,20 @@ double BulkPacket::getPacketSize()
 /**
  * @brief getPacketUnit 
  * get the packet size's Unit (as:Mb)
- * @return 
+ * @return {string} 
  */
-unit BulkPacket::getPacketUnit()
+string BulkPacket::getPacketUnit()
 {
-	return this->_type;
+	switch (this->_type) {
+		case 1:
+			return string("Byte");
+		case 2:
+			return string("Kb");
+		case 3:
+			return string("Mb");
+		case 4:
+			return string("Gb");
+	}
 }
 
 /**
@@ -94,4 +94,8 @@ bool BulkPacket::ConvertToType(int degree, bool isLarge)
 	} else {
 		return false
 	}
+}
+
+BulkPacket::~BulkPacket()
+{
 }

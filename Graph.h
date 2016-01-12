@@ -110,14 +110,14 @@ public:
 	int numTailQueue;       //number of the tail queues
 	double weight;			//weight of the edge, used to compute the shoretest path
 	double capacity;		//capacity of the edge
-
+	bool isTerminal;        //check the node is Terminal
 public:
 	//constructors
-	GraphNode():numHeadQueue(0), numTailQueue(0)
+	GraphNode():numHeadQueue(0), numTailQueue(0), isTerminal(false)
 	{}
 
 	GraphNode(int _id, double _weight, double _capacity)
-		:id(_id), weight(_weight), capacity(_capacity), numHeadQueue(0), numTailQueue(0)
+		:id(_id), weight(_weight), capacity(_capacity), numHeadQueue(0), numTailQueue(0), isTerminal(false)
 	{}
 	
 	//destructor
