@@ -1,4 +1,4 @@
-#ifdef _BULKGRAPHEDGE_H_
+#ifndef _BULKGRAPHEDGE_H_
 #define _BULKGRAPHEDGE_H_
 class BulkGraphEdge
 {
@@ -13,9 +13,11 @@ class BulkGraphEdge
 		bool operator == (const BulkGraphEdge& edge);
 		BulkGraphEdge& setWeight(double weight);
 		BulkGraphEdge& setCapacity(double capacity);
+		int getGraphEdgeSource() const;
+		int getGraphEdgeSink() const;
 		double getWeight() const;
 		double getCapacity() const;
-		virtual ~BulkGraphEdge(){}
+		 ~BulkGraphEdge(){}
 };
 
 #endif

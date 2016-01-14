@@ -1,18 +1,11 @@
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <cfloat>
 #include "Graph.h"
-#include "BulkGraphNode.h"
-#include "RandomGenerator.h"
-
 Graph::Graph(int _n):n(_n)
 {
 	if (this->n < 0) {
 		this->n = 0;
 	}
-	aList = new slist<GraphNode>[n+1];
-	e = 0;
+	aList = new BulkGraphNode[n+1];
+	this->e = 0;
 }
 
 Graph::~Graph()
@@ -89,32 +82,39 @@ Graph::weight(int v1, int v2) const
 	return 0.0;
 }
 
+/**
+ * @brief putEdge 
+ * 图中增加边，以及权值，带宽
+ * @param {interge} v1
+ * @param {interge} v2
+ * @param {double} weight
+ * @param {double} capacity
+ */
 void Graph::putEdge(int v1, int v2, double weight, double capacity)
 {	
-	if (v1 < 1 || v2 < 1 || v1 > n || v2 > n || v1 == v2)
+	if (v1 < 1 || v2 < 1 || v1 > n || v2 > n || v1 == v2) {
 		return;
-
-	GraphNode node(v2, weight, capacity);
-
-	slist<GraphNode>::iterator result = find(aList[v1].begin(), aList[v1].end(), node);
-
-	if (result == aList[v1].end())  // new edge
-	{
-		// put v2 at front of chain aList[v1]
-		aList[v1].push_front(node);
-		
-		e++;
 	}
-	/*else{
-		//edge already exist, need to change weight, capacity???
-	}*/
+	BulkGraphNode node1(v1);
+	if (aList[v1].getNodeId() == -1) {
+		aList[v1] = node1;
+	}
+	BulkGraphNode node2(v2);
+	if (aList[v2].getNodeId() == -1) {
+		aList[v2] = node2;
+	}
+	BulkGraphEdge edge(v1, v2, weight, capacity);
+	aList[v1].addBulkEdge(&edge);
+	aList[v2].addBulkEdge(&edge);
 }
 
-/** remove the edge (v1,v2) in the bidirected graph 
-  * you need to call removeEdge(v1, v2) and removeEdge(v2, v1) to remove link v1-v2
-  */
-void
-Graph::removeEdge(int v1, int v2)
+/**
+ * @brief removeEdge 
+ *
+ * @param {interge} v1
+ * @param {interge} v2
+ */
+void Graph::removeEdge(int v1, int v2)
 {
 	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n)
 	{
@@ -122,24 +122,22 @@ Graph::removeEdge(int v1, int v2)
 
 		slist<GraphNode>::iterator result = find(aList[v1].begin(), aList[v1].end(), node);
 
-
-		if (result != aList[v1].end())  // edge (v1, v2) do exist
+		if (result != aList[v1].end()) 
 		{
 			result = aList[v1].erase(result);
 						
-			// need to delete result ??????????
 			e--;
 		}
 	}
 }
 
-void
-Graph::clearEdges()
+/**
+ * @brief clearEdges 
+ * 删除所有边
+ */
+void Graph::clearEdges()
 {
-	//remove all the edges in the graph
-	for(int i = 1; i <= n; i++)
-		aList[i].clear();
-
+	delete[] aList;
 	e = 0;
 }
 

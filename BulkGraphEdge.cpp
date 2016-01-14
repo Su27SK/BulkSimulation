@@ -16,7 +16,7 @@ BulkGraphEdge::BulkGraphEdge(int v1, int v2, double weight, double capacity)
  */
 bool BulkGraphEdge::operator == (const BulkGraphEdge& edge)
 {
-	return (v1 == edge.v1) && (v2 == edge.v2);
+	return (this->_v1 == edge._v1) && (this->_v2 == edge._v2);
 }
 
 /**
@@ -63,4 +63,24 @@ double BulkGraphEdge::getWeight() const
 double BulkGraphEdge::getCapacity() const
 {
 	return this->_capacity;
+}
+
+/**
+ * @brief getGraphEdgeSource 
+ *
+ * @return {interge}
+ */
+int BulkGraphEdge::getGraphEdgeSource() const
+{
+	return _v1;
+}
+
+/**
+ * @brief getGraphEdgeSink 
+ *
+ * @return {interge}
+ */
+int BulkGraphEdge::getGraphEdgeSink() const
+{
+	return this->_v2;
 }

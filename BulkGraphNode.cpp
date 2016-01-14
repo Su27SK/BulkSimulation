@@ -1,6 +1,11 @@
 #include "BulkGraphNode.h"
 BulkGraphNode::BulkGraphNode(int _id):id(_id), numHeadQueue(0), numTailQueue(0), isTerminal(false)
 {
+	if (this->id < 1) {
+		this->id = -1;
+	}
+	this->headEdge = new slist<BulkGraphEdge>(0);
+	this->tailEdge = new slist<BulkGraphEdge>(0);
 }
 
 bool BulkGraphNode::operator == (const BulkGraphNode& node)
@@ -29,45 +34,94 @@ int BulkGraphNode::getNumTailQueue() const
 }
 
 /**
- * @brief operator++ 
- * 后缀++操作符(用于numTailQueue的计数++)
- * @return 
+ * @brief getNodeId 
+ * 获得node的id号
+ * @return {interger}
  */
-BulkGraphNode& BulkGraphNode::operator++(int)
+int BulkGraphNode::getNodeId() const
 {
-	this->numTailQueue++;
-	return *this;
+	return this->id;
 }
 
 /**
- * @brief operator++ 
- * 前缀++操作符(用于numHeadQueue的计数++)
- * @return 
+ * @brief getHeadEdge 
+ *
+ * @return slist<BulkGraphEdge>*
  */
-BulkGraphNode& BulkGraphNode::operator++()
+slist<BulkGraphEdge>* BulkGraphNode::getHeadEdge() const
 {
-	++this->numHeadQueue;
-	return *this;
+	return this->headEdge;
 }
 
 /**
- * @brief operator-- 
- * 后缀++操作符(用于numTailQueue的计数--)
- * @return 
+ * @brief getTailEdge 
+ *
+ * @return slist<BulkGraphEdge>*
  */
-BulkGraphNode& BulkGraphNode::operator--(int)
+slist<BulkGraphEdge>* BulkGraphNode::getTailEdge() const
 {
-	this->numTailQueue--;
-	return *this;
+	return this->tailEdge;
 }
 
 /**
- * @brief operator-- 
- * 前缀--操作符(用于numHeadQueue的计数--)
- * @return 
+ * @brief addBulkEdge 
+ * 节点中增加与节点相连的边
+ * @param {BulkGraphEdge} edge
+ *
+ * @return {boolean}
  */
-BulkGraphNode& BulkGraphNode::operator--()
+bool BulkGraphNode::addBulkEdge(BulkGraphEdge* edge)
 {
-	--this->numHeadQueue;
+	if (this->id == edge->getGraphEdgeSource()) {
+		this->headEdge->push_front(*edge);
+		this->numHeadQueue++;
+		return true;
+	} else if (this->id == edge->getGraphEdgeSink()) {
+		this->tailEdge->push_front(*edge);
+		this->numTailQueue++;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool BulkGraphNode::removeBulkEdge(BulkGraphEdge* edge)
+{
+	
+
+
+}
+
+/**
+ * @brief operator= 
+ * 重载操作符
+ * @param {BulkGraphNode} node
+ *
+ * @return {BulkGraphNode}
+ */
+BulkGraphNode& BulkGraphNode::operator=(const BulkGraphNode &node)
+{
+	if (this != &node) {
+		BulkGraphNode nodeTemp(node);
+		this->id = nodeTemp.id;
+		this->numHeadQueue = nodeTemp.numHeadQueue;
+		this->numTailQueue = nodeTemp.numTailQueue;
+		this->isTerminal = node.isTerminal;
+		
+		slist<BulkGraphEdge>* pHTemp = nodeTemp.headEdge;
+		nodeTemp.headEdge = this->headEdge;
+		this->headEdge = pHTemp;
+
+		slist<BulkGraphEdge>* pTTemp = nodeTemp.tailEdge;
+		nodeTemp.tailEdge = this->tailEdge;
+		this->tailEdge = pTTemp;
+	}
 	return *this;
+}
+
+int BulkGraphNode::Print()
+{
+	slist<BulkGraphEdge>::iterator iter;
+	iter = this->headEdge->begin();
+	return iter->getGraphEdgeSource();
 }
