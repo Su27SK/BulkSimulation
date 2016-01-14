@@ -13,7 +13,7 @@ BulkPacket::BulkPacket(double size, unit type)
 BulkPacket&BulkPacket::setPacketSize(double size)
 {
 	this->_size = size;
-	return this;
+	return *this;
 }
 
 /**
@@ -24,7 +24,7 @@ BulkPacket&BulkPacket::setPacketSize(double size)
 BulkPacket&BulkPacket::setPacketType(unit type)
 {
 	this->_type = type;
-	return this;
+	return *this;
 }
 
 /**
@@ -47,7 +47,7 @@ string BulkPacket::getPacketInfo()
  * get the packet size (as: 4.2)
  * @return {double}
  */
-double BulkPacket::getPacketSize()
+double BulkPacket::getPacketSize() const
 {
 	return this->_size;
 }

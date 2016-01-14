@@ -7,7 +7,7 @@ class BulkNetwork
 	private:
 		int _nSource; //有几个Source流入点
 		int _nSink;   //有几个Sink流出点
-		slist<GNraphNode>* _lSourceList;
+		slist<GraphNode>* _lSourceList;
 		slist<GraphNode>* _lSinkList;
 		Graph* _topology;
 	public:

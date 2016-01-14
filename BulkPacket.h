@@ -20,7 +20,7 @@ class BulkPacket
 		BulkPacket& setPacketSize(double size);
 		BulkPacket& setPacketType(unit type);
 		string getPacketInfo();
-		double getPacketSize();
+		double getPacketSize() const;
 		string getPacketUnit();
 		bool ConvertToType(int degree, bool isLarge = true);
 		~BulkPacket();

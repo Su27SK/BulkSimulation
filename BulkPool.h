@@ -4,10 +4,16 @@
 class BulkPool
 {
 	private:
-		slist<BulkPackets>* pool;
+		slist<BulkPackets>* _pool;
+		BulkPackets* _packets;
+		static int MAXSIZE = 1000;
+		static int INITSIZE = 100;
 	public:
-		BulkPool
+		BulkPool();
+		BulkPool(BulkPackets* packetsModel);
 		void init();
 		void destroy();
+		void placePacketsToPool(BulkPackets* packets);
+		BulkPackets* getPacketsFromPool();
 };
 #endif

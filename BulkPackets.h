@@ -21,6 +21,7 @@ class BulkPackets
 		BulkPackets& setTransferPacketsNum(double number);
 		BulkPackets& setSourceNode(GraphNode* source);
 		BulkPackets& setSinkNode(GraphNode* sink);
+		BulkPackets& operator=(BulkPackets& bulkPackets);
 		~BulkPackets();
 };
 #endif

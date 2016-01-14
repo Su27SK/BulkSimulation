@@ -1,26 +1,17 @@
-// Graph.cpp: implementation of the Graph class.
-//
-//////////////////////////////////////////////////////////////////////
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <cfloat>
 #include "Graph.h"
+#include "BulkGraphNode.h"
 #include "RandomGenerator.h"
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-Graph::Graph(int _n)
-:n(_n)
+Graph::Graph(int _n):n(_n)
 {
-	if(n < 0)
-		n = 0;
-
+	if (this->n < 0) {
+		this->n = 0;
+	}
 	aList = new slist<GraphNode>[n+1];
-
-	// default value of e is 0
 	e = 0;
 }
 
@@ -30,30 +21,42 @@ Graph::~Graph()
 	aList = NULL;
 }
 
-/** @return number of vertices */
-int
-Graph::vertices() const
+/**
+ * @brief getVertices 
+ * 获得节点的个数
+ * @return {int}
+ */
+int Graph::getVertices() const
 {
 	return n;
 }
 
-/** @return number of edges */
-int
-Graph::edges() const
+
+/**
+ * @brief getEdges 
+ * 获得边的数量
+ * @return {interge}
+ */
+int Graph::getEdges() const
 {
 	return e;
 }
 
-/** @return capacity of an edge (v1, v2) */
-double
-Graph::capacity(int v1, int v2) const
+/**
+ * @brief capacity 
+ * 获得当前链路(v1, v2)的带宽
+ * @param {interge} v1
+ * @param {interge} v2
+ *
+ * @return {double}
+ */
+double Graph::capacity(int v1, int v2) const
 {
 	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n)
 	{
 		GraphNode node(v2, 0, 0);
 
 		slist<GraphNode>::iterator result = find(aList[v1].begin(), aList[v1].end(), node);
-
 
 		if (result != aList[v1].end())  // edge (v1, v2) do exist
 		{
@@ -86,12 +89,7 @@ Graph::weight(int v1, int v2) const
 	return 0.0;
 }
 
-/** put the edge (v1,v2) into the bidirected graph 
-  * you need to call putEdge(v1, v2) and putEdge(v2, v1) to guarantee you insert both of the
-  * directions into the graph
-  */
-void
-Graph::putEdge(int v1, int v2, double weight, double capacity)
+void Graph::putEdge(int v1, int v2, double weight, double capacity)
 {	
 	if (v1 < 1 || v2 < 1 || v1 > n || v2 > n || v1 == v2)
 		return;

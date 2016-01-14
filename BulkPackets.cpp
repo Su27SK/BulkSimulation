@@ -31,7 +31,7 @@ BulkPackets::BulkPackets(double number, GraphNode* source, GraphNode* sink, Bulk
 BulkPackets& BulkPackets::setTransferPacketsNum(double number)
 {
 	this->_transferPacketsNum = number;
-	return this;
+	return *this;
 }
 
 /**
@@ -44,7 +44,7 @@ BulkPackets& BulkPackets::setTransferPacketsNum(double number)
 BulkPackets& BulkPackets::setSourceNode(GraphNode* source)
 {
 	this->_sourceNode = source;
-	return this;
+	return *this;
 }
 
 /**
@@ -57,7 +57,7 @@ BulkPackets& BulkPackets::setSourceNode(GraphNode* source)
 BulkPackets& BulkPackets::setSinkNode(GraphNode* sink)
 {
 	this->_sinkNode = sink;
-	return this;
+	return *this;
 }
 
 /**
@@ -84,6 +84,21 @@ string getBulkPacketsInfo()
 	value<<ss;
 	ss.clear();
 	return value + this->_model->getPacketUnit();
+}
+
+/**
+ * @brief operator= 
+ * 重载操作符
+ * @param {BulkPackets} bulkPackets
+ *
+ * @return {BulkPackets}
+ */
+BulkPackets& BulkPackets::operator=(const BulkPackets& bulkPackets)
+{
+	if (this != bulkPackets) {
+		BulkPackets bulkPackTemp(bulkPackets);
+			
+	}
 }
 
 BulkPackets::~BulkPackets()

@@ -2,39 +2,29 @@
 #define _BULKLINK_H_
 #include <ext/slist>
 #include <queue>
-#include "Graph.h"
+#include "BulkGraphEdge.h"
 #include "BulkPackets.h"
 #include "BulkControlPacket.h"
-class BulkLink
+using namespace std;
+class BulkLink:BulkGraphEdge
 {
 	private:
-		int _from;
-		int _to;
 		bool _isToTerminal; //_to是否通向终止点
 		int _numPacketsHead; //edge边头的队列
 		int _numPacketsTail; //edge边尾的队列
 		queue<BulkPackets>* _headQueue;
 		queue<BulkPackets>* _tailQueue;
 	public:
-		BulkLink()
+		BulkLink():BulkGraphEdge()
 		{
-			this->_from = -1;
-			this->_to = -1;
 			this->_isToTerminal = false;
-			this->_headQueue = this->_tailQueue = NULL;
 			this->_numPacketsHead = this->_numPacketsTail = 0;
+			this->_headQueue = new queue<BulkPackets>(0);
+			this->_tailQueue = new queue<BulkPackets>(0);
 		}
-
-		BulkLink(int from, int to, bool isTerminal = false):
-		_headQueue(NULL), _tailQueue(NULL), _numPacketsHead(0),_numPacketsTail(0)
-		{
-			this->_from = from;
-			this->_to = to;
-			this->_isToTerminal = isTerminal;
-		}
-
+		BulkLink(int from, int to, bool isTerminal = false);
+		BulkLink(int from, int to, int weight, int capacity, bool isTerminal = false);
 		bool addNumPacketsHead(bool isAdd, int numPackets = 1);
 		bool addNumPacketsTail(bool isAdd, int numPackets = 1);
-		
 };
 #endif
