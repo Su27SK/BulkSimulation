@@ -85,11 +85,40 @@ bool BulkGraphNode::addBulkEdge(BulkGraphEdge* edge)
 	}
 }
 
+/**
+ * @brief removeBulkEdge 
+ * 节点中删除与节点相连的边
+ * @param {BulkGraphEdge} edge
+ *
+ * @return {boolean}
+ */
 bool BulkGraphNode::removeBulkEdge(BulkGraphEdge* edge)
 {
-	
-
-
+	slist<BulkGraphEdge>::iterator iter;
+	slist<BulkGraphEdge>::iterator iterEnd;
+	if (this->id == edge->getGraphEdgeSource()) {
+		iter = this->headEdge->begin();
+		iterEnd = this->headEdge->end();
+		for (; iter != iterEnd; iter++) {
+			if (*iter == *edge) {
+				this->headEdge->erase(iter);
+				break;
+			}
+		}
+	} else if (this->id == edge->getGraphEdgeSink()) {
+		iter = this->tailEdge->begin();
+		iterEnd = this->tailEdge->end();
+		for (; iter != iterEnd; iter++) {
+			if (*iter == *edge) {
+				this->tailEdge->erase(iter);
+				break;
+			}
+		}
+	}
+	if (iter != iterEnd) {
+		return true; 
+	}
+	return false;
 }
 
 /**
