@@ -26,6 +26,7 @@ class BulkGraphNode
 		int getNumHeadQueue() const;
 		int getNumTailQueue() const;
 		int getNodeId() const;
+		BulkGraphEdge* getBulkEdge(BulkGraphEdge* edge) const;
 		slist<BulkGraphEdge>* getHeadEdge() const;
 		slist<BulkGraphEdge>* getTailEdge() const;
 		BulkGraphNode& operator = (const BulkGraphNode &node);

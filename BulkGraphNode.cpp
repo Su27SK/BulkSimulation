@@ -94,31 +94,18 @@ bool BulkGraphNode::addBulkEdge(BulkGraphEdge* edge)
  */
 bool BulkGraphNode::removeBulkEdge(BulkGraphEdge* edge)
 {
-	slist<BulkGraphEdge>::iterator iter;
-	slist<BulkGraphEdge>::iterator iterEnd;
-	if (this->id == edge->getGraphEdgeSource()) {
-		iter = this->headEdge->begin();
-		iterEnd = this->headEdge->end();
-		for (; iter != iterEnd; iter++) {
-			if (*iter == *edge) {
-				this->headEdge->erase(iter);
-				break;
-			}
+	BulkGraphEdge* nowEdge = this->getBulkEdge(edge);
+	if (nowEdge != NULL) {
+		if (this->id == edge->getGraphEdgeSource()) {
+			this->headEdge->erase(nowEdge);
+			return true;
+		} else if (this->id == edge->getGraphEdgeSink()) {
+			this->tailEdge->erase(nowEdge);
+			return true;
 		}
-	} else if (this->id == edge->getGraphEdgeSink()) {
-		iter = this->tailEdge->begin();
-		iterEnd = this->tailEdge->end();
-		for (; iter != iterEnd; iter++) {
-			if (*iter == *edge) {
-				this->tailEdge->erase(iter);
-				break;
-			}
-		}
+	} else {
+		return false;
 	}
-	if (iter != iterEnd) {
-		return true; 
-	}
-	return false;
 }
 
 /**
@@ -146,6 +133,41 @@ BulkGraphNode& BulkGraphNode::operator=(const BulkGraphNode &node)
 		this->tailEdge = pTTemp;
 	}
 	return *this;
+}
+
+/**
+ * @brief getBulkEdge 
+ * 通过edge 返回向量边,包含具体信息，比如weight, capacity信息
+ * (*iter == *edge) 主要比较(from, to)的数值
+ * @param {BulkGraphEdge} edge
+ *
+ * @return {BulkGraphEdge}
+ */
+BulkGraphEdge* BulkGraphNode::getBulkEdge(BulkGraphEdge* edge) const
+{
+	slist<BulkGraphEdge>::iterator iter;
+	slist<BulkGraphEdge>::iterator iterEnd;
+	if (this->id == edge->getGraphEdgeSource()) {
+		iter = this->headEdge->begin();
+		iterEnd = this->headEdge->end();
+		for (; iter != iterEnd; iter++) {
+			if (*iter == *edge) {
+				return iter;
+			}
+		}
+	} else if (this->id == edge->getGraphEdgeSink()) {
+		iter = this->tailEdge->begin();
+		iterEnd = this->tailEdge->end();
+		for (; iter != iterEnd; iter++) {
+			if (*iter == *edge) {
+				return iter;
+			}
+		}
+	} 
+	if (iter == iterEnd) {
+		return NULL; 
+	}
+	return NULL;
 }
 
 int BulkGraphNode::Print()

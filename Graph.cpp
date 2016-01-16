@@ -17,11 +17,11 @@ Graph::~Graph()
 /**
  * @brief getVertices 
  * 获得节点的个数
- * @return {int}
+ * @return {interge}
  */
 int Graph::getVertices() const
 {
-	return n;
+	return this->n;
 }
 
 
@@ -32,7 +32,7 @@ int Graph::getVertices() const
  */
 int Graph::getEdges() const
 {
-	return e;
+	return this->e;
 }
 
 /**
@@ -47,13 +47,10 @@ double Graph::capacity(int v1, int v2) const
 {
 	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n)
 	{
-		GraphNode node(v2, 0, 0);
-
-		slist<GraphNode>::iterator result = find(aList[v1].begin(), aList[v1].end(), node);
-
-		if (result != aList[v1].end())  // edge (v1, v2) do exist
-		{
-			return (*result).capacity;
+		BulkGraphEdge edge(v1, v2);
+		BulkGraphEdge* nowEdge = aList[v1].getBulkEdge(&edge);
+		if (nowEdge != NULL) {
+			return nowEdge->getCapacity();
 		}
 	}
 
@@ -61,20 +58,22 @@ double Graph::capacity(int v1, int v2) const
 	return 0.0;
 }
 
-/** @return weight of an edge (v1, v2) */
-double
-Graph::weight(int v1, int v2) const
+/**
+ * @brief weight 
+ * 返回两点之间的权值
+ * @param {interge} v1
+ * @param {interge} v2
+ *
+ * @return {boolean}
+ */
+double Graph::weight(int v1, int v2) const
 {
 	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n)
 	{
-		GraphNode node(v2, 0, 0);
-
-		slist<GraphNode>::iterator result = find(aList[v1].begin(), aList[v1].end(), node);
-
-
-		if (result != aList[v1].end())  // edge (v1, v2) do exist
-		{
-			return (*result).weight;
+		BulkGraphEdge edge(v1, v2);
+		BulkGraphEdge* nowEdge = aList[v1].getBulkEdge(&edge);
+		if (nowEdge != NULL) {
+			return nowEdge->getWeight();
 		}
 	}
 
@@ -106,27 +105,27 @@ void Graph::putEdge(int v1, int v2, double weight, double capacity)
 	BulkGraphEdge edge(v1, v2, weight, capacity);
 	aList[v1].addBulkEdge(&edge);
 	aList[v2].addBulkEdge(&edge);
+	this->e++
 }
 
 /**
  * @brief removeEdge 
- *
+ * 图中删除边，以及权值，带宽
  * @param {interge} v1
  * @param {interge} v2
  */
 void Graph::removeEdge(int v1, int v2)
 {
-	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n)
-	{
-		GraphNode node(v2, 0, 0);
-
-		slist<GraphNode>::iterator result = find(aList[v1].begin(), aList[v1].end(), node);
-
-		if (result != aList[v1].end()) 
-		{
-			result = aList[v1].erase(result);
-						
-			e--;
+	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n) {
+		if (aList[v1].getNodeId() == -1 || 
+			aList[v2].getNodeId() == -1) {
+			return;
+		} else {
+			BulkGraphEdge edge(v1, v2);
+			if (aList[v1].removeBulkEdge(&edge) || 
+				aList[v2].removeBulkEdge(&edge)) {
+				this->e--;
+			}
 		}
 	}
 }
@@ -138,145 +137,28 @@ void Graph::removeEdge(int v1, int v2)
 void Graph::clearEdges()
 {
 	delete[] aList;
-	e = 0;
+	this->e = 0;
 }
 
-/** @return true iff bidirected graph is connected 
-  * here it is treated as a undirected graph, it's called when we generate a connected random
-  * graph
-  */
-bool
-Graph::connected() const
+/**
+ * @brief connected 
+ * 判断两点之间是否连通
+ * @param {interge} v1
+ * @param {interge} v2
+ *
+ * @return {boolean} 
+ */
+bool Graph::connected(int v1, int v2) const
 {
-	bool* reach = new bool [n + 1];
-	
-	for (int i = 1; i <= n; i++)
-        	reach[i] = false;
-        	
-	// mark vertices reachable from vertex 1
-	rDfs(1, reach);
-      
-	// check if all vertices marked
-	for (int i = 1; i <= n; i++){
-        	if (false == reach[i])
+	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n) {
+		if (aList[v1].getNodeId() == -1 ||
+			aList[v2].getNodeId() == -1) {
 			return false;
-	}
-			
-	delete [] reach;
-	reach = NULL;
-	return true;		
-}
-
-/** recursive dfs method
-  * reach[i] is set to label for all vertices reachable
-  * from vertex v */
-void
-Graph::rDfs(int v, bool* reach) const
-{
-	reach[v] = true;
-
-	if(aList[v].empty())
-		return;
-
-	slist<GraphNode>::iterator iv = aList[v].previous(aList[v].end());
-
-	while (true)
-	{// visit an adjacent vertex of v
-		int u = (*iv).id;
-		if (false == reach[u])  // u is an unreached vertex
-			rDfs(u, reach);
-
-		if(iv == aList[v].begin())
-			break;
-		else
-			iv = aList[v].previous(iv);
-	}
-}
-
-/** Dijkstra's shortest-path algorithm */
-void
-Graph::shortestPaths(int sourceVertex, double* distanceFromSource, int* predecessor) const
-{
-	if (sourceVertex < 1 || sourceVertex > n)
-	{
-		cerr << "wrong source vertex " << sourceVertex << endl;
-		return;
-	}
-
-
-	GraphNode node;
-
-	slist<int> newReachableVertices;
-
-	slist<GraphNode>::iterator result;
-
-	// initialize
-	for(int i = 1; i <= n; i++)
-	{
-		node.id = i;
-		result = find(aList[sourceVertex].begin(), aList[sourceVertex].end(), node);
-
-		if(result == aList[sourceVertex].end())
-		{
-			//sourceVertex and node i is NOT connected directly
-			distanceFromSource[i] = DBL_MAX;
-			predecessor[i] = -1;
-		}else{
-			//sourceVertex and node i is connected directly
-			distanceFromSource[i] = (*result).weight;
-			predecessor[i] = sourceVertex;
-			newReachableVertices.push_front(i);
+		} else {
+			if (
+			aList[v1]
 		}
 	}
-
-	//source vetex has no predecessor
-	predecessor[sourceVertex] = 0;
-	distanceFromSource[sourceVertex] = 0.0;
-
-	while(!newReachableVertices.empty())
-	{
-		//more path exist
-		//find unreached vertex v with least distanceFrom Source
-		slist<int>::iterator iNewReachableVertices = newReachableVertices.previous(newReachableVertices.end());
-
-		int v = *iNewReachableVertices;
-
-		while(iNewReachableVertices != newReachableVertices.begin())
-		{
-			iNewReachableVertices = newReachableVertices.previous(iNewReachableVertices);
-			int w = *iNewReachableVertices;
-			if(distanceFromSource[w] < distanceFromSource[v])
-				v = w;
-		}
-
-		//next shortest path is to vertex v
-		//delete v from newReachableVertices and
-		//update distanceFromSource
-		iNewReachableVertices = find(newReachableVertices.begin(), newReachableVertices.end(), v);
-		newReachableVertices.erase(iNewReachableVertices);
-
-		for(int j = 1; j <= n; j++)
-		{
-			node.id = j;
-			result = find(aList[v].begin(), aList[v].end(), node);
-
-			if(result != aList[v].end() && (-1 == predecessor[j] || 
-				distanceFromSource[j] > distanceFromSource[v] + (*result).weight)){
-
-				//distanceFromSource[j] decreases
-				distanceFromSource[j] = distanceFromSource[v] + (*result).weight;
-
-				//add j to newReachablevertices
-				if(-1 == predecessor[j])
-					//not reached before
-					newReachableVertices.push_front(j);
-
-				predecessor[j] = v;
-			}
-		}
-
-	}
-
 }
 
 /** Generate a connected random bidirected graph with nodes = n, E(edges) = m

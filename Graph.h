@@ -30,7 +30,6 @@ class Graph
 		void removeEdge(int v1, int v2);
 		void clearEdges();
 		bool connected() const;
-		void shortestPaths(int sourceVertex, double* distanceFromSource, int* predecessor) const;
 		static Graph* importGraph(string cfilename);
 		void exportGraph(string cfilename) const;
 		static Graph* genRandomGraph(int numNodes, int numEdges, double minCapacity, double maxCapacity);
