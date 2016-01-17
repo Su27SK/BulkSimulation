@@ -18,6 +18,7 @@ class Graph
 		int n;	// number of vertices
 		int e;	// number of edges, one edge counts two times, since later one edge has two opposite direction flow
 		BulkGraphNode* aList; // adjacency lists
+		void _dfsVisit(int uSource, int* visited, int vSink); //DFS algorithm
 	public:
 		Graph():n(0), e(0){}
 		Graph(int _n);
@@ -29,9 +30,8 @@ class Graph
 		void putEdge(int v1, int v2, double weight, double capacity);		
 		void removeEdge(int v1, int v2);
 		void clearEdges();
-		bool connected() const;
+		bool connected(int v1, int v2) const;
 		static Graph* importGraph(string cfilename);
 		void exportGraph(string cfilename) const;
-		static Graph* genRandomGraph(int numNodes, int numEdges, double minCapacity, double maxCapacity);
 };
 #endif

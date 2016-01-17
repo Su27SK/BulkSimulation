@@ -155,92 +155,53 @@ bool Graph::connected(int v1, int v2) const
 			aList[v2].getNodeId() == -1) {
 			return false;
 		} else {
-			if (
-			aList[v1]
-		}
-	}
-}
-
-/** Generate a connected random bidirected graph with nodes = n, E(edges) = m
-  * the probability that v1 is connected with v2 is a Bernoulli Distribution(p)
-  * p is numEdges / (n(n-1)/2) 
-  * the weight of each edge is 1 +- epsilon, epsilon is between [0.0, 0.01)
-  * Here we assume each link is bidirected. The weights of the two directions are same, but 
-  * capacity is different
-  */
-Graph*
-Graph::genRandomGraph(int numNodes, int numEdges, double minCapacity, double maxCapacity)
-{
-	int i, j;
-	int connected;
-	
-	//# times failed to create a connected graph
-	int failedtimes; 		
-	double p;
-	double epsilon;
-	int isPositive;
-	//the probability that epsilon is positive is 0.5
-	double isPositiveProb = 0.5; 
-
-	double default_weight = 1.0;
-
-	double capacity = 1.0;
-
-	Graph* g = new Graph(numNodes);
-
-	p = 2.0 * ((double) numEdges / (double) (numNodes * (numNodes - 1))); 
-
-	failedtimes = 0;
-	while(true)
-	{
-		for(i = 1; i <= numNodes; i++)
-		{
-			for(j = i + 1; j <= numNodes; j++)
-			{
-				connected = RandomGenerator::genBernoulliInt(p);
-				if(1 == connected){
-					epsilon = RandomGenerator::genUniform() / 100.0;
-					isPositive = RandomGenerator::genBernoulliInt(isPositiveProb);
-					if(1 == isPositive){
-						capacity = RandomGenerator::genUniformDouble(minCapacity, maxCapacity);
-						g->putEdge(i, j, default_weight + epsilon, capacity);
-						//cout << "Edge " << i << "-" << j << " (" << default_weight - epsilon << ")" << endl;
-
-						capacity = RandomGenerator::genUniformDouble(minCapacity, maxCapacity);
-						g->putEdge(j, i, default_weight + epsilon, capacity);
-						//cout << "Edge " << j << "-" << i << " (" << default_weight - epsilon << ")" << endl;
-
-					}else{
-						capacity = RandomGenerator::genUniformDouble(minCapacity, maxCapacity);
-						g->putEdge(i, j, default_weight - epsilon, capacity);
-						//cout << "Edge " << i << "-" << j << " (" << default_weight + epsilon << ")" << endl;
-
-						capacity = RandomGenerator::genUniformDouble(minCapacity, maxCapacity);
-						g->putEdge(j, i, default_weight - epsilon, capacity);
-							//cout << "Edge " << j << "-" << i << " (" << default_weight + epsilon << ")" << endl;
-					}
-				}
+			int* visited = (int*)malloc(this->n + 1);
+			if (!visited[v1]) {
+				this->_dfsVisit(v1, visited);
 			}
 		}
+		if (visited[v2]) {
+			return true;
+		}
+	}
+	return false;
+}
 
-		if(!g->connected()){
-			//remove all the  edges
-			g->clearEdges();
-			cout << "Graph is not connected. All edges are cleared" << endl;
-			failedtimes++;
-			if(failedtimes >= 50)
-			// I guess the edge/nodes ratio is too small to get a connected graph
-				return NULL;
-		}else{
+/**
+ * @brief _dfsVisit 
+ * 深度优先搜索算法
+ * @param {interge} uSource 
+ * @param {interge[]} visited (存放已经访问过的节点id) 
+ * @param {interge} vSink (存放已经访问过的节点id) 
+ */
+void Graph::_dfsVisit(int uSource, int* visited, int vSink)
+{
+	visited[u] = 1;
+	slist<BulkGraphEdge>* headEdge = aList[u].getHeadEdge();
+	slist<BulkGraphEdge>::iterator iter = headEdge->begin();
+	slist<BulkGraphEdge>::iterator iterEnd = headEdge->end();
+	for (; iter < iterEnd; iter++) {
+		if (visited[vSink]) {
+			break;
+		}
+		int sink = iter->getGraphEdgeSink();
+		if (!visited[sink] && sink != vSink) {
+			this->_dfsVisit(sink, visited, vSink);
+		} else {
+			visited[sink] = 1;
 			break;
 		}
 	}
-
-	return g;
 }
 
-Graph*
-Graph::importGraph(string cfilename)
+/**
+ * @brief importGraph 
+ * 导入网路拓朴结构
+ * @param {文件名} cfilename
+ *
+ * @return 
+ */
+Graph* Graph::importGraph(string cfilename)
 {
 	//ifstream inFile = ifstream(cfilename.data());
 	ifstream inFile;
@@ -253,14 +214,6 @@ Graph::importGraph(string cfilename)
 	int numNodes, numEdges, idx1, idx2;
 	double weight, capacity;
 
-	/*
-	double epsilon;
-	int isPositive;
-	*/
-
-	/* t number
-		(total number of nodes)
-	 */
 	getline(inFile, inputLine);
 	lpos = inputLine.find(" ");
 	numNodes = atoi((inputLine.substr(lpos + 1)).data());
