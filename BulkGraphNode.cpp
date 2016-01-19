@@ -94,18 +94,28 @@ bool BulkGraphNode::addBulkEdge(BulkGraphEdge* edge)
  */
 bool BulkGraphNode::removeBulkEdge(BulkGraphEdge* edge)
 {
-	BulkGraphEdge* nowEdge = this->getBulkEdge(edge);
-	if (nowEdge != NULL) {
-		if (this->id == edge->getGraphEdgeSource()) {
-			this->headEdge->erase(nowEdge);
-			return true;
-		} else if (this->id == edge->getGraphEdgeSink()) {
-			this->tailEdge->erase(nowEdge);
-			return true;
+	slist<BulkGraphEdge>::iterator iter;
+	slist<BulkGraphEdge>::iterator iterEnd;
+	if (this->id == edge->getGraphEdgeSource()) {
+		iter = this->headEdge->begin();
+		iterEnd = this->headEdge->end();
+		for (; iter != iterEnd; iter++) {
+			if (*iter == *edge) {
+				this->headEdge->erase(iter);
+				return true;
+			}
 		}
-	} else {
-		return false;
+	} else if (this->id == edge->getGraphEdgeSink()) {
+		iter = this->tailEdge->begin();
+		iterEnd = this->tailEdge->end();
+		for (; iter != iterEnd; iter++) {
+			if (*iter == *edge) {
+				this->headEdge->erase(iter);
+				return true;
+			}
+		}
 	}
+	return false;
 }
 
 /**
@@ -152,7 +162,7 @@ BulkGraphEdge* BulkGraphNode::getBulkEdge(BulkGraphEdge* edge) const
 		iterEnd = this->headEdge->end();
 		for (; iter != iterEnd; iter++) {
 			if (*iter == *edge) {
-				return iter;
+				return &(*iter);
 			}
 		}
 	} else if (this->id == edge->getGraphEdgeSink()) {
@@ -160,7 +170,7 @@ BulkGraphEdge* BulkGraphNode::getBulkEdge(BulkGraphEdge* edge) const
 		iterEnd = this->tailEdge->end();
 		for (; iter != iterEnd; iter++) {
 			if (*iter == *edge) {
-				return iter;
+				return &(*iter);
 			}
 		}
 	} 
