@@ -29,6 +29,7 @@ class BulkGraphNode
 		BulkGraphEdge* getBulkEdge(BulkGraphEdge* edge) const;
 		slist<BulkGraphEdge>* getHeadEdge() const;
 		slist<BulkGraphEdge>* getTailEdge() const;
+		BulkGraphNode& setId(int id);
 		BulkGraphNode& operator = (const BulkGraphNode &node);
 		int Print();
 		//destructor

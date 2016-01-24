@@ -4,8 +4,24 @@ Graph::Graph(int _n):n(_n)
 	if (this->n < 0) {
 		this->n = 0;
 	}
-	aList = new BulkGraphNode[n+1];
+	this->aList = new BulkGraphNode[n + 1];
 	this->e = 0;
+}
+
+/**
+ * @brief setVertices 
+ * 设置节点个数
+ * @param {interge} n
+ *
+ * @return {Graph}
+ */
+Graph& Graph::setVertices(int n)
+{
+	this->n = n;
+	if (this->aList == NULL) {
+		this->aList = new BulkGraphNode[this->n + 1];
+	}
+	return *this;
 }
 
 Graph::~Graph()
@@ -105,7 +121,7 @@ void Graph::putEdge(int v1, int v2, double weight, double capacity)
 	BulkGraphEdge edge(v1, v2, weight, capacity);
 	aList[v1].addBulkEdge(&edge);
 	aList[v2].addBulkEdge(&edge);
-	this->e++
+	this->e++;
 }
 
 /**
@@ -148,7 +164,7 @@ void Graph::clearEdges()
  *
  * @return {boolean} 
  */
-bool Graph::connected(int v1, int v2) const
+bool Graph::connected(int v1, int v2)
 {
 	if (v1 >= 1 && v2 >= 1 && v1 <= n && v2 <= n) {
 		if (aList[v1].getNodeId() == -1 ||
@@ -157,11 +173,11 @@ bool Graph::connected(int v1, int v2) const
 		} else {
 			int* visited = (int*)malloc(this->n + 1);
 			if (!visited[v1]) {
-				this->_dfsVisit(v1, visited);
+				this->_dfsVisit(v1, visited, v2);
 			}
-		}
-		if (visited[v2]) {
-			return true;
+			if (visited[v2]) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -176,11 +192,11 @@ bool Graph::connected(int v1, int v2) const
  */
 void Graph::_dfsVisit(int uSource, int* visited, int vSink)
 {
-	visited[u] = 1;
-	slist<BulkGraphEdge>* headEdge = aList[u].getHeadEdge();
+	visited[uSource] = 1;
+	slist<BulkGraphEdge>* headEdge = aList[uSource].getHeadEdge();
 	slist<BulkGraphEdge>::iterator iter = headEdge->begin();
 	slist<BulkGraphEdge>::iterator iterEnd = headEdge->end();
-	for (; iter < iterEnd; iter++) {
+	for (; iter != iterEnd; iter++) {
 		if (visited[vSink]) {
 			break;
 		}
@@ -199,125 +215,76 @@ void Graph::_dfsVisit(int uSource, int* visited, int vSink)
  * 导入网路拓朴结构
  * @param {文件名} cfilename
  *
- * @return 
+ * @return {Graph}
  */
 Graph* Graph::importGraph(string cfilename)
 {
-	//ifstream inFile = ifstream(cfilename.data());
-	ifstream inFile;
-	inFile.open(cfilename.data(), ifstream::in);
-
-	string inputLine;
-	int lpos, rpos;
- 
-	Graph* g = NULL;
-	int numNodes, numEdges, idx1, idx2;
-	double weight, capacity;
-
-	getline(inFile, inputLine);
-	lpos = inputLine.find(" ");
-	numNodes = atoi((inputLine.substr(lpos + 1)).data());
-	g = new Graph(numNodes);
-
-	/* T number
-		(total number of links)
-	 */
-	getline(inFile, inputLine);
-	lpos = inputLine.find(" ");
-	numEdges = atoi((inputLine.substr(lpos + 1)).data());
-
-	for(int i = 0; i < numNodes; i++)
-	{
-		// ? node_index name
-		// Don't need to use those info. of nodes, just read and ignore it
-		getline(inFile, inputLine);
+	int i, nPos = 1;
+	BulkFile* inFile = new BulkFile("Bulk_Config_File");
+	inFile->addFile(cfilename, "Bulk_Config_File");
+	char** msgBuf = (char**)malloc(50 * sizeof(char*));
+	for (i = 0; i < 50; i++) {
+		msgBuf[i] = (char*)malloc(30 * sizeof(char));
 	}
+	inFile->getlines(msgBuf, 50);
 
-	for(int i = 0; i < numEdges; i++)
-	{
-		/* l linkidx n_idx1 n_idx2 weight
-			l - unidirectional
-		 */	
-		getline(inFile, inputLine);
-		lpos = inputLine.find(" ");
-		lpos = inputLine.find(" ", lpos + 1);
-		rpos = inputLine.find(" ", lpos + 1);
-		idx1 = atoi((inputLine.substr(lpos + 1, rpos - lpos)).data());
-
-		lpos = rpos;
-		rpos = inputLine.find(" ", lpos + 1);
-		idx2 = atoi((inputLine.substr(lpos + 1, rpos - lpos)).data());
-
-		lpos = rpos;
-		rpos = inputLine.find(" ", lpos + 1);
-		weight = atof((inputLine.substr(lpos + 1, rpos - lpos)).data());
-
-		/*
-		epsilon = RandomGenerator::genUniform() / 100.0;
-		isPositive = RandomGenerator::genBernoulliInt(0.5);
-		if(1 == isPositive)
-			weight = 1.0 + epsilon;
-		else
-			weight = 1.0 - epsilon;
-		*/
+	Graph* g = new Graph();
 	
-		lpos = rpos;
-		capacity = atof((inputLine.substr(lpos + 1)).data());
-		//capacity *= 1e+;
-
-		g->putEdge(idx1, idx2, weight, capacity);
+	for (i = 0; i < nPos; i++) {
+		int nTemp;
+		nTemp = g->_extractInfo(msgBuf[i], g);
+		if (nTemp) {
+			nPos = nTemp;
+		}
 	}
-
-	inFile.close();
-
 	return g;
 }
 
-void
-Graph::exportGraph(string cfilename) const
+/**
+ * @brief _extractInfo 
+ * 分析提取到的每一行数据
+ * @param {char*} message
+ * @param {Graph*} graph
+ *
+ * @return {size_t} 
+ */
+size_t Graph::_extractInfo(char* message, Graph* graph)
 {
-	ofstream outFile;
-	
-	outFile.open(cfilename.data());
-
-	/* t number
-		(total number of nodes)
-	   T number
-		(total number of links)
-	 */
-	outFile << "t " << n <<	endl; 
-	outFile << "T " << e << endl; 
-
-	// ? node_index name
-	
-	int i;
-	int numLinks;
-
-	for(i = 1; i <= n; i++)
-		outFile << "? " << i << " " << i << endl;
-
-	slist<GraphNode>::iterator result;
-
-	/* l linkidx n_idx1 n_idx2 weight
-		l - unidirectional
-	 */	
-	for(i = 1, numLinks = 0; i <= n; i++)
-	{
-		if(!aList[i].empty())
-		{
-			result = aList[i].previous(aList[i].end());
-
-			while(true)
-			{	
-				outFile << "L " << numLinks << " " << i << " " << (*result).id << " " << (*result).weight << " " << (*result).capacity << endl;
-				numLinks++;
-				
-				if(result == aList[i].begin())
-					break;
-				result = aList[i].previous(result);
-			}
-		}
+	char c = message[0];
+	string s(message);
+	switch (c) {
+		case 't':
+			int vertices;
+			vertices = atoi(s.substr(2).c_str());
+			graph->setVertices(vertices);
+			return vertices;
+		case 'T':
+			int edges;
+			edges = atoi(s.substr(2).c_str());
+			return edges;
+		case '?':
+			int index, id;
+			BulkGraphNode* list;
+			index = atoi(s.substr(2,1).c_str());
+			id = atoi(s.substr(4,1).c_str());
+			list = graph->getList();
+			list[index].setId(id);
+			return -1;
+		case 'L':
+			int source, sink;
+			source = atoi(s.substr(2,1).c_str());
+			sink = atoi(s.substr(4,1).c_str());
+			double weight = 10.0;
+			double capacity = 20.0;
+			graph->putEdge(source, sink, weight, capacity);
+			return -1;
 	}
-
-	outFile.close();
+	return -1;
 }
+
+BulkGraphNode* Graph::getList()
+{
+	return aList;
+}
+
+

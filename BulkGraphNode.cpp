@@ -186,3 +186,16 @@ int BulkGraphNode::Print()
 	iter = this->headEdge->begin();
 	return iter->getGraphEdgeSource();
 }
+
+/**
+ * @brief setId 
+ * 设置节点ID号
+ * @param {interge} id
+ *
+ * @return {BulkGraphNode}
+ */
+BulkGraphNode& BulkGraphNode::setId(int id)
+{
+	this->id = id;
+	return *this;
+}

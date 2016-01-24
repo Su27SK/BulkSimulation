@@ -3,30 +3,47 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <stdlib.h>
 #include <string>
+#include <cstring>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
-struct aPathInfo
+#include <unistd.h>
+#include <stdio.h>
+#include <map>
+using namespace std;
+typedef struct aPathInfo
 {
-	string sDirname;
-	string sBasename;
-	string sExtension;
+	string sDirname;  //目录名(/home/paul/BulkFile)
+	string sBasename; //文件基本名字(file.odf, file.dat)
+	string sExtension; //文件后缀(.odf, .dat)
+	string filename;   //文件名(file)
 }pathInfo;
 
 class BulkFile
 {
 	private:
-		string _defaultDirname;
-		string _sFilePath;
-		string _sTempDirname;
-		string _sTempPath;
-		FILE* _fileHandle;
+		string _defaultDirname; //默认文件夹
+		string _sFilePath; //当前文件全路径
+		string _sTempDirname; //临时文件夹
+		string _sTempPath; //临时路径
+		map<string, bool> _arr; //存放文件信息的数组
+		FILE* _fileHandle; //文件句柄
 		pathInfo* _pathinfo(string sDirname, string sBasename, string sExtension = ".odf");
 		void _setFileName(pathInfo* fileNameInfo, string sFileName);
 		string _getFileFullPath(pathInfo* fileNameInfo);
+		string _removeForbiddenChar(string* s);
+		bool _fileMkdir(string dirname);
+		string _ItoS(int source);
+		bool _fileExisted(string filePath);
 	public:
 		BulkFile();
 		BulkFile(string dirname);
+		BulkFile& setTempDirname(string tempDir);
+		string getTempDirname() const;
+		string getFilePath() const;
+		void getlines(char** buff, int nSize);
 		void addFile(string sBasename, string sDirname = NULL);
 		void init();
 };
