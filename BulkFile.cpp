@@ -60,10 +60,15 @@ pathInfo* BulkFile:: _pathinfo(string sDirname, string sBasename, string sExtens
 bool BulkFile::_fileMkdir(string dirname)
 {
 	string cmd = string("mkdir ") + dirname;
-	const char* c_s = cmd.c_str();
-	int erron = system(c_s);
-	if (erron) {
-		return false;
+	struct stat fileStat;
+	if ((stat(dirname.c_str(), &fileStat) == 0) && S_ISDIR(fileStat.st_mode)) {
+		return true;
+	} else {
+		const char* c_s = cmd.c_str();
+		int erron = system(c_s);
+		if (erron) {
+			return false;
+		}
 	}
 	return true;
 }
