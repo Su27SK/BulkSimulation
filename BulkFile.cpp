@@ -234,12 +234,13 @@ string BulkFile::getTempDirname() const
  * 读取几行数据
  * @param {char**} buff
  * @param {interge} nSize
+ * @param {string} filePath
  *
  */
-void BulkFile::getlines(char** buff, int nSize)
+void BulkFile::getlines(char** buff, int nSize, string filePath)
 {
 	int n = 0;
-	this->_fileHandle = fopen(this->_sFilePath.c_str(), "r");
+	this->_fileHandle = fopen(filePath.c_str(), "r");
 	while (!feof(this->_fileHandle) && n < nSize) {
 		 fgets(buff[n], 50, this->_fileHandle);
 		 n++;

@@ -221,21 +221,21 @@ Graph* Graph::importGraph(string cfilename)
 {
 	int i, nPos = 1;
 	BulkFile* inFile = new BulkFile("Bulk_Config_File");
-	inFile->addFile(cfilename, "Bulk_Config_File");
+	//inFile->addFile(cfilename, "Bulk_Config_File");
 	char** msgBuf = (char**)malloc(50 * sizeof(char*));
 	for (i = 0; i < 50; i++) {
 		msgBuf[i] = (char*)malloc(30 * sizeof(char));
 	}
-	inFile->getlines(msgBuf, 50);
+	inFile->getlines(msgBuf, 50, cfilename);
 
 	Graph* g = new Graph();
 	
 	for (i = 0; i < nPos; i++) {
 		int nTemp;
 		nTemp = g->_extractInfo(msgBuf[i], g);
-		if (nTemp) {
-			nPos = nTemp;
-		}
+		if (nTemp == -1) {
+			nPos ++;
+		}  
 	}
 	return g;
 }
@@ -250,18 +250,21 @@ Graph* Graph::importGraph(string cfilename)
  */
 size_t Graph::_extractInfo(char* message, Graph* graph)
 {
-	char c = message[0];
 	string s(message);
-	switch (c) {
+	switch (s[0]) {
 		case 't':
 			int vertices;
 			vertices = atoi(s.substr(2).c_str());
 			graph->setVertices(vertices);
-			return vertices;
+			return -1;
 		case 'T':
 			int edges;
 			edges = atoi(s.substr(2).c_str());
-			return edges;
+			if (edges > 0) {
+				return -1;
+			} else {
+				return -2;
+			}
 		case '?':
 			int index, id;
 			BulkGraphNode* list;
@@ -272,14 +275,16 @@ size_t Graph::_extractInfo(char* message, Graph* graph)
 			return -1;
 		case 'L':
 			int source, sink;
+			double weight, capacity;
 			source = atoi(s.substr(2,1).c_str());
 			sink = atoi(s.substr(4,1).c_str());
-			double weight = 10.0;
-			double capacity = 20.0;
+			weight = 10;
+			capacity = 20;
 			graph->putEdge(source, sink, weight, capacity);
 			return -1;
+		default:break;
 	}
-	return -1;
+	return -2;
 }
 
 BulkGraphNode* Graph::getList()

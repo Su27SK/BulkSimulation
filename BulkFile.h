@@ -30,7 +30,7 @@ class BulkFile
 		string _sTempPath; //临时路径
 		map<string, bool> _arr; //存放文件信息的数组
 		FILE* _fileHandle; //文件句柄
-		pathInfo* _pathinfo(string sDirname, string sBasename, string sExtension = ".odf");
+		pathInfo* _pathinfo(string sDirname, string sBasename, string sExtension = ".dat");
 		void _setFileName(pathInfo* fileNameInfo, string sFileName);
 		string _getFileFullPath(pathInfo* fileNameInfo);
 		string _removeForbiddenChar(string* s);
@@ -43,7 +43,7 @@ class BulkFile
 		BulkFile& setTempDirname(string tempDir);
 		string getTempDirname() const;
 		string getFilePath() const;
-		void getlines(char** buff, int nSize);
+		void getlines(char** buff, int nSize, string filePath);
 		void addFile(string sBasename, string sDirname = NULL);
 		void init();
 };

@@ -6,9 +6,11 @@
 using namespace std;
 int main()
 {
-	Graph* graph = Graph::importGraph("graph");
+	Graph* graph = Graph::importGraph("graph.txt");
 	int nNode = graph->getVertices();
-	cout<<nNode<<endl;
+	int nEdge = graph->getEdges();
+	cout<<"nNode:"<<nNode<<endl;
+	cout<<"nEdge:"<<nEdge<<endl;
 	BulkGraphNode* node = new BulkGraphNode(2);
 	BulkGraphEdge e(2, 3, 25.0, 22.0);
 	node->addBulkEdge(&e);
