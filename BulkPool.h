@@ -1,16 +1,17 @@
-#ifndef	BULKPOOL_H_
-#define BULKPOOL_H_
+#ifndef	_BULKPOOL_H_
+#define _BULKPOOL_H_
 #include "BulkPackets.h"
 class BulkPool
 {
 	private:
 		slist<BulkPackets>* _pool;
 		BulkPackets* _packets;
-		static int MAXSIZE = 1000;
-		static int INITSIZE = 100;
+		static const int MAXSIZE = 1000;
+		static const int INITSIZE = 10;
 	public:
 		BulkPool();
 		BulkPool(BulkPackets* packetsModel);
+		~BulkPool();
 		void init();
 		void destroy();
 		void placePacketsToPool(BulkPackets* packets);

@@ -1,8 +1,9 @@
-#ifdef _BULKPACKET_H_
+#ifndef _BULKPACKET_H_
 #define _BULKPACKET_H_
-#include<string>
 #include<sstream>
+#include<string>
 #include<iostream>
+using namespace std;
 enum unit{
 	Byte = 1,
 	Kb = 2,
@@ -19,9 +20,12 @@ class BulkPacket
 		BulkPacket(double size, unit type);
 		BulkPacket& setPacketSize(double size);
 		BulkPacket& setPacketType(unit type);
+		explicit BulkPacket(const BulkPacket& P);
+		BulkPacket(BulkPacket& P);
 		string getPacketInfo();
 		double getPacketSize() const;
 		string getPacketUnit();
+		BulkPacket& operator = (const BulkPacket& packet);
 		bool ConvertToType(int degree, bool isLarge = true);
 		~BulkPacket();
 };

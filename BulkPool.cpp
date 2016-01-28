@@ -10,18 +10,70 @@ BulkPool::BulkPool(BulkPackets* packetsModel)
 	this->_packets = packetsModel;
 }
 
+/**
+ * @brief init 
+ * 初始化100个数据包
+ */
 void BulkPool::init()
 {
 	int i;
 	for (i = 0; i < this->INITSIZE; i++) {
-		newPackets = new BulkPackets();
-		this->_pool.push_front(newP
+		BulkPackets* newPackets = new BulkPackets();
+		*newPackets  = *this->_packets;
+		this->_pool->push_front(*newPackets);
 	}
 }
 
+/**
+ * @brief destroy
+ * 销毁所有的数据包
+ */
 void BulkPool::destroy()
 {
-
+	slist<BulkPackets>::iterator iterStart;
+	slist<BulkPackets>::iterator iterEnd;
+	iterStart = this->_pool->begin();
+	iterEnd = this->_pool->end();
+	if (iterStart != iterEnd) {
+		this->_pool->erase(iterStart, iterEnd);
+	}
 }
 
+/**
+ * @brief placePacketsToPool 
+ *
+ * @param {BulkPackets*} packets
+ */
+void BulkPool::placePacketsToPool(BulkPackets* packets)
+{
+	this->_pool->push_front(*packets);
+}
+
+/**
+ * @brief getPacketsFromPool 
+ * 从内存池中获得数据包
+ * @return {BulkPackets*}
+ */
+BulkPackets* BulkPool::getPacketsFromPool()
+{
+	if (!this->_pool->empty()) {
+		BulkPackets* packets = new BulkPackets();
+		*packets = *this->_pool->begin();
+		this->_pool->pop_front();
+		return packets;
+	} else {
+		this->init();
+		this->getPacketsFromPool();
+	}
+	return NULL;
+}
+
+BulkPool::~BulkPool()
+{
+	delete this->_packets;
+	//cout<<"Delete Pool"<<endl;
+	this->_pool->~slist();
+	this->_packets = NULL;
+	this->_pool = NULL;
+}
 
