@@ -8,10 +8,51 @@ BulkGraphNode::BulkGraphNode(int _id):id(_id), numHeadQueue(0), numTailQueue(0),
 	this->tailEdge = new slist<BulkGraphEdge>(0);
 }
 
+/**
+ * @brief BulkGraphNode 
+ * 显式深拷贝构造函数
+ * @param {BulkGraphNode} Node
+ */
+BulkGraphNode::BulkGraphNode(const BulkGraphNode& Node)
+{
+	this->id = Node.id;
+	this->numHeadQueue = Node.numHeadQueue;
+	this->numTailQueue = Node.numTailQueue;
+	slist<BulkGraphEdge>::iterator iterS;
+	slist<BulkGraphEdge>::iterator iterE;
+	iterS = Node.headEdge->begin();
+	iterE = Node.headEdge->end();
+	this->headEdge = new slist<BulkGraphEdge>(iterS, iterE);
+	iterS = Node.tailEdge->begin();
+	iterE = Node.tailEdge->end();
+	this->tailEdge = new slist<BulkGraphEdge>(iterS, iterE);
+}
+
+/**
+ * @brief BulkGraphNode 
+ * 深拷贝构造函数
+ * @param {BulkGraphNode} Node
+ */
+BulkGraphNode::BulkGraphNode(BulkGraphNode& Node)
+{
+	this->id = Node.id;
+	this->numHeadQueue = Node.numHeadQueue;
+	this->numTailQueue = Node.numTailQueue;
+	slist<BulkGraphEdge>::iterator iterS;
+	slist<BulkGraphEdge>::iterator iterE;
+	iterS = Node.headEdge->begin();
+	iterE = Node.headEdge->end();
+	this->headEdge = new slist<BulkGraphEdge>(iterS, iterE);
+	iterS = Node.tailEdge->begin();
+	iterE = Node.tailEdge->end();
+	this->tailEdge = new slist<BulkGraphEdge>(iterS, iterE);
+}
+
 bool BulkGraphNode::operator == (const BulkGraphNode& node)
 {
 	return id == node.id;
 }
+
 
 /**
  * @brief getNumHeadQueue 

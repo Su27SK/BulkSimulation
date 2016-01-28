@@ -6,9 +6,9 @@ using namespace __gnu_cxx;
 class BulkGraphNode
 {
 	private:
-		int id;				    //id of the end node of the edge
-		int numHeadQueue;       //number of the head queues
-		int numTailQueue;       //number of the tail queues
+		int id;		//id of the end node of the edge
+		int numHeadQueue; //number of the head queues
+		int numTailQueue; //number of the tail queues
 		bool isTerminal ; //check the node is Terminal
 		slist<BulkGraphEdge>* headEdge;
 		slist<BulkGraphEdge>* tailEdge;
@@ -19,6 +19,8 @@ class BulkGraphNode
 			this->headEdge = new slist<BulkGraphEdge>(0);
 			this->tailEdge = new slist<BulkGraphEdge>(0);
 		}
+		explicit BulkGraphNode(const BulkGraphNode& Node);
+		BulkGraphNode(BulkGraphNode& Node);
 		BulkGraphNode(int _id);
 		bool operator == (const BulkGraphNode& node);
 		bool addBulkEdge(BulkGraphEdge* edge);
@@ -35,6 +37,8 @@ class BulkGraphNode
 		//destructor
 		virtual ~BulkGraphNode()
 		{
+			this->headEdge->~slist();
+			this->tailEdge->~slist();
 			this->headEdge = NULL;
 			this->tailEdge = NULL;
 		}
