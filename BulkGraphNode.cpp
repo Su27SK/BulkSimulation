@@ -251,4 +251,5 @@ BulkGraphNode& BulkGraphNode::setId(int id)
 BulkGraphNode& BulkGraphNode::setTerminal(bool terminal)
 {
 	this->isTerminal = terminal;
+	return *this;
 }
