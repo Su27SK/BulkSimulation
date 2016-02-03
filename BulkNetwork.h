@@ -1,34 +1,27 @@
-#ifdef  BULKNETWORK_H_ 
-#define BULKNETWORK_H_
+#ifndef  _BULKNETWORK_H_ 
+#define  _BULKNETWORK_H_
 #include"Graph.h"
-#include<ext/slist>
+#include <map>
+using namespace std;
 class BulkNetwork
 {
 	private:
 		int _nSource; //有几个Source流入点
 		int _nSink;   //有几个Sink流出点
-		slist<GraphNode>* _lSourceList;
-		slist<GraphNode>* _lSinkList;
+		map<int, BulkGraphNode>* _lSourceList; //具体流入source数据包节点索引
+		map<int, BulkGraphNode>* _lSinkList;   //具体流出sink数据包节点索引
 		Graph* _topology;
 	public:
-		BulkNetwork():_nSource(0), _nSink(0){}
-		BulkNetwork(int nSour, int nSink, Graph& graph = NULL):_nSource(0), _nSink(0)
-		{
-			this->_nSource = nSour;
-			this->_nSink = nSink;
-			this->_lSourceList = new slist<GraphNode>[this->_nSource];
-			this->_lSinkList = new slist<GraphNode>[this->_nSink];
-			if (graph != NULL) {
-				int nodeNum = this->_nSource + this->_nSink;
-				this->_topology = new Graph(nodeNum);
-			} else {
-				this->_topology = graph;
-			}
+		BulkNetwork():_nSource(0), _nSink(0) {
+			this->_lSourceList = new map<int, BulkGraphNode>;
+			this->_lSinkList = new map<int, BulkGraphNode>;
+			this->_topology = NULL;
 		}
+		BulkNetwork(Graph& graph);
 		BulkNetwork& setSourceNodeById(int id);
 		BulkNetwork& setSinkNodeById(int id);
-		slist<GraphNode>* getSourceNodeById(int id) const;
-		slist<GraphNode>* getSinkNodeById(int id) const;
-		virtual ~BulkNetwork();
+		BulkGraphNode* getSourceNodeById(int id) const;
+		BulkGraphNode* getSinkNodeById(int id) const;
+		~BulkNetwork(){};
 };
 #endif

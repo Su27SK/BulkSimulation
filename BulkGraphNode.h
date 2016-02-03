@@ -32,6 +32,7 @@ class BulkGraphNode
 		slist<BulkGraphEdge>* getHeadEdge() const;
 		slist<BulkGraphEdge>* getTailEdge() const;
 		BulkGraphNode& setId(int id);
+		BulkGraphNode& setTerminal(bool terminal);
 		BulkGraphNode& operator = (const BulkGraphNode &node);
 		int Print();
 		//destructor

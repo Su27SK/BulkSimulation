@@ -1,30 +1,26 @@
 #ifndef _BULKLINK_H_
 #define _BULKLINK_H_
 #include <ext/slist>
-#include <queue>
 #include "BulkGraphEdge.h"
-#include "BulkPackets.h"
-#include "BulkControlPacket.h"
+#include "BulkSession.h"
+#include "BulkNetwork.h"
+using namespace __gnu_cxx;
 using namespace std;
-class BulkLink:BulkGraphEdge
+class BulkLink:public BulkGraphEdge
 {
 	private:
-		bool _isToTerminal; //_to是否通向终止点
-		int _numPacketsHead; //edge边头的队列
-		int _numPacketsTail; //edge边尾的队列
-		queue<BulkPackets>* _headQueue;
-		queue<BulkPackets>* _tailQueue;
+		bool _isToTerminal;  //_to是否通向终止点
 	public:
 		BulkLink():BulkGraphEdge()
 		{
 			this->_isToTerminal = false;
-			this->_numPacketsHead = this->_numPacketsTail = 0;
-			this->_headQueue = new queue<BulkPackets>(0);
-			this->_tailQueue = new queue<BulkPackets>(0);
 		}
 		BulkLink(int from, int to, bool isTerminal = false);
 		BulkLink(int from, int to, int weight, int capacity, bool isTerminal = false);
-		bool addNumPacketsHead(bool isAdd, int numPackets = 1);
-		bool addNumPacketsTail(bool isAdd, int numPackets = 1);
+		void addSession(BulkSession& session);
+		void fromHeadToTail(int numPackets, int sessionId);
+		bool isUnderConstraints();
+	protected:
+		slist<BulkSession>* session_;
 };
 #endif

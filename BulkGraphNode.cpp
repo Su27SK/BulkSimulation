@@ -240,3 +240,15 @@ BulkGraphNode& BulkGraphNode::setId(int id)
 	this->id = id;
 	return *this;
 }
+
+/**
+ * @brief setTerminal 
+ *
+ * @param terminal
+ * 设置节点是否是终点
+ * @return {BulkGraphNode}
+ */
+BulkGraphNode& BulkGraphNode::setTerminal(bool terminal)
+{
+	this->isTerminal = terminal;
+}
