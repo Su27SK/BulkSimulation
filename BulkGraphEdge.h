@@ -17,7 +17,7 @@ class BulkGraphEdge
 		int getGraphEdgeSink() const;
 		double getWeight() const;
 		double getCapacity() const;
-		 ~BulkGraphEdge(){}
+		virtual ~BulkGraphEdge(){}
 };
 
 #endif

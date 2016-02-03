@@ -7,7 +7,7 @@ class BulkPool
 		slist<BulkPackets>* _pool;
 		BulkPackets* _packets;
 		static const int MAXSIZE = 1000;
-		static const int INITSIZE = 10;
+		static const int INITSIZE = 100;
 	public:
 		BulkPool();
 		BulkPool(BulkPackets* packetsModel);
