@@ -7,6 +7,22 @@ BulkGraphEdge::BulkGraphEdge(int v1, int v2, double weight, double capacity)
 	this->_capacity = capacity;
 }
 
+BulkGraphEdge::BulkGraphEdge(BulkGraphEdge& edge)
+{
+	_v1 = edge._v1;
+	_v2 = edge._v2;
+	_weight = edge._weight;
+	_capacity = edge._weight;
+}
+
+BulkGraphEdge::BulkGraphEdge(const BulkGraphEdge& edge)
+{
+	_v1 = edge._v1;
+	_v2 = edge._v2;
+	_weight = edge._weight;
+	_capacity = edge._weight;
+}
+
 /**
  * @brief operator == 
  * 是否为同一条边(有向边)

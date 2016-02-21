@@ -1,7 +1,8 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 #include "Process.h"
-template<class T>
+#include "BulkPackets.h"
+template<class T = BulkPackets>
 class Application : public Process<T>
 {
 	public:
@@ -15,5 +16,4 @@ class Application : public Process<T>
 		int enableRecv_;
 		int enableResume_;
 };
-
 #endif

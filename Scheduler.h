@@ -1,5 +1,13 @@
 #ifndef _SCHEDULER_H_
 #define _SCHEDULER_H_
+class Event;
+class Handler
+{
+	public:
+		virtual ~Handler() {}
+		virtual void handle(Event* event) = 0;
+};
+
 class Event
 {
 	public:
@@ -14,22 +22,12 @@ class Event
 		}
 };
 
-class Handler
-{
-	public:
-		virtual ~Handler() {}
-		virtual void handle(Event* event) = 0;
-};
-
 #define SCHED_START 0.0  /* start time (secs) */
 
 class Scheduler
 {
 	public:
 		static Scheduler& instance() {
-			if (NULL == _instance) {
-				_instance = new Scheduler();
-			}
 			return (*_instance);
 		}
 		void schedule(Handler*, Event*, double delay);

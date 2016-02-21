@@ -1,8 +1,13 @@
 #include"BulkNetwork.h"
+
+/**
+ * @brief BulkNetwork 
+ * construct function
+ */
 BulkNetwork::BulkNetwork(Graph& graph):_nSource(0), _nSink(0)
 {
-	this->_lSourceList = new map<int, BulkGraphNode>;
-	this->_lSinkList = new map<int, BulkGraphNode>;
+	this->_lSourceList = new map<int, BulkNode>;
+	this->_lSinkList = new map<int, BulkNode>;
 	this->_topology = graph;
 }
 
@@ -17,11 +22,11 @@ BulkNetwork& BulkNetwork::setSourceNodeById(int id)
 {
 	int i;
 	if (this->_topology != NULL) {
-		BulkGraphNode* aList = this->_topology->getList();
+		BulkNode* aList = this->_topology->getList();
 		for (i = 1; i < this->_topology->getVertices(); i++) {
 			int nodeId = aList[i].getNodeId();
 			if (nodeId == id) {
-				this->_lSourceList->insert(pair<int, BulkGraphNode>(id, aList[i]));
+				this->_lSourceList->insert(pair<int, BulkNode>(id, aList[i]));
 				this->_nSource++;
 			}
 		}
@@ -43,7 +48,7 @@ BulkNetwork& BulkNetwork::setSinkNodeById(int id)
 		for (i = 1; i < this->_topology->getVertices(); i++) {
 			int nodeId = aList[i].getNodeId();
 			if (nodeId == id) {
-				this->_lSinkList->insert(pair<int, BulkGraphNode>(id, aList[i])); 
+				this->_lSinkList->insert(pair<int, BulkNode>(id, aList[i])); 
 				aList[i].setTerminal(true);
 				this->_nSink++;
 			}
@@ -57,9 +62,9 @@ BulkNetwork& BulkNetwork::setSinkNodeById(int id)
  * 通过节点ID获得关于该节点的相关信息，以及邻居信息
  * @param {integer} id
  *
- * @return {BulkGraphNode*}
+ * @return {BulkNode*}
  */
-BulkGraphNode* BulkNetwork::getSourceNodeById(int id) const
+BulkNode* BulkNetwork::getSourceNodeById(int id) const
 {
 	if (!this->_lSourceList->empty()) {
 		return this->_lSourceList[id];
@@ -71,11 +76,12 @@ BulkGraphNode* BulkNetwork::getSourceNodeById(int id) const
  * 通过节点ID获得关于该节点的相关信息，以及邻居信息
  * @param {integer} id
  *
- * @return {BulkGraphNode*}
+ * @return {BulkNode*}
  */
-BulkGraphNode* BulkNetwork::getSinkNodeById(int id) const
+BulkNode* BulkNetwork::getSinkNodeById(int id) const
 {
 	if (!this->_lSinkList->empty()) {
 		return this->_lSinkList[i];
 	}
 }
+

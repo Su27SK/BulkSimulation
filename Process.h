@@ -17,6 +17,6 @@ class Process
 			}
 		}
 	protected:
-		Process* target_;
+		Process<T>* target_;
 };
 #endif

@@ -4,7 +4,7 @@
  * 处理数据
  * @param {double} size
  */
-void Process::processData(double size)
+void Process<T>::processData(double size)
 {
 	abort();
 }
@@ -16,7 +16,7 @@ void Process::processData(double size)
  *
  * @return T
  */
-T* Process::getData(double size)
+T* Process<T>::getData(double size)
 {
 	abort();
 	return NULL;

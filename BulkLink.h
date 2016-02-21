@@ -8,15 +8,11 @@ using namespace __gnu_cxx;
 using namespace std;
 class BulkLink:public BulkGraphEdge
 {
-	private:
-		bool _isToTerminal;  //_to是否通向终止点
 	public:
-		BulkLink():BulkGraphEdge()
-		{
-			this->_isToTerminal = false;
-		}
-		BulkLink(int from, int to, bool isTerminal = false);
-		BulkLink(int from, int to, int weight, int capacity, bool isTerminal = false);
+		BulkLink():BulkGraphEdge() {}
+		BulkLink(int from, int to);
+		BulkLink(int from, int to, int weight, int capacity);
+		BulkLink(BulkGraphEdge& edge);
 		void addSession(BulkSession& session);
 		void fromHeadToTail(int numPackets, int sessionId);
 		bool isUnderConstraints();

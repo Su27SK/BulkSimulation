@@ -1,19 +1,48 @@
 #include "BulkSession.h"
+
+/**
+ * @brief expire 
+ * 
+ * @param {Event} e
+ */
+void BulkSessionTimer::expire(Event* e)
+{
+
+}
+
+/**
+ * @brief handle 
+ *
+ * @param {Event} e
+ */
+void BulkSessionTimer::handle(Event* e)
+{
+
+}
+
 /**
  * @brief send 
- * 该session每次从sinkNode向后推送npackets的数据
+ * 该session每次从sourceNode向后推送npackets的数据
  * @param {interge} npackets
  */
 void BulkSession::send(int npackets)
 {
-	if (this->_sinkNode == NULL) {
+	if (this->_sinkNode == NULL || id_ == -1) {
 		return;
 	}
 	int i;
+	bool flag = this->_sinkNode->getTerminal();
 	for (i = 0; i < npackets; i++) {
-		BulkPackets* packets = this->_tailQueue->front();
-		this->_tailQueue->pop();
-		bulkpool_.placePacketsToPool(*packets);
+		BulkPackets* packets = this->_sourceNode->queue[id_]->front();
+		this->_sourceNode->queue[id_]->pop();
+		this->_sourceNode->reduce(id_);
+		if (flag) {
+			_bulkPool.placePacketsToPool(*packets);
+		} else {
+			this->_sinkNode->queue[id_]->push(*packets);
+			this->_sinkNode->addSession(id_);
+		}
+		flow_ += packets->getBulkPacketsSize();
 	}
 }
 
@@ -24,13 +53,14 @@ void BulkSession::send(int npackets)
  */
 void BulkSession::recv(int npackets)
 {
-	if (this->_sourceNode == NULL) {
+	if (this->_sourceNode == NULL || id_ == -1) {
 		return;
 	}
 	int i;
 	for (i = 0; i < npackets; i++) {
-		BulkPackets* packets = bulkpool_.getPacketsFromPool();
-		this->_headQueue->push(*packets);
+		BulkPackets* packets = _bulkPool.getPacketsFromPool();
+		this->_sourceNode->queue[id_]->push(*packets);
+		this->_sourceNode->addSession(id_);
 	}
 }
 
@@ -41,7 +71,25 @@ void BulkSession::recv(int npackets)
  */
 int BulkSession::diffPackets()
 {
-	return this->_tailQueue.size() - this->_headQueue.size();
+	return this->_sinkNode->queue[id_]->size() - this->_sourceNode->queue[id_]->size();
+}
+
+/**
+ * @brief isSessionEqualLink 
+ * 检查link与session是否匹配
+ * @param {interge} bId {起点node的id}
+ * @param {interge} eId {终点node的id}
+ * @param {interge} sId {session的id}
+ *
+ * @return {boolean}
+ */
+bool BulkSession::isSessionEqualLink(int bId, int eId, int sId)
+{
+	if (this->_sourceNode->getNodeId() != bId || 
+		this->_sinkNode->getNodeId() != eId || id_ != sId) {
+		return false;
+	}
+	return true;
 }
 
 /**

@@ -10,6 +10,8 @@ class BulkGraphEdge
 	public:
 		BulkGraphEdge():_v1(-1), _v2(-1), _weight(0.0), _capacity(0.0){}
 		BulkGraphEdge(int v1, int v2, double weight = 0.0, double capacity = 0.0);
+		BulkGraphEdge(const BulkGraphEdge& edge);
+		BulkGraphEdge(BulkGraphEdge& edge);
 		bool operator == (const BulkGraphEdge& edge);
 		BulkGraphEdge& setWeight(double weight);
 		BulkGraphEdge& setCapacity(double capacity);

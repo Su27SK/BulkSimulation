@@ -1,13 +1,21 @@
 #include "BulkLink.h"
-BulkLink::BulkLink(int from, int to, bool isTerminal):BulkGraphEdge(from, to)
+BulkLink::BulkLink(int from, int to):BulkGraphEdge(from, to)
 {
-	this->_isToTerminal = isTerminal;
 	session_ = new slist<BulkSession>;
 }
 
-BulkLink::BulkLink(int from, int to, int weight, int capacity, bool isTerminal):BulkGraphEdge(from, to, weight, capacity)
+BulkLink::BulkLink(int from, int to, int weight, int capacity):BulkGraphEdge(from, to, weight, capacity)
 {
-	this->_isToTerminal = isTerminal;
+	session_ = new slist<BulkSession>;
+}
+
+/**
+ * @brief BulkLink 
+ * 构造函数
+ * @param {BulkGraphEdge} edge
+ */
+BulkLink::BulkLink(BulkGraphEdge& edge):BulkGraphEdge(edge)
+{
 	session_ = new slist<BulkSession>;
 }
 
@@ -23,9 +31,9 @@ void BulkLink::fromHeadToTail(int numPackets, int sessionId)
 	for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
 		if (iter->id_ == sessionId) {
 			iter->send(numPackets);
+			break;
 		}
 	}
-	this->
 }
 
 /**
@@ -43,14 +51,11 @@ void BulkLink::addSession(BulkSession& session)
  * 是否满足小于Link中的capacity
  * @return {boolean}
  */
-bool BulkLink::isUnderConstraints()
-{
-	slist<BulkSession>::iterator iter;
-	for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
+//bool BulkLink::isUnderConstraints()
+//{
+	//slist<BulkSession>::iterator iter;
+	//for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
 		
-	}
-}
-
-
-
+	//}
+//}
 

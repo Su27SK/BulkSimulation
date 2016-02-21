@@ -5,7 +5,7 @@
 class TimerHandler: public Handler
 {
 	public:
-		TimerHandler():
+		TimerHandler():status_(TIMER_IDLE) {}
 		void sched(double delay);   //cannot be pending, 与Scheduler交互的函数
 		void resched(double delay); //may or may not be pending, if you don't know the pending status, call resched()
 		void cancel();
