@@ -1,25 +1,4 @@
 #include "BulkSession.h"
-
-/**
- * @brief expire 
- * 
- * @param {Event} e
- */
-void BulkSessionTimer::expire(Event* e)
-{
-
-}
-
-/**
- * @brief handle 
- *
- * @param {Event} e
- */
-void BulkSessionTimer::handle(Event* e)
-{
-
-}
-
 /**
  * @brief send 
  * 该session每次从sourceNode向后推送npackets的数据
@@ -33,16 +12,16 @@ void BulkSession::send(int npackets)
 	int i;
 	bool flag = this->_sinkNode->getTerminal();
 	for (i = 0; i < npackets; i++) {
-		BulkPackets* packets = this->_sourceNode->queue[id_]->front();
-		this->_sourceNode->queue[id_]->pop();
-		this->_sourceNode->reduce(id_);
+		BulkPackets& packets = this->_sourceNode->pqueue[id_]->front();
+		this->_sourceNode->pqueue[id_]->pop();
+		this->_sourceNode->reduceSessionNum(id_);
 		if (flag) {
-			_bulkPool.placePacketsToPool(*packets);
+			_bulkPool->placePacketsToPool(&packets);
 		} else {
-			this->_sinkNode->queue[id_]->push(*packets);
-			this->_sinkNode->addSession(id_);
+			this->_sinkNode->pqueue[id_]->push(packets);
+			this->_sinkNode->addSessionNum(id_);
 		}
-		flow_ += packets->getBulkPacketsSize();
+		flow_ += packets.getBulkPacketsSize();
 	}
 }
 
@@ -58,9 +37,9 @@ void BulkSession::recv(int npackets)
 	}
 	int i;
 	for (i = 0; i < npackets; i++) {
-		BulkPackets* packets = _bulkPool.getPacketsFromPool();
-		this->_sourceNode->queue[id_]->push(*packets);
-		this->_sourceNode->addSession(id_);
+		BulkPackets* packets = _bulkPool->getPacketsFromPool();
+		this->_sourceNode->pqueue[id_]->push(*packets);
+		this->_sourceNode->addSessionNum(id_);
 	}
 }
 
@@ -71,7 +50,7 @@ void BulkSession::recv(int npackets)
  */
 int BulkSession::diffPackets()
 {
-	return this->_sinkNode->queue[id_]->size() - this->_sourceNode->queue[id_]->size();
+	return this->_sinkNode->pqueue[id_]->size() - this->_sourceNode->pqueue[id_]->size();
 }
 
 /**

@@ -78,7 +78,7 @@ void Scheduler::dispatch(Event* p, double t)
 
 	_clock = t;
 	p->_uid = -p->_uid;    //being dispatched
-	p->handler->handle(p); //dispatch
+	p->_handler->handle(p); //dispatch
 }
 
 /**
@@ -193,7 +193,7 @@ Event* ListScheduler::deque()
 	Event* e = _queue;
 	if (e) {
 		_queue = e->_next;
-		e->_next->prev = e->_next;
+		e->_next->_prev = e->_next;
 		e->_next = e->_prev = NULL;
 	}
 	return (e);

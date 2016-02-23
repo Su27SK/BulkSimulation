@@ -20,8 +20,8 @@ class TimerHandler: public Handler
 		//TIMER_HANDLING: 处理中(运行)
 		int status() {return status_;}
 	protected:
-		virtual void expire(Event*) = 0; //must be filled
-		virtual void handle(Event*) = 0; 
+		virtual void expire(Event*) = 0;  //must be filled
+		virtual void handle(Event*) = 0;  //must be filled
 		int status_;
 		Event event_;
 	private:

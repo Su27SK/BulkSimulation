@@ -4,6 +4,7 @@
  * 处理数据
  * @param {double} size
  */
+template <class T>
 void Process<T>::processData(double size)
 {
 	abort();
@@ -16,6 +17,7 @@ void Process<T>::processData(double size)
  *
  * @return T
  */
+template <class T>
 T* Process<T>::getData(double size)
 {
 	abort();

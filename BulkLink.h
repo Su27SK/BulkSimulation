@@ -13,7 +13,8 @@ class BulkLink:public BulkGraphEdge
 		BulkLink(int from, int to);
 		BulkLink(int from, int to, int weight, int capacity);
 		BulkLink(BulkGraphEdge& edge);
-		void addSession(BulkSession& session);
+		bool addSession(BulkSession& session);
+		bool deleteSession(int sId);
 		void fromHeadToTail(int numPackets, int sessionId);
 		bool isUnderConstraints();
 	protected:

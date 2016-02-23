@@ -40,10 +40,40 @@ void BulkLink::fromHeadToTail(int numPackets, int sessionId)
  * @brief addSession 
  * Link上增加一个session
  * @param {BulkSession} session
+ *
+ * @return {boolean}
  */
-void BulkLink::addSession(BulkSession& session)
+bool BulkLink::addSession(BulkSession& session)
 {
-	this->session_->push_front(session);
+	int source = this->getGraphEdgeSource();
+	int sink = this->getGraphEdgeSink();
+	int sId = session.id_;
+	if (session.isSessionEqualLink(source, sink, sId)) {
+		this->session_->push_front(session);
+		return true;
+	}
+	return false;
+}
+
+/**
+ * @brief deleteSession 
+ * Link上删除一个session
+ * @param {interge} sId {session id}
+ *
+ * @return {boolean}
+ */
+bool BulkLink::deleteSession(int sId)
+{
+	bool isFound = false;
+	slist<BulkSession>::iterator iter;
+	for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
+		if (iter->id_ == sId) {
+			this->session_->erase(iter);
+			isFound = true;
+			break;
+		}
+	}
+	return isFound;
 }
 
 /**
@@ -58,4 +88,3 @@ void BulkLink::addSession(BulkSession& session)
 		
 	//}
 //}
-

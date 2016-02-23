@@ -1,5 +1,7 @@
 #ifndef _SCHEDULER_H_
 #define _SCHEDULER_H_
+#include <stdio.h>
+#include <stdlib.h>
 class Event;
 class Handler
 {
@@ -11,12 +13,12 @@ class Handler
 class Event
 {
 	public:
-		Event* _next;  /* event list */
+		Event* _next;      /* event list */
 		Event* _prev;
 		Handler* _handler; /* handler to call when event ready */
 		double _time;
 		int _uid;
-		Event():_time(0), _uid(0){
+		Event():_time(0), _uid(0) {
 			this->_prev = this;
 			this->_next = NULL;
 		}

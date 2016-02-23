@@ -81,7 +81,9 @@ BulkNode* BulkNetwork::getSourceNodeById(int id) const
 BulkNode* BulkNetwork::getSinkNodeById(int id) const
 {
 	if (!this->_lSinkList->empty()) {
-		return this->_lSinkList[i];
+		return this->_lSinkList[id];
 	}
 }
+
+
 

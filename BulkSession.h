@@ -5,20 +5,6 @@
 #include "BulkNode.h"
 #include "BulkPool.h"
 #include "Application.h"
-#include "TimerHandler.h"
-#include "getClass.h"
-class BulkSession;
-class BulkSessionTimer : public TimerHandler
-{
-	public:
-		BulkSessionTimer(BulkSession* t): TimerHandler(), t_(t){}
-		BulkSessionTimer(): TimerHandler(){}
-		inline virtual void expire(Event*);
-		inline virtual void handle(Event*);
-	protected:
-		BulkSession* t_;
-};
-
 class BulkSession : public Application<BulkPackets>
 {
 	private:
@@ -53,6 +39,5 @@ class BulkSession : public Application<BulkPackets>
 	protected:
 		void start();
 		void stop();
-		BulkSessionTimer timer_;
 };
 #endif
