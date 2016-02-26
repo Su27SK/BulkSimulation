@@ -2,6 +2,7 @@
 #define  _BULKNETWORK_H_
 #include "Graph.h"
 #include "BulkNode.h"
+#include "RandomGenerator.h"
 #include <map>
 using namespace std;
 class BulkNetwork
@@ -12,15 +13,22 @@ class BulkNetwork
 		map<int, BulkNode>* _lSourceList; //具体流入source数据包节点索引
 		map<int, BulkNode>* _lSinkList;   //具体流出sink数据包节点索引
 		Graph* _topology;
+	protected:
+		BulkNode** nList_;
 	public:
 		BulkNetwork():_nSource(0), _nSink(0) {
 			this->_lSourceList = new map<int, BulkNode>;
 			this->_lSinkList = new map<int, BulkNode>;
 			this->_topology = NULL;
+			nList_ = NULL;
 		}
-		BulkNetwork(Graph& graph);
-		BulkNetwork& setSourceNodeById(int id);
-		BulkNetwork& setSinkNodeById(int id);
+		void init();
+		void setGraph(Graph* graph);
+		void startSession(BulkSession& session);
+		void inputPackets(double m, BulkSession& session);
+		BulkNetwork(Graph* graph);
+		BulkNetwork& setSourceNode(BulkNode& node);
+		BulkNetwork& setSinkNode(BulkNode& node);
 		BulkNode* getSourceNodeById(int id) const;
 		BulkNode* getSinkNodeById(int id) const;
 		~BulkNetwork(){};

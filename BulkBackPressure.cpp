@@ -1,25 +1,12 @@
 #include "BulkBackPressure.h"
 
 /**
- * @brief start 
+ * @brief handle 
  */
-void BulkBackPressure::start()
+void BulkBackPressure::handle()
 {
 
 }
 
-/**
- * @brief stop 
- */
-void BulkBackPressure::stop()
-{
 
-}
 
-/**
- * @brief timeout 
- */
-void BulkBackPressure::timeout()
-{
-
-}

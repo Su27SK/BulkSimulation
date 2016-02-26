@@ -32,5 +32,4 @@ class TimerHandler: public Handler
 			(void)Scheduler::instance().cancel(&event_);
 		} //no need to free event_ since it's statically allocated
 };
-
 #endif

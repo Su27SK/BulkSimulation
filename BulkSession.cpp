@@ -6,20 +6,20 @@
  */
 void BulkSession::send(int npackets)
 {
-	if (this->_sinkNode == NULL || id_ == -1) {
+	if (this->sinkNode_ == NULL || id_ == -1 || running_ == 0) {
 		return;
 	}
 	int i;
-	bool flag = this->_sinkNode->getTerminal();
+	bool flag = this->sinkNode_->getTerminal();
 	for (i = 0; i < npackets; i++) {
-		BulkPackets& packets = this->_sourceNode->pqueue[id_]->front();
-		this->_sourceNode->pqueue[id_]->pop();
-		this->_sourceNode->reduceSessionNum(id_);
+		BulkPackets& packets = this->sourceNode_->pqueue[id_]->front();
+		this->sourceNode_->pqueue[id_]->pop();
+		this->sourceNode_->reduceSessionNum(id_);
 		if (flag) {
-			_bulkPool->placePacketsToPool(&packets);
+			bulkPool_.placePacketsToPool(&packets);
 		} else {
-			this->_sinkNode->pqueue[id_]->push(packets);
-			this->_sinkNode->addSessionNum(id_);
+			this->sinkNode_->pqueue[id_]->push(packets);
+			this->sinkNode_->addSessionNum(id_);
 		}
 		flow_ += packets.getBulkPacketsSize();
 	}
@@ -32,14 +32,17 @@ void BulkSession::send(int npackets)
  */
 void BulkSession::recv(int npackets)
 {
-	if (this->_sourceNode == NULL || id_ == -1) {
+	if (this->sourceNode_ == NULL || id_ == -1 || running_ == 0) {
 		return;
 	}
-	int i;
-	for (i = 0; i < npackets; i++) {
-		BulkPackets* packets = _bulkPool->getPacketsFromPool();
-		this->_sourceNode->pqueue[id_]->push(*packets);
-		this->_sourceNode->addSessionNum(id_);
+	bool flag = this->sourceNode_->getOriginal();
+	if (flag) {
+		int i;
+		for (i = 0; i < npackets; i++) {
+			BulkPackets* packets = bulkPool_.getPacketsFromPool();
+			this->sourceNode_->pqueue[id_]->push(*packets);
+			this->sourceNode_->addSessionNum(id_);
+		}
 	}
 }
 
@@ -50,7 +53,7 @@ void BulkSession::recv(int npackets)
  */
 int BulkSession::diffPackets()
 {
-	return this->_sinkNode->pqueue[id_]->size() - this->_sourceNode->pqueue[id_]->size();
+	return this->sinkNode_->pqueue[id_]->size() - this->sourceNode_->pqueue[id_]->size();
 }
 
 /**
@@ -64,8 +67,8 @@ int BulkSession::diffPackets()
  */
 bool BulkSession::isSessionEqualLink(int bId, int eId, int sId)
 {
-	if (this->_sourceNode->getNodeId() != bId || 
-		this->_sinkNode->getNodeId() != eId || id_ != sId) {
+	if (this->sourceNode_->getNodeId() != bId || 
+		this->sinkNode_->getNodeId() != eId || id_ != sId) {
 		return false;
 	}
 	return true;
@@ -77,7 +80,7 @@ bool BulkSession::isSessionEqualLink(int bId, int eId, int sId)
  */
 void BulkSession::start()
 {
-	
+	running_ = 1;
 }
 
 /**
@@ -86,6 +89,7 @@ void BulkSession::start()
  */
 void BulkSession::stop()
 {
-
+	running_ = 0;
+	flow_ = 0.0;
 }
 

@@ -2,10 +2,13 @@
 #define _BULKLINK_H_
 #include <ext/slist>
 #include "BulkGraphEdge.h"
+#include "BulkNode.h"
+class BulkNode;
 #include "BulkSession.h"
 #include "BulkNetwork.h"
 using namespace __gnu_cxx;
 using namespace std;
+class BulkSession;
 class BulkLink:public BulkGraphEdge
 {
 	public:

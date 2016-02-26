@@ -15,6 +15,7 @@ class BulkPool
 		void init();
 		void destroy();
 		void placePacketsToPool(BulkPackets* packets);
+		void setPacketsType(BulkPackets* type);
 		BulkPackets* getPacketsFromPool();
 };
 #endif

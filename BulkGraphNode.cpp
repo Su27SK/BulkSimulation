@@ -1,5 +1,5 @@
 #include "BulkGraphNode.h"
-BulkGraphNode::BulkGraphNode(int _id):id(_id), numHeadQueue(0), numTailQueue(0), isTerminal(false)
+BulkGraphNode::BulkGraphNode(int _id):id(_id), numHeadQueue(0), numTailQueue(0)
 {
 	if (this->id < 1) {
 		this->id = -1;
@@ -173,8 +173,6 @@ BulkGraphNode& BulkGraphNode::operator=(const BulkGraphNode &node)
 		this->id = nodeTemp.id;
 		this->numHeadQueue = nodeTemp.numHeadQueue;
 		this->numTailQueue = nodeTemp.numTailQueue;
-		this->isTerminal = node.isTerminal;
-		
 		slist<BulkGraphEdge>* pHTemp = nodeTemp.headEdge;
 		nodeTemp.headEdge = this->headEdge;
 		this->headEdge = pHTemp;
@@ -241,15 +239,3 @@ BulkGraphNode& BulkGraphNode::setId(int id)
 	return *this;
 }
 
-/**
- * @brief setTerminal 
- *
- * @param terminal
- * 设置节点是否是终点
- * @return {BulkGraphNode}
- */
-BulkGraphNode& BulkGraphNode::setTerminal(bool terminal)
-{
-	this->isTerminal = terminal;
-	return *this;
-}

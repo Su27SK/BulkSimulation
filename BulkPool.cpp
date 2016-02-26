@@ -68,6 +68,11 @@ BulkPackets* BulkPool::getPacketsFromPool()
 	return NULL;
 }
 
+void BulkPool::setPacketsType(BulkPackets* type)
+{
+	this->_packets = type;
+}
+
 BulkPool::~BulkPool()
 {
 	delete this->_packets;

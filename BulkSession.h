@@ -7,29 +7,28 @@
 #include "Application.h"
 class BulkSession : public Application<BulkPackets>
 {
-	private:
-		BulkNode* _sourceNode;
-		BulkNode* _sinkNode;
-		static BulkPool* _bulkPool;  
 	public:
+		BulkNode* sourceNode_;
+		BulkNode* sinkNode_;
+		static BulkPool bulkPool_;  
 		int id_;       //该session中的id
 		double flow_;  //该session传输flow_大小(从source节点传输到sink节点)
 		static void initPool()
 		{
-			if (_bulkPool == 0) {
-				static BulkPackets bulkpackets;
-				_bulkPool = new BulkPool(&bulkpackets);
-				_bulkPool->init(); //内存池初始化
-			}
+			static BulkPackets bulkpackets;
+			bulkPool_.setPacketsType(&bulkpackets);
+			bulkPool_.init(); //内存池初始化
 		}
-		BulkSession():Application(), _sourceNode(NULL), _sinkNode(NULL) {
+		BulkSession():Application(), sourceNode_(NULL), sinkNode_(NULL) {
 			id_ = -1;
+			running_ = 0;
 			flow_ = 0.0;
 		}
 		BulkSession(int id, BulkNode* source, BulkNode* sink):Application() {
-			this->_sourceNode = source;
-			this->_sinkNode = sink;
+			this->sourceNode_ = source;
+			this->sinkNode_ = sink;
 			id_ = id;
+			running_ = 0;
 			flow_ = 0.0;
 		}
 		int diffPackets();
@@ -37,6 +36,7 @@ class BulkSession : public Application<BulkPackets>
 		virtual void send(int npackets);
 		virtual void recv(int npackets);
 	protected:
+		int running_;
 		void start();
 		void stop();
 };

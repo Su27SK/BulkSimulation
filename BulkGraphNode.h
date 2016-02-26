@@ -9,12 +9,11 @@ class BulkGraphNode
 		int id;		//id of the end node of the edge
 		int numHeadQueue; //number of the head queues
 		int numTailQueue; //number of the tail queues
-		bool isTerminal ; //check the node is Terminal
 		slist<BulkGraphEdge>* headEdge;
 		slist<BulkGraphEdge>* tailEdge;
 	public:
 		//constructors
-		BulkGraphNode():id(-1), numHeadQueue(0), numTailQueue(0), isTerminal(false) 
+		BulkGraphNode():id(-1), numHeadQueue(0), numTailQueue(0) 
 		{
 			this->headEdge = new slist<BulkGraphEdge>(0);
 			this->tailEdge = new slist<BulkGraphEdge>(0);
@@ -32,7 +31,6 @@ class BulkGraphNode
 		slist<BulkGraphEdge>* getHeadEdge() const;
 		slist<BulkGraphEdge>* getTailEdge() const;
 		BulkGraphNode& setId(int id);
-		BulkGraphNode& setTerminal(bool terminal);
 		BulkGraphNode& operator = (const BulkGraphNode &node);
 		int Print();
 		//destructor
