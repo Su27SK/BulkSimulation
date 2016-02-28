@@ -27,7 +27,7 @@ void BulkSession::send(int npackets)
 
 /**
  * @brief recv 
- * 该session每次从sourceNode获得npackets的数据
+ * 该session每次从originNode获得npackets的数据
  * @param {interge} npackets
  */
 void BulkSession::recv(int npackets)

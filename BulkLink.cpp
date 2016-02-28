@@ -1,12 +1,12 @@
 #include "BulkLink.h"
 BulkLink::BulkLink(int from, int to):BulkGraphEdge(from, to)
 {
-	session_ = new slist<BulkSession>;
+	this->_defaultInit();
 }
 
 BulkLink::BulkLink(int from, int to, int weight, int capacity):BulkGraphEdge(from, to, weight, capacity)
 {
-	session_ = new slist<BulkSession>;
+	this->_defaultInit();
 }
 
 /**
@@ -16,20 +16,43 @@ BulkLink::BulkLink(int from, int to, int weight, int capacity):BulkGraphEdge(fro
  */
 BulkLink::BulkLink(BulkGraphEdge& edge):BulkGraphEdge(edge)
 {
+	this->_defaultInit();
+}
+
+/**
+ * @brief _defaultInit 
+ */
+void BulkLink::_defaultInit()
+{
+	int i;
 	session_ = new slist<BulkSession>;
+	head = new queue<BulkPackets>*[MAX_SIZE];
+	for (i = 0; i < MAX_SIZE; i++) {
+		head[i] = new queue<BulkPackets>;
+	}
+	tail = new queue<BulkPackets>*[MAX_SIZE];
+	for (i = 0; i < MAX_SIZE; i++) {
+		tail[i] = new queue<BulkPackets>;
+	}
 }
 
 /**
  * @brief fromHeadToTail 
  * 数据包从头部传输到尾部
  * @param {interge} numPackets
- * @param {interge} sessionId
+ * @param {interge} sId
  */
-void BulkLink::fromHeadToTail(int numPackets, int sessionId)
+void BulkLink::fromHeadToTail(int numPackets, int sId)
 {
 	slist<BulkSession>::iterator iter;
+	int i;
+	for (i = 0; i < numPackets; i++) {
+		tail[sId]->pop();
+		BulkPackets* packets = tail[sId]->front();
+		head[sId]->push(*packets);
+	}
 	for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
-		if (iter->id_ == sessionId) {
+		if (iter->id_ == sId) {
 			iter->send(numPackets);
 			break;
 		}
@@ -74,6 +97,24 @@ bool BulkLink::deleteSession(int sId)
 		}
 	}
 	return isFound;
+}
+
+/**
+ * @brief findSession 
+ * Link中寻找session（通过sId）
+ * @param {interge} sId
+ *
+ * @return {BulkSession}
+ */
+BulkSession* BulkLink::findSession(int sId)
+{
+	slist<BulkSession>::iterator iter;
+	for (iter = session_->begin(); iter != session_->end(); iter++) {
+		if (iter->id_ == sId) {
+			return &*iter;
+		}
+	}
+	return NULL;
 }
 
 /**

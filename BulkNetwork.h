@@ -1,5 +1,6 @@
 #ifndef  _BULKNETWORK_H_ 
 #define  _BULKNETWORK_H_
+#define MAX 100
 #include "Graph.h"
 #include "BulkNode.h"
 #include "RandomGenerator.h"
@@ -13,6 +14,7 @@ class BulkNetwork
 		map<int, BulkNode>* _lSourceList; //具体流入source数据包节点索引
 		map<int, BulkNode>* _lSinkList;   //具体流出sink数据包节点索引
 		Graph* _topology;
+		void _BFS(int nId, int sId);
 	protected:
 		BulkNode** nList_;
 	public:
@@ -26,6 +28,7 @@ class BulkNetwork
 		void setGraph(Graph* graph);
 		void startSession(BulkSession& session);
 		void inputPackets(double m, BulkSession& session);
+		virtual void dynamicPush(BulkLink* link) = 0;
 		BulkNetwork(Graph* graph);
 		BulkNetwork& setSourceNode(BulkNode& node);
 		BulkNetwork& setSinkNode(BulkNode& node);

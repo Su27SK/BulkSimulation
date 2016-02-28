@@ -14,8 +14,9 @@ class BulkNode:public BulkGraphNode
 		void _defaultInit(); //缺省初始化函数
 	protected:
 		int  store_;        //总存储包数量
-		int* sessionNumPacket_; //session's array(该session在该节点的存储数据包数量)
-		slist<BulkLink>* nextRoute_; //下一跳
+		int* sNumPackets_;  //session's array(该session在该节点的存储数据包数量)
+		slist<BulkLink>* output_; //链路出去
+		slist<BulkLink>* input_;  //链路进来
 	public: 
 		queue<BulkPackets>** pqueue;
 		BulkNode():BulkGraphNode()
@@ -28,10 +29,15 @@ class BulkNode:public BulkGraphNode
 		}
 		BulkNode(const BulkGraphNode& node);
 		BulkNode(BulkGraphNode& node);
+		int getStoreSize(int sId);
 		int getStoreSize();
 		bool getTerminal();
 		bool getOriginal();
-		void addNextLink(BulkGraphEdge* edge);
+		void realloc(int sId);
+		slist<BulkLink>* getOutputLink();
+		slist<BulkLink>* getInputLink();
+		void addOutputLink(BulkGraphEdge* edge);
+		void addInputLink(BulkGraphEdge* edge);
 		BulkNode& setTerminal();
 		BulkNode& setOriginal();
 		BulkNode& addSessionNum(int sId, int num = 1);

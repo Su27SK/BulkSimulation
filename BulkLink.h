@@ -11,16 +11,21 @@ using namespace std;
 class BulkSession;
 class BulkLink:public BulkGraphEdge
 {
+	private:
+		void _defaultInit();
 	public:
 		BulkLink():BulkGraphEdge() {}
 		BulkLink(int from, int to);
 		BulkLink(int from, int to, int weight, int capacity);
 		BulkLink(BulkGraphEdge& edge);
+		BulkSession* findSession(int sId);
 		bool addSession(BulkSession& session);
 		bool deleteSession(int sId);
-		void fromHeadToTail(int numPackets, int sessionId);
+		void fromHeadToTail(int numPackets, int sId);
 		bool isUnderConstraints();
 	protected:
 		slist<BulkSession>* session_;
+		queue<BulkPackets>** head;
+		queue<BulkPackets>** tail;
 };
 #endif

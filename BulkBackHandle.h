@@ -24,7 +24,7 @@ class BulkBackHandle
 		BulkTime _execTime;
 	public:
 		BulkBackHandle():running_(0){}
-		virtual void handle(){}
+		virtual void handle() = 0;
 		void start();
 		void stop();
 		void timeout();

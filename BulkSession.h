@@ -13,8 +13,7 @@ class BulkSession : public Application<BulkPackets>
 		static BulkPool bulkPool_;  
 		int id_;       //该session中的id
 		double flow_;  //该session传输flow_大小(从source节点传输到sink节点)
-		static void initPool()
-		{
+		static void initPool() {
 			static BulkPackets bulkpackets;
 			bulkPool_.setPacketsType(&bulkpackets);
 			bulkPool_.init(); //内存池初始化

@@ -9,8 +9,8 @@ class BulkGraphNode
 		int id;		//id of the end node of the edge
 		int numHeadQueue; //number of the head queues
 		int numTailQueue; //number of the tail queues
-		slist<BulkGraphEdge>* headEdge;
-		slist<BulkGraphEdge>* tailEdge;
+		slist<BulkGraphEdge>* headEdge;  //Node点为sink点
+		slist<BulkGraphEdge>* tailEdge;  //Node点为source点
 	public:
 		//constructors
 		BulkGraphNode():id(-1), numHeadQueue(0), numTailQueue(0) 

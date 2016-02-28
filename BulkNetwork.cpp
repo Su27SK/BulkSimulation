@@ -28,10 +28,14 @@ void BulkNetwork::init()
 		for (i = 0; i < n; i++) {
 			int nodeId = aList[i].getNodeId();
 			nList_[nodeId] = new BulkNode(aList[i]);
-			slist<BulkGraphEdge>* sEdge = aList[i].getHeadEdge();
+			slist<BulkGraphEdge>* outputEdge = aList[i].getTailEdge();
+			slist<BulkGraphEdge>* inputEdge = aList[i].getHeadEdge();
 			slist<BulkGraphEdge>::iterator iter;
-			for (iter = sEdge->begin(); iter != sEdge->end();iter++) {
-					nList_[nodeId]->addNextLink(&*iter);
+			for (iter = outputEdge->begin(); iter != outputEdge->end();iter++) {
+					nList_[nodeId]->addOutputLink(&*iter);
+			}
+			for (iter = inputEdge->begin(); iter != inputEdge->end();iter++) {
+					nList_[nodeId]->addInputLink(&*iter);
 			}
 		}
 	}
@@ -150,5 +154,48 @@ void BulkNetwork::inputPackets(double m, BulkSession& session)
 {
 	int nPack = RandomGenerator::genPoissonInt(m);
 	session.recv(nPack);
+}
+
+/**
+ * @brief _BFS 
+ * 广度优先搜索
+ * @param {interge} nId (node Id)
+ * @param {interge} sId (session Id)
+ */
+void BulkNetwork::_BFS(int nId, int sId)
+{
+	if (nId < 1 || nId > MAX) {
+		return;
+	}
+	bool visited[MAX];
+	int  i;
+	slist<BulkLink>::iterator iter;
+	for (i = 1; i <= MAX; i++) {
+		visited[i] = false;
+	}
+	visited[node->getNodeId()] = true;
+	queue<BulkNode> q;
+	q.push(nId);
+	while (!q.empty()) {
+		int u = q.front();   //get the front 
+		slist<BulkLink>* pLink = nList_[u]->getOutputLink();
+		for (iter = pLink->begin(); iter != pLink->end(); iter++) {
+			int iSink = iter->getGraphEdgeSink();
+			if (!visited[iSink]) {
+				q.push(iSink);
+				visited[iSink] = true;
+				BulkSession* nSession = iter->findSession(sId);
+				int nStore = nList_[u]->getStoreSize(sId);
+				if (nSession == NULL && nStore != 0) {
+					BulkSession* pSession = new BulkSession(sId, *nList_[u], *nList_[iSink]);
+					iter->addSession(*pSession);
+				} else if (nSession != NULL && nStore == 0) {
+					iter->deleteSession(sId);
+				}
+				this->dynamicPush(&*iter);
+			}
+		}
+		q.pop();
+	}
 }
 
