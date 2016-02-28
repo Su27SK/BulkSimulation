@@ -133,14 +133,14 @@ slist<BulkLink>* BulkNode::getInputLink()
  */
 void BulkNode::realloc(int sId)
 {
-	int mOutputLink = this->getNumTailQueue();
-	int nPerLink = this->sNumPackets_[sId]/mOutputLink;
-	for () {
+	//int mOutputLink = this->getNumTailQueue();
+	//int nPerLink = this->sNumPackets_[sId]/mOutputLink;
+	//for () {
 		
-	}
+	//}
 	slist<BulkLink>::iterator iter;
 	for (iter = output_->begin(); iter != output_->end(); iter++) {
-			
+		;	
 	}
 }
 

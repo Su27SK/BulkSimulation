@@ -48,8 +48,8 @@ void BulkLink::fromHeadToTail(int numPackets, int sId)
 	int i;
 	for (i = 0; i < numPackets; i++) {
 		tail[sId]->pop();
-		BulkPackets* packets = tail[sId]->front();
-		head[sId]->push(*packets);
+		BulkPackets& packets = tail[sId]->front();
+		head[sId]->push(packets);
 	}
 	for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
 		if (iter->id_ == sId) {

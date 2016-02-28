@@ -173,8 +173,8 @@ void BulkNetwork::_BFS(int nId, int sId)
 	for (i = 1; i <= MAX; i++) {
 		visited[i] = false;
 	}
-	visited[node->getNodeId()] = true;
-	queue<BulkNode> q;
+	visited[nId] = true;
+	queue<int> q;
 	q.push(nId);
 	while (!q.empty()) {
 		int u = q.front();   //get the front 
@@ -187,7 +187,7 @@ void BulkNetwork::_BFS(int nId, int sId)
 				BulkSession* nSession = iter->findSession(sId);
 				int nStore = nList_[u]->getStoreSize(sId);
 				if (nSession == NULL && nStore != 0) {
-					BulkSession* pSession = new BulkSession(sId, *nList_[u], *nList_[iSink]);
+					BulkSession* pSession = new BulkSession(sId, &*nList_[u], &*nList_[iSink]);
 					iter->addSession(*pSession);
 				} else if (nSession != NULL && nStore == 0) {
 					iter->deleteSession(sId);

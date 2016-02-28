@@ -2,17 +2,16 @@
 #define _BULKBACKHANDLE_H_
 #include "TimerHandler.h"
 #include "Timer.h"
-#include "BulkBackPressure.h"
 class BulkBackHandle;
 class BulkBackHandleTimer : public TimerHandler
 {
 	public:
-		BulkBackPressureTimer(BulkBackPressure* t): TimerHandler(), t_(t){}
-		BulkBackPressureTimer(): TimerHandler(){}
+		BulkBackHandleTimer(BulkBackHandle* t): TimerHandler(), t_(t){}
+		BulkBackHandleTimer(): TimerHandler(){}
 		inline virtual void expire(Event*) {
 			t_->handle();
 			t_->timeout();
-			cout<<"expire"<<endl;
+			//cout<<"expire"<<endl;
 		}
 	protected:
 		BulkBackHandle* t_;
@@ -21,10 +20,10 @@ class BulkBackHandleTimer : public TimerHandler
 class BulkBackHandle
 {
 	private:
-		BulkTime _execTime;
+		Timer _execTime;
 	public:
 		BulkBackHandle():running_(0){}
-		virtual void handle() = 0;
+		virtual void handle(){};
 		void start();
 		void stop();
 		void timeout();

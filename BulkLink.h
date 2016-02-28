@@ -1,6 +1,7 @@
 #ifndef _BULKLINK_H_
 #define _BULKLINK_H_
 #include <ext/slist>
+#include "BulkPackets.h"
 #include "BulkGraphEdge.h"
 #include "BulkNode.h"
 class BulkNode;

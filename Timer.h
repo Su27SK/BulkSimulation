@@ -3,11 +3,11 @@
 class Timer
 {
 	protected:
-		static double now_ = -1.0;
-		static double interval_ = 1.0;
+		static double now_;
+		static double interval_;
 	public:
-		Timer(): now_(0.0), interval_(1.0){}
-		void reset() {
+		Timer(){}
+		static void reset() {
 			now_ = 0.0;
 		}
 		static double getTime() {
@@ -17,8 +17,10 @@ class Timer
 			now_ += interval_;
 		}
 
-		static void next(interval) {
+		static void next(double interval) {
 			now_ += interval;
 		}
 };
+double Timer::now_ = 0.0;
+double Timer::interval_ = 1.0;
 #endif

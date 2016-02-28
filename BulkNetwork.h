@@ -5,6 +5,8 @@
 #include "BulkNode.h"
 #include "RandomGenerator.h"
 #include <map>
+class BulkLink;
+class BulkSession;
 using namespace std;
 class BulkNetwork
 {

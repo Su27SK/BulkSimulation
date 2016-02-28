@@ -37,7 +37,7 @@ void BulkBackHandle::timeout()
  */
 double BulkBackHandle::next(double interval)
 {
-	_execTime->next(interval);
+	_execTime.next(interval);
 	return this->getNowTime();
 }
 
