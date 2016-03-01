@@ -12,9 +12,8 @@ class BulkNode:public BulkGraphNode
 		bool _isTerminal;    //是否是终点
 		bool _isOriginal;    //是否是起点
 		void _defaultInit(); //缺省初始化函数
+		double _getAllWeight();  //对I(v) U O(v)求weight倒数之和
 	protected:
-		int  store_;        //总存储包数量
-		int* sNumPackets_;  //session's array(该session在该节点的存储数据包数量)
 		slist<BulkLink>* output_; //链路出去
 		slist<BulkLink>* input_;  //链路进来
 	public: 
@@ -30,7 +29,7 @@ class BulkNode:public BulkGraphNode
 		BulkNode(const BulkGraphNode& node);
 		BulkNode(BulkGraphNode& node);
 		int getStoreSize(int sId);
-		int getStoreSize();
+		int getNumLink();
 		bool getTerminal();
 		bool getOriginal();
 		void realloc(int sId);
@@ -40,7 +39,5 @@ class BulkNode:public BulkGraphNode
 		void addInputLink(BulkGraphEdge* edge);
 		BulkNode& setTerminal();
 		BulkNode& setOriginal();
-		BulkNode& addSessionNum(int sId, int num = 1);
-		BulkNode& reduceSessionNum(int sId, int num = 1);
 };
 #endif

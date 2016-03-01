@@ -12,14 +12,10 @@ void BulkSession::send(int npackets)
 	int i;
 	bool flag = this->sinkNode_->getTerminal();
 	for (i = 0; i < npackets; i++) {
-		BulkPackets& packets = this->sourceNode_->pqueue[id_]->front();
-		this->sourceNode_->pqueue[id_]->pop();
-		this->sourceNode_->reduceSessionNum(id_);
 		if (flag) {
 			bulkPool_.placePacketsToPool(&packets);
 		} else {
-			this->sinkNode_->pqueue[id_]->push(packets);
-			this->sinkNode_->addSessionNum(id_);
+
 		}
 		flow_ += packets.getBulkPacketsSize();
 	}
@@ -40,8 +36,7 @@ void BulkSession::recv(int npackets)
 		int i;
 		for (i = 0; i < npackets; i++) {
 			BulkPackets* packets = bulkPool_.getPacketsFromPool();
-			this->sourceNode_->pqueue[id_]->push(*packets);
-			this->sourceNode_->addSessionNum(id_);
+			
 		}
 	}
 }

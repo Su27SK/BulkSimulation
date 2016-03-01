@@ -22,11 +22,17 @@ class BulkLink:public BulkGraphEdge
 		BulkSession* findSession(int sId);
 		bool addSession(BulkSession& session);
 		bool deleteSession(int sId);
-		void fromHeadToTail(int numPackets, int sId);
+		void pushHeadToTail(int numPackets, int sId);
+		queue<BulkPackets>* getHead(int sId);
+		queue<BulkPackets>* getTail(int sId);
+		void setHeadPackets(int sId, int num, BulkPackets& packets);
+		void setTailPackets(int sId, int num, BulkPackets& packets);
+		void clearHeadPackets();
+		void clearTailPackets();
 		bool isUnderConstraints();
 	protected:
 		slist<BulkSession>* session_;
-		queue<BulkPackets>** head;
-		queue<BulkPackets>** tail;
+		queue<BulkPackets>** head_;
+		queue<BulkPackets>** tail_;
 };
 #endif

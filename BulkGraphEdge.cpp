@@ -37,7 +37,7 @@ bool BulkGraphEdge::operator == (const BulkGraphEdge& edge)
 
 /**
  * @brief setWeight 
- * 设置该边的权值
+ * 设置该边的权值(数学期望)
  * @param {double} weight (权值)
  *
  * @return {BulkGraphEdge}
@@ -63,7 +63,7 @@ BulkGraphEdge& BulkGraphEdge::setCapacity(double capacity)
 
 /**
  * @brief getWeight 
- * 获得权值
+ * 获得权值(数学期望)
  * @return {double}
  */
 double BulkGraphEdge::getWeight() const

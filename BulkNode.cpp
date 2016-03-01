@@ -6,8 +6,6 @@
  */
 void BulkNode::_defaultInit()
 {
-	store_ = 0;
-	sNumPackets_ = new int[MAX_SIZE]; //max 100 number of session				
 	output_ = new slist<BulkLink>(0);
 	_isTerminal = false;
 	_isOriginal = false;
@@ -16,6 +14,31 @@ void BulkNode::_defaultInit()
 	for (i = 0; i < MAX_SIZE; i++) {
 		pqueue[i] = new queue<BulkPackets>;
 	}
+}
+
+
+/**
+ * @brief _getAllWeight 
+ * 获得所有E[c(e)(t)]期望倒数之和
+ * @return 
+ */
+double BulkNode::_getAllWeight()
+{
+	slist<BulkLink>::iterator iter;
+	double sumWeight = 0;
+	double singleWeight;
+	int i = 0;
+	slist<BulkLink>* pLink = output_;
+	while (i < 2) {
+		for (iter = pLink->begin(); iter != pLink->end(); iter++) {
+			if ((singleWeight = iter->getWeight()) != 0) {
+				sumWeight  += 1/singleWeight;
+			}
+		}
+		pLink = input_;
+		i++;
+	}
+	return sumWeight;
 }
 
 /**
@@ -40,28 +63,39 @@ BulkNode::BulkNode(BulkGraphNode& node):BulkGraphNode(node)
 
 /**
  * @brief getStoreSize 
- * 获得该节点总存储数据包的数量,所有session
- * @return {interge}
- */
-int BulkNode::getStoreSize()
-{
-	int i;
-	for (i = 0; i < 100; i++) {
-		store_ += sNumPackets_[i];
-	}
-	return store_;
-}
-
-/**
- * @brief getStoreSize 
- * get the session's Store Size
+ * get the session's Store Size(the amount of packet)
  * @param {interge} sId
  *
  * @return {interge}
  */
 int BulkNode::getStoreSize(int sId)
 {
-	return sNumPackets_[sId];
+	int amount = 0;
+	slist<BulkLink>::iterator sIter;
+	queue<BulkPackets>::iterator qIter;
+	for (sIter = input_->begin(); sIter != input_->end(); sIter++) {
+		queue<BulkPackets>* pHead = sIter->getHead(sId);
+		for (qIter = pHead->begin(); qIter != pHead->end(); qIter++) {
+			amount += qIter->getTransferPacketsNum();
+		}
+	}
+	for (sIter = output_->begin(); sIter != output_->end(); sIter++) {
+		queue<BulkPackets>* pHead = sIter->getTail(sId);
+		for (qIter = pHead->begin(); qIter != pHead->end(); qIter++) {
+			amount += qIter->getTransferPacketsNum();
+		}
+	}
+	return amount;
+}
+
+/**
+ * @brief getNumLink 
+ * 获得链接Link总数
+ * @return 
+ */
+int BulkNode::getNumLink()
+{
+	return this->getNumHeadQueue() + this->getNumTailQueue();
 }
 
 /**
@@ -128,19 +162,20 @@ slist<BulkLink>* BulkNode::getInputLink()
 
 /**
  * @brief realloc 
- * 对在BulkNode中的特定session重新分配packets
+ * 对在BulkNode中的特定session重新分配packet
  * @param {interge} sId
  */
 void BulkNode::realloc(int sId)
 {
-	//int mOutputLink = this->getNumTailQueue();
-	//int nPerLink = this->sNumPackets_[sId]/mOutputLink;
-	//for () {
-		
-	//}
+	int qsv = this->getStoreSize(sId);
+	int nLink = this->getNumLink();
 	slist<BulkLink>::iterator iter;
+	double singleWeight;
 	for (iter = output_->begin(); iter != output_->end(); iter++) {
-		;	
+		if ((singleWeight = iter->getWeight()) != 0) {
+			double = singleWeight / _getAllWeight();
+			iter->head_[sId]
+		}
 	}
 }
 
@@ -164,33 +199,5 @@ void BulkNode::addInputLink(BulkGraphEdge* edge)
 {
 	BulkLink* link = new BulkLink(*edge);
 	this->input_->push_front(*link);
-}
-
-/**
- * @brief addSessionNum 
- * 增加某sessionId下存储的数据包数量
- * @param {interge} sId
- * @param {interge} num
- *
- * @return {BulkNode}
- */
-BulkNode& BulkNode::addSessionNum(int sId, int num)
-{
-	this->sNumPackets_[sId] += num;
-	return *this;
-}
-
-/**
- * @brief reduceSessionNum 
- * 减少某sessionId下存储的数据包数量
- * @param {interge} sId
- * @param {interge} num
- *
- * @return {BulkNode}
- */
-BulkNode& BulkNode::reduceSessionNum(int sId, int num)
-{
-	this->sNumPackets_[sId] -= num;
-	return *this;
 }
 

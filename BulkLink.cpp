@@ -26,36 +26,30 @@ void BulkLink::_defaultInit()
 {
 	int i;
 	session_ = new slist<BulkSession>;
-	head = new queue<BulkPackets>*[MAX_SIZE];
+	head_ = new queue<BulkPackets>*[MAX_SIZE];
 	for (i = 0; i < MAX_SIZE; i++) {
-		head[i] = new queue<BulkPackets>;
+		head_[i] = new queue<BulkPackets>;
 	}
-	tail = new queue<BulkPackets>*[MAX_SIZE];
+	tail_ = new queue<BulkPackets>*[MAX_SIZE];
 	for (i = 0; i < MAX_SIZE; i++) {
-		tail[i] = new queue<BulkPackets>;
+		tail_[i] = new queue<BulkPackets>;
 	}
 }
 
 /**
- * @brief fromHeadToTail 
+ * @brief pushHeadToTail 
  * 数据包从头部传输到尾部
  * @param {interge} numPackets
  * @param {interge} sId
  */
-void BulkLink::fromHeadToTail(int numPackets, int sId)
+void BulkLink::pushHeadToTail(int numPackets, int sId)
 {
 	slist<BulkSession>::iterator iter;
 	int i;
 	for (i = 0; i < numPackets; i++) {
-		tail[sId]->pop();
-		BulkPackets& packets = tail[sId]->front();
-		head[sId]->push(packets);
-	}
-	for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
-		if (iter->id_ == sId) {
-			iter->send(numPackets);
-			break;
-		}
+		BulkPackets& packets = tail_[sId]->front();
+		tail_[sId]->pop();
+		head_[sId]->push(packets);
 	}
 }
 
@@ -115,6 +109,88 @@ BulkSession* BulkLink::findSession(int sId)
 		}
 	}
 	return NULL;
+}
+
+/**
+ * @brief getHead 
+ * get the head_ packets from the link
+ * @param {interge} sId
+ *
+ * @return {queue<BulkPackets>*}
+ */
+queue<BulkPackets>* BulkLink::getHead(int sId)
+{
+	return &*head_[sId];
+}
+
+/**
+ * @brief getTail 
+ * get the tail_ packets from the link
+ * @param {interge} sId
+ *
+ * @return {queue<BulkPackets>*}
+ */
+queue<BulkPackets>* BulkLink::getTail(int sId)
+{
+	return &*tail_[sId];
+}
+
+/**
+ * @brief setHeadPackets 
+ * set the link's head packets into the head_
+ * @param {interge} sId
+ * @param {interge} num
+ * @param {BulkPackets} packets
+ */
+void BulkLink::setHeadPackets(int sId, int num, BulkPackets& packets)
+{
+	int i;
+	for (i = 0; i < num; i++) {
+		this->head_[sId]->push(*packets);
+	}
+}
+
+/**
+ * @brief setTailPackets 
+ * set the link's tail packets into the tail_
+ * @param {interge} sId
+ * @param {interge} num
+ * @param {BulkPackets} packets
+ */
+void BulkLink::setTailPackets(int sId, int num, BulkPackets& packets)
+{	
+	int i;
+	for (i = 0; i < num; i++) {
+		this->tail_[sId]->push(*packets);
+	}
+}
+
+/**
+ * @brief clearHeadPackets 
+ * @param {interge} sId
+ */
+void BulkLink::clearHeadPackets(int sId)
+{
+	queue<BulkPackets>::iterator iter;
+	for (iter = head_[sId]->begin(); iter != head_[sId]->end(); iter++) {
+		BulkPackets* pTemp = iter->front();
+		iter->pop();
+		pTemp->~BulkPackets();
+	}
+}
+
+/**
+ * @brief clearTailPackets 
+ * @param {interge} sId
+ */
+void BulkLink::clearTailPackets(int sId)
+{
+	queue<BulkPackets>::iterator iter;
+	for (iter = tail_[sId]->begin(); iter != tail_[sId]->end(); iter++) {
+		BulkPackets* pTemp = iter->front();
+		iter->pop();
+		pTemp->~BulkPackets();
+	}
 }
 
 /**

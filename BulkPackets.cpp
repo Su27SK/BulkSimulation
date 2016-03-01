@@ -105,6 +105,16 @@ double BulkPackets::getBulkPacketsSize()
 }
 
 /**
+ * @brief getTransferPacketsNum 
+ * 传输packet数量
+ * @return {double}
+ */
+double BulkPackets::getTransferPacketsNum()
+{
+	return this->_transferPacketsNum;
+}
+
+/**
  * @brief getBulkPacketsInfo 
  * 获得传输数据流的具体信息，(as 2.5Gb, 3Mb)
  * @return {string}
