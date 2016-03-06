@@ -10,7 +10,7 @@ BulkPacket::BulkPacket(double size, unit type)
  * set the packet size
  * @param {double} size
  */
-BulkPacket&BulkPacket::setPacketSize(double size)
+BulkPacket& BulkPacket::setPacketSize(double size)
 {
 	this->_size = size;
 	return *this;
@@ -44,9 +44,12 @@ BulkPacket::BulkPacket(BulkPacket& P)
  * set the packet size unit 单位
  * @param {unit} type 枚举类型
  */
-BulkPacket&BulkPacket::setPacketType(unit type)
+BulkPacket& BulkPacket::setPacketType(unit type)
 {
-	this->_type = type;
+	if (type != _type) {
+		bool plusMinus = (type - _type) > 0 ? true : false;
+		convertToType(abs(type - _type), plusMinus);
+	}
 	return *this;
 }
 
@@ -113,35 +116,35 @@ BulkPacket& BulkPacket::operator = (const BulkPacket& packet)
 }
 
 /**
- * @brief ConvertToType 
+ * @brief convertToType 
  * from one unit to anther type;
  * @param {interge} degree (放大或者缩小倍数 base is 10)
  * @param {boolean} isLarge(true:放大, false:缩小)
  *
  * @return {boolean} false/true
  */
-bool BulkPacket::ConvertToType(int degree, bool isLarge)
+bool BulkPacket::convertToType(int degree, bool isLarge)
 {
 	int nowType = isLarge? this->_type + degree: this->_type -degree;
 	if (nowType >= 1 && nowType <=4) {
 		switch (nowType) {
 			case 1:
-				this->_type = Byte;
+				_type = Byte;
 				break;
 			case 2:
-				this->_type = Kb;
+				_type = Kb;
 				break;
 			case 3:
-				this->_type = Mb;
+				_type = Mb;
 				break;
 			case 4:
-				this->_type = Gb;
+				_type = Gb;
 				break;
 		}
 		if (isLarge) {
-			this->_size = this->_size * degree;
+			_size = _size * degree * 1024;
 		} else {
-			this->_size = this->_size / degree;
+			_size = _size / degree / 1024;
 		}
 		return true;
 	} else {

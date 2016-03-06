@@ -105,6 +105,19 @@ double BulkPackets::getBulkPacketsSize()
 }
 
 /**
+ * @brief getBulkPacketsSize 
+ * 在当前type类型下获得数据
+ * @param {unit} type
+ *
+ * @return {double}
+ */
+double BulkPackets::getBulkPacketsSize(unit type)
+{
+	this->_model->setPacketSize(type);
+	return this->getBulkPacketsSize();
+}
+
+/**
  * @brief getTransferPacketsNum 
  * 传输packet数量
  * @return {double}
@@ -112,6 +125,16 @@ double BulkPackets::getBulkPacketsSize()
 double BulkPackets::getTransferPacketsNum()
 {
 	return this->_transferPacketsNum;
+}
+
+/**
+ * @brief getModel 
+ * 获得BulkPacket的model
+ * @return {BulkPacket}
+ */
+BulkPacket* BulkPackets::getModel() const
+{
+	return this->_model;
 }
 
 /**

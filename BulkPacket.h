@@ -26,7 +26,7 @@ class BulkPacket
 		double getPacketSize() const;
 		string getPacketUnit();
 		BulkPacket& operator = (const BulkPacket& packet);
-		bool ConvertToType(int degree, bool isLarge = true);
+		bool convertToType(int degree, bool isLarge = true);
 		~BulkPacket();
 };
 #endif

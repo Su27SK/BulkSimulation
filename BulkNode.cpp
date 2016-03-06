@@ -65,24 +65,36 @@ BulkNode::BulkNode(BulkGraphNode& node):BulkGraphNode(node)
  * @brief getStoreSize 
  * get the session's Store Size(the amount of packet)
  * @param {interge} sId
+ * @param {unit} type
  *
  * @return {interge}
  */
-int BulkNode::getStoreSize(int sId)
+double BulkNode::getStoreSize(int sId, unit type)
 {
-	int amount = 0;
+	double amount = 0;
+	int i = 0;
 	slist<BulkLink>::iterator sIter;
-	queue<BulkPackets>::iterator qIter;
 	for (sIter = input_->begin(); sIter != input_->end(); sIter++) {
 		queue<BulkPackets>* pHead = sIter->getHead(sId);
-		for (qIter = pHead->begin(); qIter != pHead->end(); qIter++) {
-			amount += qIter->getTransferPacketsNum();
+		int nSize = pHead->size();
+		while (i < nSize) {
+			BulkPackets& p = pHead->front();
+			pHead->pop();
+			amount += p.getBulkPacketsSize(type);
+			pHead->push(p);
+			i++;
 		}
 	}
+	i = 0;
 	for (sIter = output_->begin(); sIter != output_->end(); sIter++) {
-		queue<BulkPackets>* pHead = sIter->getTail(sId);
-		for (qIter = pHead->begin(); qIter != pHead->end(); qIter++) {
-			amount += qIter->getTransferPacketsNum();
+		queue<BulkPackets>* pTail = sIter->getTail(sId);
+		int nSize = pTail->size();
+		while (i < nSize) {
+			BulkPackets& p = pTail->front();
+			pTail->pop();
+			amount += p.getBulkPacketsSize(type);
+			pTail->push(p);
+			i++;
 		}
 	}
 	return amount;
@@ -167,15 +179,57 @@ slist<BulkLink>* BulkNode::getInputLink()
  */
 void BulkNode::realloc(int sId)
 {
-	int qsv = this->getStoreSize(sId);
-	int nLink = this->getNumLink();
+	unit type = Kb;
+	double qsv = this->getStoreSize(sId, type);
 	slist<BulkLink>::iterator iter;
 	double singleWeight;
+	double allWeight = this->_getAllWeight();
 	for (iter = output_->begin(); iter != output_->end(); iter++) {
 		if ((singleWeight = iter->getWeight()) != 0) {
-			double = singleWeight / _getAllWeight();
-			iter->head_[sId]
+			double proportion = (1/singleWeight) / allWeight;
+			double size = qsv * proportion;
+			if (iter->tail_[sId]->size() == 0) {
+				iter->setTailPackets(sId, 4);
+			}
+			this->_reallocPackets(iter->tail_[sId], size, type); 
+		} else {
+			iter->clearTailPackets(sId);
 		}
+	}
+	for (iter = input_->begin(); iter != input_->end(); iter++) {
+		if ((singleWeight = iter->getWeight()) != 0) {
+			double proportion = (1/singleWeight) / allWeight;
+			double size = qsv * proportion;
+			if (iter->head_[sId]->size() == 0) {
+				iter->setHeadPackets(sId, 4);
+			}
+			this->_reallocPackets(iter->head_[sId], size, type); 
+		} else {
+			iter->clearHeadPackets(sId);
+		}
+	}
+}
+
+/**
+ * @brief _reallocPackets 
+ * 在队列queue上重新分配packets
+ * @param {queue<BulkPackets>} p(packets队列)
+ * @param {double} size (该队列下总的传输数据大小)
+ * @param {unit} type
+ */
+void BulkNode::_reallocPackets(queue<BulkPackets>* p, double size, unit type)
+{
+	double meanSize = size / p->size();
+	int nSize = p->size();
+	int i = 0;
+	while (i < nSize) {
+		BulkPackets& q = p->front();
+		BulkPacket* pBag = q.getModel();
+		pBag->setPacketSize(meanSize/100).setPacketType(type);
+		q.setTransferPacketsNum(100);	
+		p->pop();
+		p->push(q);
+		i++;
 	}
 }
 

@@ -25,13 +25,14 @@ class BulkLink:public BulkGraphEdge
 		void pushHeadToTail(int numPackets, int sId);
 		queue<BulkPackets>* getHead(int sId);
 		queue<BulkPackets>* getTail(int sId);
-		void setHeadPackets(int sId, int num, BulkPackets& packets);
-		void setTailPackets(int sId, int num, BulkPackets& packets);
-		void clearHeadPackets();
-		void clearTailPackets();
+		void setHeadPackets(int sId, int num, BulkPackets* packets = NULL);
+		void setTailPackets(int sId, int num, BulkPackets* packets = NULL);
+		void clearHeadPackets(int sId);
+		void clearTailPackets(int sId);
 		bool isUnderConstraints();
 	protected:
 		slist<BulkSession>* session_;
+	public:
 		queue<BulkPackets>** head_;
 		queue<BulkPackets>** tail_;
 };

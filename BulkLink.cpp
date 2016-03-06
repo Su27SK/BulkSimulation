@@ -142,8 +142,13 @@ queue<BulkPackets>* BulkLink::getTail(int sId)
  * @param {interge} num
  * @param {BulkPackets} packets
  */
-void BulkLink::setHeadPackets(int sId, int num, BulkPackets& packets)
+void BulkLink::setHeadPackets(int sId, int num, BulkPackets* packets)
 {
+	if (packets == NULL) {
+		BulkGraphNode* pSource = new BulkGraphNode(getGraphEdgeSource());
+		BulkGraphNode* pSink = new BulkGraphNode(getGraphEdgeSink());
+		packets = new BulkPackets(0, pSource, pSink);
+	} 
 	int i;
 	for (i = 0; i < num; i++) {
 		this->head_[sId]->push(*packets);
@@ -157,8 +162,13 @@ void BulkLink::setHeadPackets(int sId, int num, BulkPackets& packets)
  * @param {interge} num
  * @param {BulkPackets} packets
  */
-void BulkLink::setTailPackets(int sId, int num, BulkPackets& packets)
+void BulkLink::setTailPackets(int sId, int num, BulkPackets* packets)
 {	
+	if (packets == NULL) {
+		BulkGraphNode* pSource = new BulkGraphNode(getGraphEdgeSource());
+		BulkGraphNode* pSink = new BulkGraphNode(getGraphEdgeSink());
+		packets = new BulkPackets(0, pSource, pSink);
+	} 
 	int i;
 	for (i = 0; i < num; i++) {
 		this->tail_[sId]->push(*packets);
@@ -171,11 +181,12 @@ void BulkLink::setTailPackets(int sId, int num, BulkPackets& packets)
  */
 void BulkLink::clearHeadPackets(int sId)
 {
-	queue<BulkPackets>::iterator iter;
-	for (iter = head_[sId]->begin(); iter != head_[sId]->end(); iter++) {
-		BulkPackets* pTemp = iter->front();
-		iter->pop();
-		pTemp->~BulkPackets();
+	int i = 0, nSize = head_[sId]->size();
+	while (i < nSize) {
+		BulkPackets& pTemp = head_[sId]->front();
+		head_[sId]->pop();
+		pTemp.~BulkPackets();
+		i++;
 	}
 }
 
@@ -185,11 +196,12 @@ void BulkLink::clearHeadPackets(int sId)
  */
 void BulkLink::clearTailPackets(int sId)
 {
-	queue<BulkPackets>::iterator iter;
-	for (iter = tail_[sId]->begin(); iter != tail_[sId]->end(); iter++) {
-		BulkPackets* pTemp = iter->front();
-		iter->pop();
-		pTemp->~BulkPackets();
+	int i = 0, nSize = tail_[sId]->size();
+	while (i < nSize) {
+		BulkPackets& pTemp = tail_[sId]->front();
+		tail_[sId]->pop();
+		pTemp.~BulkPackets();
+		i++;
 	}
 }
 

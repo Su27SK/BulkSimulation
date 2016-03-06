@@ -20,7 +20,9 @@ class BulkPackets
 		BulkPackets(BulkPackets& P);
 		~BulkPackets();
 		double getBulkPacketsSize();
+		double getBulkPacketsSize(unit type);
 		double getTransferPacketsNum();
+		BulkPacket* getModel() const;
 		string getBulkPacketsInfo();
 		BulkPackets& setTransferPacketsNum(double number);
 		BulkPackets& setSourceNode(BulkGraphNode* source);

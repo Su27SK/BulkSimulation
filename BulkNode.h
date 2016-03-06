@@ -13,22 +13,21 @@ class BulkNode:public BulkGraphNode
 		bool _isOriginal;    //是否是起点
 		void _defaultInit(); //缺省初始化函数
 		double _getAllWeight();  //对I(v) U O(v)求weight倒数之和
+		void _reallocPackets(queue<BulkPackets> *p, double size, unit type);
 	protected:
 		slist<BulkLink>* output_; //链路出去
 		slist<BulkLink>* input_;  //链路进来
 	public: 
 		queue<BulkPackets>** pqueue;
-		BulkNode():BulkGraphNode()
-		{
+		BulkNode():BulkGraphNode() {
 			this->_defaultInit();
 		}
-		BulkNode(int _id):BulkGraphNode(_id)
-		{
+		BulkNode(int _id):BulkGraphNode(_id) {
 			this->_defaultInit();
 		}
 		BulkNode(const BulkGraphNode& node);
 		BulkNode(BulkGraphNode& node);
-		int getStoreSize(int sId);
+		double getStoreSize(int sId, unit type = Kb);
 		int getNumLink();
 		bool getTerminal();
 		bool getOriginal();
