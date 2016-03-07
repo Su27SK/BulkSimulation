@@ -7,14 +7,15 @@
 #include "Application.h"
 class BulkSession : public Application<BulkPackets>
 {
+	private: 
+		static BulkPool bulkPool_;  
+		static BulkPackets bulkpackets;
 	public:
 		BulkNode* sourceNode_;
 		BulkNode* sinkNode_;
-		static BulkPool bulkPool_;  
 		int id_;       //该session中的id
-		double flow_;  //该session传输flow_大小(从source节点传输到sink节点)
+		double flow_;  //该session传输flow_大小
 		static void initPool() {
-			static BulkPackets bulkpackets;
 			bulkPool_.setPacketsType(&bulkpackets);
 			bulkPool_.init(); //内存池初始化
 		}
@@ -30,7 +31,6 @@ class BulkSession : public Application<BulkPackets>
 			running_ = 0;
 			flow_ = 0.0;
 		}
-		int diffPackets();
 		bool isSessionEqualLink(int bId, int eId, int sId);
 		virtual void send(int npackets);
 		virtual void recv(int npackets);

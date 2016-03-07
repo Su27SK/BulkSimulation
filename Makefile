@@ -1,5 +1,5 @@
 BulkTest: BulkNode.o BulkLink.o BulkSession.o BulkGraphEdge.o BulkGraphNode.o BulkFile.o Graph.o BulkPacket.o BulkPackets.o BulkPool.o Scheduler.o TimerHandler.o Process.o BulkNetwork.o BulkBackHandle.o BulkBackPressure.o
-	g++  BulkNode.o BulkLink.o BulkSession.o BulkGraphEdge.o BulkGraphNode.o BulkFile.o Graph.o BulkPacket.o BulkPackets.o BulkPool.o Scheduler.o TimerHandler.o Process.o BulkNetwork.o BulkBackHandle.o BulkBackPressure.o -o BulkTest -g BulkTest.c
+	g++  BulkNode.o BulkLink.o BulkSession.o BulkGraphEdge.o BulkGraphNode.o BulkFile.o Graph.o BulkPacket.o BulkPackets.o BulkPool.o Scheduler.o TimerHandler.o Process.o BulkNetwork.o  BulkBackHandle.o BulkBackPressure.o -o BulkTest -g BulkTest.c
 
 BulkGraphEdge.o: BulkGraphEdge.h BulkGraphEdge.cpp
 	g++ -Wall -c -g BulkGraphEdge.cpp
@@ -30,7 +30,7 @@ BulkLink.o: BulkGraphNode.h BulkLink.h BulkLink.cpp
 	g++ -Wall -c -g BulkLink.cpp
 BulkNetwork.o: BulkNetwork.h BulkNetwork.cpp
 	g++ -Wall -c -g BulkNetwork.cpp
-BulkBackHandle.o: BulkBackHandle.h BulkBackHandle.cpp
+BulkBackHandle.o: Timer.h BulkBackHandle.h BulkBackHandle.cpp
 	g++ -Wall -c -g BulkBackHandle.cpp
 BulkBackPressure.o: BulkBackPressure.h BulkBackPressure.cpp
 	g++ -Wall -c -g BulkBackPressure.cpp

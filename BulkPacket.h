@@ -1,5 +1,6 @@
 #ifndef _BULKPACKET_H_
 #define _BULKPACKET_H_
+#include<stdlib.h>
 #include<sstream>
 #include<string>
 #include<iostream>

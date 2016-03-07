@@ -29,7 +29,8 @@ void BulkBackPressure::propagate(BulkSession& session)
 	BulkNode* eNode = session.sinkNode_;
 	while (sNode->getNodeId() != eNode->getNodeId()) {
 		if (sNode->getStoreSize(session.id_) != 0) {
-
+			
+		}
 	}
 }
 

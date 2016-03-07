@@ -9,15 +9,21 @@ void BulkSession::send(int npackets)
 	if (this->sinkNode_ == NULL || id_ == -1 || running_ == 0) {
 		return;
 	}
-	int i;
+	slist<BulkLink>* pLink = this->sourceNode_->getOutputLink();
+	slist<BulkLink>::iterator iter;
 	bool flag = this->sinkNode_->getTerminal();
-	for (i = 0; i < npackets; i++) {
-		if (flag) {
-			bulkPool_.placePacketsToPool(&packets);
-		} else {
-
+	for (iter = pLink->begin(); iter != pLink->end(); iter++) {
+		if (iter->getGraphEdgeSink() == this->sinkNode_->getNodeId()) {
+			iter->pushHeadToTail(npackets, id_);
+			if (flag) {
+				while(!iter->head_[id_]->empty()) {
+					BulkPackets& packets = iter->head_[id_]->front();
+					bulkPool_.placePacketsToPool(&packets);
+					iter->head_[id_]->pop();
+				}
+			}
+			break;
 		}
-		flow_ += packets.getBulkPacketsSize();
 	}
 }
 
@@ -33,22 +39,11 @@ void BulkSession::recv(int npackets)
 	}
 	bool flag = this->sourceNode_->getOriginal();
 	if (flag) {
-		int i;
-		for (i = 0; i < npackets; i++) {
+		for (int i = 0; i < npackets; i++) {
 			BulkPackets* packets = bulkPool_.getPacketsFromPool();
-			
 		}
+		sourceNode_->realloc(id_);
 	}
-}
-
-/**
- * @brief diffPackets 
- * 计算q_s(tail(e))(t) - q_s(head(e))(t)
- * @return {interge}
- */
-int BulkSession::diffPackets()
-{
-	return this->sinkNode_->pqueue[id_]->size() - this->sourceNode_->pqueue[id_]->size();
 }
 
 /**

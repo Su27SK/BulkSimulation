@@ -21,7 +21,7 @@ class TimerHandler: public Handler
 		int status() {return status_;}
 	protected:
 		virtual void expire(Event*) = 0;  //must be filled
-		virtual void handle(Event*) = 0;  //must be filled
+		virtual void handle(Event*); 
 		int status_;
 		Event event_;
 	private:

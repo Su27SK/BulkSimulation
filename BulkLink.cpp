@@ -45,8 +45,7 @@ void BulkLink::_defaultInit()
 void BulkLink::pushHeadToTail(int numPackets, int sId)
 {
 	slist<BulkSession>::iterator iter;
-	int i;
-	for (i = 0; i < numPackets; i++) {
+	for (int i = 0; i < numPackets; i++) {
 		BulkPackets& packets = tail_[sId]->front();
 		tail_[sId]->pop();
 		head_[sId]->push(packets);
@@ -149,9 +148,13 @@ void BulkLink::setHeadPackets(int sId, int num, BulkPackets* packets)
 		BulkGraphNode* pSink = new BulkGraphNode(getGraphEdgeSink());
 		packets = new BulkPackets(0, pSource, pSink);
 	} 
-	int i;
-	for (i = 0; i < num; i++) {
-		this->head_[sId]->push(*packets);
+	if (num <= 0) {
+		num = 1;
+	}
+	this->head_[sId]->push(*packets);
+	for (int i = 1; i < num; i++) {
+		BulkPackets* p = new BulkPackets(*packets);
+		this->head_[sId]->push(*p);
 	}
 }
 
@@ -168,10 +171,14 @@ void BulkLink::setTailPackets(int sId, int num, BulkPackets* packets)
 		BulkGraphNode* pSource = new BulkGraphNode(getGraphEdgeSource());
 		BulkGraphNode* pSink = new BulkGraphNode(getGraphEdgeSink());
 		packets = new BulkPackets(0, pSource, pSink);
-	} 
-	int i;
-	for (i = 0; i < num; i++) {
-		this->tail_[sId]->push(*packets);
+	}
+	if (num <= 0) {
+		num = 1;
+	}
+	this->tail_[sId]->push(*packets);
+	for (int i = 1; i < num; i++) {
+		BulkPackets* p = new BulkPackets(*packets);
+		this->tail_[sId]->push(*p);
 	}
 }
 

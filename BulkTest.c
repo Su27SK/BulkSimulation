@@ -9,7 +9,7 @@ int main()
 {
 	Graph* graph = Graph::importGraph("graph.txt");
 	BulkPacket modelPacket(4.0, Mb);
-	cout<<modelPacket.ConvertToType(2, false)<<endl;
+	cout<<modelPacket.convertToType(2, false)<<endl;
 	//modelPacket.setPacketSize(4.0);
 	BulkPackets modelPackets(200, &modelPacket);
 	BulkPool* pool = new BulkPool(&modelPackets);

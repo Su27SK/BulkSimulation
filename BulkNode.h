@@ -18,7 +18,6 @@ class BulkNode:public BulkGraphNode
 		slist<BulkLink>* output_; //链路出去
 		slist<BulkLink>* input_;  //链路进来
 	public: 
-		queue<BulkPackets>** pqueue;
 		BulkNode():BulkGraphNode() {
 			this->_defaultInit();
 		}

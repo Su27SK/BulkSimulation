@@ -7,13 +7,9 @@
 void BulkNode::_defaultInit()
 {
 	output_ = new slist<BulkLink>(0);
+	input_ = new slist<BulkLink>(0);
 	_isTerminal = false;
 	_isOriginal = false;
-	pqueue = new queue<BulkPackets>*[MAX_SIZE];
-	int i;
-	for (i = 0; i < MAX_SIZE; i++) {
-		pqueue[i] = new queue<BulkPackets>;
-	}
 }
 
 
@@ -65,7 +61,7 @@ BulkNode::BulkNode(BulkGraphNode& node):BulkGraphNode(node)
  * @brief getStoreSize 
  * get the session's Store Size(the amount of packet)
  * @param {interge} sId
- * @param {unit} type
+ * @param {unit} type = Kb
  *
  * @return {interge}
  */
