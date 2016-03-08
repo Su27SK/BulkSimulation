@@ -11,13 +11,12 @@ using namespace std;
 class BulkNetwork
 {
 	private:
+		Graph* _topology;
+	protected:
 		int _nSource; //有几个Source流入点
 		int _nSink;   //有几个Sink流出点
 		map<int, BulkNode>* _lSourceList; //具体流入source数据包节点索引
 		map<int, BulkNode>* _lSinkList;   //具体流出sink数据包节点索引
-		Graph* _topology;
-		void _BFS(int nId, int sId);
-	protected:
 		BulkNode** nList_;
 	public:
 		BulkNetwork():_nSource(0), _nSink(0) {

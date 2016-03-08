@@ -4,6 +4,7 @@
 #include "BulkLink.h"
 #include "BulkPackets.h"
 #include <queue>
+#include <vector>
 #define MAX_SIZE 100
 class BulkLink;
 class BulkNode:public BulkGraphNode
@@ -18,6 +19,7 @@ class BulkNode:public BulkGraphNode
 		slist<BulkLink>* output_; //链路出去
 		slist<BulkLink>* input_;  //链路进来
 	public: 
+		vector<int> sVector;      //存放session id
 		BulkNode():BulkGraphNode() {
 			this->_defaultInit();
 		}
@@ -31,6 +33,7 @@ class BulkNode:public BulkGraphNode
 		bool getTerminal();
 		bool getOriginal();
 		void realloc(int sId);
+		void reallocAll();
 		slist<BulkLink>* getOutputLink();
 		slist<BulkLink>* getInputLink();
 		void addOutputLink(BulkGraphEdge* edge);

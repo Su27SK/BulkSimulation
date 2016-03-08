@@ -176,6 +176,7 @@ slist<BulkLink>* BulkNode::getInputLink()
 void BulkNode::realloc(int sId)
 {
 	unit type = Kb;
+	sVector.push(sId);
 	double qsv = this->getStoreSize(sId, type);
 	slist<BulkLink>::iterator iter;
 	double singleWeight;
@@ -203,6 +204,17 @@ void BulkNode::realloc(int sId)
 		} else {
 			iter->clearHeadPackets(sId);
 		}
+	}
+}
+
+/**
+ * @brief reallocAll 
+ */
+void BulkNode::reallocAll()
+{
+	vector<int>::iterator iterId;
+	for (iterId = sVector.begin(); iterId != sVector.end(); iterId++) {
+		realloc(*iterId);
 	}
 }
 

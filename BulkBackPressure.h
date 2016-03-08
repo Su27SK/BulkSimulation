@@ -4,10 +4,13 @@
 #include "BulkNetwork.h"
 class BulkBackPressure: public BulkBackHandle, public BulkNetwork
 {
+	private:
+		
 	public:
 		BulkBackPressure():BulkBackHandle(), BulkNetwork(){}
 		inline virtual void handle();
-		inline virtual void dynamicPush(BulkLink* link);
-		void propagate(BulkSession& session);
+		inline virtual void dynamicPush(BulkLink& link);
+		void propagate(queue<int>* q, int* visited);
+		void pushPacketsOut(int nodeId);
 };
 #endif

@@ -24,14 +24,13 @@ BulkLink::BulkLink(BulkGraphEdge& edge):BulkGraphEdge(edge)
  */
 void BulkLink::_defaultInit()
 {
-	int i;
 	session_ = new slist<BulkSession>;
 	head_ = new queue<BulkPackets>*[MAX_SIZE];
-	for (i = 0; i < MAX_SIZE; i++) {
+	for (int i = 0; i < MAX_SIZE; i++) {
 		head_[i] = new queue<BulkPackets>;
 	}
 	tail_ = new queue<BulkPackets>*[MAX_SIZE];
-	for (i = 0; i < MAX_SIZE; i++) {
+	for (int i = 0; i < MAX_SIZE; i++) {
 		tail_[i] = new queue<BulkPackets>;
 	}
 }

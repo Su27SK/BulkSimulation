@@ -32,6 +32,7 @@ class BulkSession : public Application<BulkPackets>
 			flow_ = 0.0;
 		}
 		bool isSessionEqualLink(int bId, int eId, int sId);
+		void initDistribute();
 		virtual void send(int npackets);
 		virtual void recv(int npackets);
 	protected:
