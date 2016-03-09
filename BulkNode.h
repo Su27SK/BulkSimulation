@@ -29,6 +29,7 @@ class BulkNode:public BulkGraphNode
 		BulkNode(const BulkGraphNode& node);
 		BulkNode(BulkGraphNode& node);
 		double getStoreSize(int sId, unit type = Kb);
+		double getStore(int sId);
 		int getNumLink();
 		bool getTerminal();
 		bool getOriginal();

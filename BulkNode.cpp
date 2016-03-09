@@ -59,7 +59,7 @@ BulkNode::BulkNode(BulkGraphNode& node):BulkGraphNode(node)
 
 /**
  * @brief getStoreSize 
- * get the session's Store Size(the amount of packet)
+ * get the session's Store Size(the explicit size)
  * @param {interge} sId
  * @param {unit} type = Kb
  *
@@ -90,6 +90,32 @@ double BulkNode::getStoreSize(int sId, unit type)
 			pTail->pop();
 			amount += p.getBulkPacketsSize(type);
 			pTail->push(p);
+			i++;
+		}
+	}
+	return amount;
+}
+
+/**
+ * @brief getStore 
+ * get the session's Store Size(the num of packets)
+ * @param {interge} sId
+ *
+ * @return {double}
+ */
+double BulkNode::getStore(int sId)
+{
+	double amount = 0;
+	slist<BulkLink>::iterator sIter;
+	vector<int>::iterator iterId;
+	int i = 0;
+	slist<BulkLink>* pLink = iutput_;
+	while (i < 2) {
+		for (sIter = input_->begin(); sIter != input_->end(); sIter++) {
+			for (iterId = sVector.begin(); iterId != sVector.end(); iterId++) {
+				amount += sIter->diffPackets(*iterId);
+			}
+			pLink = output_;
 			i++;
 		}
 	}
@@ -177,14 +203,15 @@ void BulkNode::realloc(int sId)
 {
 	unit type = Kb;
 	sVector.push(sId);
-	double qsv = this->getStoreSize(sId, type);
+	//double qsv = this->getStoreSize(sId, type);
+	double qsv = this->getStore(sId);
 	slist<BulkLink>::iterator iter;
 	double singleWeight;
 	double allWeight = this->_getAllWeight();
 	for (iter = output_->begin(); iter != output_->end(); iter++) {
 		if ((singleWeight = iter->getWeight()) != 0) {
 			double proportion = (1/singleWeight) / allWeight;
-			double size = qsv * proportion;
+			double size = floor(qsv * proportion);
 			if (iter->tail_[sId]->size() == 0) {
 				iter->setTailPackets(sId, 4);
 			}
@@ -196,7 +223,7 @@ void BulkNode::realloc(int sId)
 	for (iter = input_->begin(); iter != input_->end(); iter++) {
 		if ((singleWeight = iter->getWeight()) != 0) {
 			double proportion = (1/singleWeight) / allWeight;
-			double size = qsv * proportion;
+			double size = floor(qsv * proportion);
 			if (iter->head_[sId]->size() == 0) {
 				iter->setHeadPackets(sId, 4);
 			}

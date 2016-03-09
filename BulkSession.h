@@ -14,7 +14,7 @@ class BulkSession : public Application<BulkPackets>
 		BulkNode* sourceNode_;
 		BulkNode* sinkNode_;
 		int id_;       //该session中的id
-		double flow_;  //该session传输flow_大小
+		double flow_;  //该session传输flow_大小(packets num)
 		static void initPool() {
 			bulkPool_.setPacketsType(&bulkpackets);
 			bulkPool_.init(); //内存池初始化

@@ -4,8 +4,6 @@
 #include "BulkNetwork.h"
 class BulkBackPressure: public BulkBackHandle, public BulkNetwork
 {
-	private:
-		
 	public:
 		BulkBackPressure():BulkBackHandle(), BulkNetwork(){}
 		inline virtual void handle();

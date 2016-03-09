@@ -64,7 +64,7 @@ bool BulkLink::addSession(BulkSession& session)
 	int sink = this->getGraphEdgeSink();
 	int sId = session.id_;
 	if (session.isSessionEqualLink(source, sink, sId)) {
-		this->session_->push_front(session);
+		session_->push_front(session);
 		return true;
 	}
 	return false;
@@ -81,9 +81,9 @@ bool BulkLink::deleteSession(int sId)
 {
 	bool isFound = false;
 	slist<BulkSession>::iterator iter;
-	for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
+	for (iter = session_->begin(); iter != session_->end(); iter++) {
 		if (iter->id_ == sId) {
-			this->session_->erase(iter);
+			session_->erase(iter);
 			isFound = true;
 			break;
 		}
@@ -107,6 +107,18 @@ BulkSession* BulkLink::findSession(int sId)
 		}
 	}
 	return NULL;
+}
+
+/**
+ * @brief diffPackets 
+ * qs(tail(e))(t) - qs(head(e))(t)
+ * @param {interge} sId
+ *
+ * @return {interge}
+ */
+int BulkLink::diffPackets(int sId)
+{
+	return (tail_[sId]->size() - head_[sId]->size());
 }
 
 /**
@@ -216,10 +228,11 @@ void BulkLink::clearTailPackets(int sId)
  * 是否满足小于Link中的capacity
  * @return {boolean}
  */
-//bool BulkLink::isUnderConstraints()
-//{
-	//slist<BulkSession>::iterator iter;
-	//for (iter = this->session_->begin(); iter != this->session_->end(); iter++) {
-		
-	//}
-//}
+bool BulkLink::isUnderConstraints()
+{
+	double sumFlow = 0;
+	slist<BulkSession>::iterator iter;
+	for (iter = session_->begin(); iter != session_->end(); iter++) {
+		sumFlow += iter->flow_;
+	}
+}

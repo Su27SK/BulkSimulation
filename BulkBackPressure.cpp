@@ -25,7 +25,11 @@ void BulkBackPressure::handle()
  */
 void BulkBackPressure::dynamicPush(BulkLink& link)
 {
-	
+	slist<BulkSession>* pSession = link.session_;
+	slist<BulkSession>::iterator iter;
+	for (iter = pSession->begin(); iter != pSession->end(); iter++) {
+		double difference = link.diffPackets(sId);
+	}
 }
 
 /**
