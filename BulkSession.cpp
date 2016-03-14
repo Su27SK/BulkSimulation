@@ -31,11 +31,13 @@ BulkSession::BulkSession(int id, BulkNode* source, BulkNode* sink) {
  */
 void BulkSession::send(int npackets, BulkLink& link)
 {
+	cout<<"running:"<<running_<<endl;
 	if (sinkNode_ == NULL || id_ == -1 || running_ == 0) {
 		return;
 	}
 	bool flag = sinkNode_->getTerminal();
 	if (link.getGraphEdgeSink() == sinkNode_->getNodeId()) {
+		cout<<"push from to the sink"<<endl;
 		link.pushHeadToTail(npackets, id_);
 		*(sourceNode_->demand_[id_]) = _demand;  
 		*(sinkNode_->demand_[id_]) = _demand; 

@@ -52,8 +52,10 @@ void BulkBackPressure::dynamicPush(BulkLink& link)
 		if ((qSession = link.findSession(sId)) != 0) { 
 			double difference = link.diffPackets(sId);
 			double demand = qSession->getDemand();
-			int fi = (difference - s * pow(demand, 2)) / 2;
+			int fi = ROUND((difference - s * pow(demand, 2)) / 2);
+			cout<<"fi:"<<fi<<endl;
 			qSession->send(fi, link);
+			cout<<"sink_packets:"<<qSession->sinkNode_->getStoreAmount(1)<<endl;
 		}
 	}
 }
@@ -131,15 +133,31 @@ void BulkBackPressure::pushPacketsOut(int nodeId)
 		for (iterId = pSourceNode->sVector.begin(); iterId != pSourceNode->sVector.end(); iterId++) {
 			BulkSession* nSession = iterLink->findSession(*iterId);
 			int nStore = pSourceNode->getStoreAmount(*iterId); //增加或者删除session
-			if (nSession == NULL && nStore != 0) {
-				BulkSession* pSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
-				double demand = *pSourceNode->demand_[*iterId];
-				pSession->setDemand(demand);
-				iterLink->addSession(*pSession);
-			} else if (nSession != NULL && nStore == 0) {
-				iterLink->deleteSession(*iterId);
-				pSourceNode->sVector.erase(iterId);
-			} 
+			cout<<"nStore:"<<nStore<<endl;
+			//if (nSession == NULL && nStore != 0) {
+				//nSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
+				//double demand = *pSourceNode->demand_[*iterId];
+				//nSession->setDemand(demand);
+				//iterLink->addSession(*nSession);
+			//} else if (nSession != NULL && nStore == 0) {
+				////iterLink->deleteSession(*iterId);
+				//pSourceNode->sVector.erase(iterId);
+			//} 
+			if (nStore != 0) {
+				if (nSession == NULL) {
+					nSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
+					double demand = *pSourceNode->demand_[*iterId];
+					nSession->setDemand(demand);
+					iterLink->addSession(*nSession);
+				}
+				iterLink->findSession(*iterId)->start();  
+			} else {
+				if (nSession != NULL) {
+					iterLink->findSession(*iterId)->stop();
+					pSourceNode->sVector.erase(iterId);
+				}
+			} //启动session(use the start and stop function in session)
+
 			if (!pSinkNode->sIdExisted(*iterId)) {
 				pSinkNode->sVector.push_back(*iterId);
 			}
