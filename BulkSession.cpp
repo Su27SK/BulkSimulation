@@ -1,28 +1,51 @@
 #include "BulkSession.h"
+BulkPackets BulkSession::initPackets;
+BulkPool BulkSession::bulkPool(&initPackets);
+/**
+ * @brief BulkSession 
+ * constructor function
+ */
+BulkSession::BulkSession():sourceNode_(NULL), sinkNode_(NULL) {
+	id_ = -1;
+	running_ = 0;
+	flow_ = _demand = 0.0;
+}
+
+/**
+ * @brief BulkSession 
+ * constructor function
+ */
+BulkSession::BulkSession(int id, BulkNode* source, BulkNode* sink) {
+	sourceNode_ = source;
+	sinkNode_ = sink;
+	id_ = id;
+	running_ = 0;
+	flow_ = _demand = 0.0;
+}
+
 /**
  * @brief send 
  * 该session每次从sourceNode向后推送npackets的数据
  * @param {interge} npackets
+ * @param {BulkLink} link 
  */
-void BulkSession::send(int npackets)
+void BulkSession::send(int npackets, BulkLink& link)
 {
-	if (this->sinkNode_ == NULL || id_ == -1 || running_ == 0) {
+	if (sinkNode_ == NULL || id_ == -1 || running_ == 0) {
 		return;
 	}
-	slist<BulkLink>* pLink = this->sourceNode_->getOutputLink();
-	slist<BulkLink>::iterator iter;
-	bool flag = this->sinkNode_->getTerminal();
-	for (iter = pLink->begin(); iter != pLink->end(); iter++) {
-		if (iter->getGraphEdgeSink() == this->sinkNode_->getNodeId()) {
-			iter->pushHeadToTail(npackets, id_);
-			if (flag) {
-				while(!iter->head_[id_]->empty()) {
-					BulkPackets& packets = iter->head_[id_]->front();
-					bulkPool_.placePacketsToPool(&packets);
-					iter->head_[id_]->pop();
-				}
+	bool flag = sinkNode_->getTerminal();
+	if (link.getGraphEdgeSink() == sinkNode_->getNodeId()) {
+		link.pushHeadToTail(npackets, id_);
+		*(sourceNode_->demand_[id_]) = _demand;  
+		*(sinkNode_->demand_[id_]) = _demand; 
+		if (flag) {
+			flow_ = npackets;
+			while(!link.head_[id_]->empty()) {
+				BulkPackets& packets = link.head_[id_]->front();
+				bulkPool.placePacketsToPool(&packets);
+				link.head_[id_]->pop();
 			}
-			break;
 		}
 	}
 }
@@ -34,15 +57,21 @@ void BulkSession::send(int npackets)
  */
 void BulkSession::recv(int npackets)
 {
-	if (this->sourceNode_ == NULL || id_ == -1 || running_ == 0) {
+	cout<<"npackets:"<<npackets<<endl;
+	if (sourceNode_ == NULL || id_ == -1 || running_ == 0) {
 		return;
 	}
-	bool flag = this->sourceNode_->getOriginal();
+	queue<BulkPackets> q;
+	bool flag = sourceNode_->getOriginal();
 	if (flag) {
+		_demand = npackets;
 		for (int i = 0; i < npackets; i++) {
-			BulkPackets* packets = bulkPool_.getPacketsFromPool();
+			BulkPackets* packets = bulkPool.getPacketsFromPool();
+			//cout<<packets->getBulkPacketsInfo()<<endl;
+			q.push(*packets);
 		}
-		sourceNode_->realloc(id_);
+		*(sourceNode_->demand_[id_]) = _demand;  
+		sourceNode_->initNodePackets(id_, &q);
 	}
 }
 
@@ -57,11 +86,32 @@ void BulkSession::recv(int npackets)
  */
 bool BulkSession::isSessionEqualLink(int bId, int eId, int sId)
 {
-	if (this->sourceNode_->getNodeId() != bId || 
-		this->sinkNode_->getNodeId() != eId || id_ != sId) {
+	if (sourceNode_->getNodeId() != bId || 
+		sinkNode_->getNodeId() != eId || id_ != sId) {
 		return false;
 	}
 	return true;
+}
+
+/**
+ * @brief setDemand 
+ * 设置平均流入系统的数据包值
+ * @param {double} demand
+ */
+BulkSession& BulkSession::setDemand(double demand)
+{
+	_demand = demand;
+	return *this;
+}
+
+/**
+ * @brief getDemand 
+ * 获得demand值
+ * @return {double}
+ */
+double BulkSession::getDemand()
+{
+	return _demand;
 }
 
 /**

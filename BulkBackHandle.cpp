@@ -1,6 +1,16 @@
 #include "BulkBackHandle.h"
 
 /**
+ * @brief expire 
+ * handle function
+ */
+void BulkBackHandleTimer::expire(Event*)
+{
+	t_->handle();
+	t_->timeout();
+}
+
+/**
  * @brief start 
  */
 void BulkBackHandle::start()
@@ -37,8 +47,8 @@ void BulkBackHandle::timeout()
  */
 double BulkBackHandle::next(double interval)
 {
-	_execTime.next(interval);
-	return this->getNowTime();
+	Timer::next(interval);
+	return getNowTime();
 }
 
 /**
@@ -48,8 +58,8 @@ double BulkBackHandle::next(double interval)
  */
 double BulkBackHandle::next()
 {
-	_execTime.next();
-	return this->getNowTime();
+	Timer::next();
+	return getNowTime();
 }
 
 /**
@@ -59,5 +69,5 @@ double BulkBackHandle::next()
  */
 double BulkBackHandle::getNowTime()
 {
-	return _execTime.getTime();
+	return Timer::getTime();
 }

@@ -1,7 +1,7 @@
 #include "BulkPackets.h"
-BulkPackets::BulkPackets(double number, BulkPacket* packet):_sourceNode(new BulkGraphNode()), _sinkNode(new BulkGraphNode())
+BulkPackets::BulkPackets(double number, BulkPacket* packet):_sourceId(-1), _sinkId(-1), _ptr(1)
 {
-	this->_transferPacketsNum = number;
+	this->_transmitNum = number;
 	if (packet != NULL) {
 		this->_model = new BulkPacket(*packet);
 	} else {
@@ -13,15 +13,16 @@ BulkPackets::BulkPackets(double number, BulkPacket* packet):_sourceNode(new Bulk
  * @brief BulkPackets 
  *
  * @param {double} number
- * @param {BulkGraphNode*} source
- * @param {BulkGraphNode*} sink
+ * @param {interge} source
+ * @param {interge} sink
  * @param {BulkPacket*} packet
  */
-BulkPackets::BulkPackets(double number, BulkGraphNode* source, BulkGraphNode* sink, BulkPacket* packet)
+BulkPackets::BulkPackets(double number, int source, int sink, BulkPacket* packet)
 {
-	this->_sourceNode = source;
-	this->_sinkNode = sink;
-	this->_transferPacketsNum = number;
+	this->_sourceId = source;
+	this->_sinkId = sink;
+	this->_transmitNum = number;
+	this->_ptr = 1;
 	if (packet != NULL) {
 		this->_model = new BulkPacket(*packet);
 	} else {
@@ -36,9 +37,10 @@ BulkPackets::BulkPackets(double number, BulkGraphNode* source, BulkGraphNode* si
  */
 BulkPackets::BulkPackets(const BulkPackets& P)
 {
-	this->_transferPacketsNum = P._transferPacketsNum;
-	this->_sourceNode = new BulkGraphNode(*P._sourceNode);
-	this->_sinkNode = new BulkGraphNode(*P._sinkNode);
+	this->_transmitNum = P._transmitNum;
+	this->_sourceId = P._sourceId;
+	this->_sinkId = P._sinkId;
+	this->_ptr = P._ptr;
 	this->_model = new BulkPacket(*P._model);
 }
 
@@ -49,48 +51,49 @@ BulkPackets::BulkPackets(const BulkPackets& P)
  */
 BulkPackets::BulkPackets(BulkPackets& P)
 {
-	this->_transferPacketsNum = P._transferPacketsNum;
-	this->_sourceNode = new BulkGraphNode(*P._sourceNode);
-	this->_sinkNode = new BulkGraphNode(*P._sinkNode);
+	this->_transmitNum = P._transmitNum;
+	this->_sourceId = P._sourceId;
+	this->_sinkId = P._sinkId;
+	this->_ptr = P._ptr;
 	this->_model = new BulkPacket(*P._model);
 }
 
 /**
- * @brief setTransferPacketsNum 
+ * @brief setTransmitNum 
  * 设置一次传输packet数量
  * @param {double} number
  *
  * @return {BulkPackets}
  */
-BulkPackets& BulkPackets::setTransferPacketsNum(double number)
+BulkPackets& BulkPackets::setTransmitNum(double number)
 {
-	this->_transferPacketsNum = number;
+	this->_transmitNum = number;
 	return *this;
 }
 
 /**
  * @brief setSourceNode 
  * 设置传输数据包的source节点
- * @param {GraphNode} source
+ * @param {interge} source
  *
  * @return {BulkPackets}
  */
-BulkPackets& BulkPackets::setSourceNode(BulkGraphNode* source)
+BulkPackets& BulkPackets::setSourceNode(int source)
 {
-	this->_sourceNode = source;
+	this->_sourceId = source;
 	return *this;
 }
 
 /**
  * @brief setSinkNode 
  * 设置传输数据包的sink节点
- * @param {GraphNode} sink
+ * @param {interge} sink
  *
  * @return {BulkPackets}
  */
-BulkPackets& BulkPackets::setSinkNode(BulkGraphNode* sink)
+BulkPackets& BulkPackets::setSinkNode(int sink)
 {
-	this->_sinkNode = sink;
+	this->_sinkId = sink;
 	return *this;
 }
 
@@ -101,7 +104,7 @@ BulkPackets& BulkPackets::setSinkNode(BulkGraphNode* sink)
  */
 double BulkPackets::getBulkPacketsSize()
 {
-	return this->_model->getPacketSize() * this->_transferPacketsNum; 
+	return this->_model->getPacketSize() * this->_transmitNum; 
 }
 
 /**
@@ -118,13 +121,13 @@ double BulkPackets::getBulkPacketsSize(unit type)
 }
 
 /**
- * @brief getTransferPacketsNum 
+ * @brief getTransmitNum 
  * 传输packet数量
  * @return {double}
  */
-double BulkPackets::getTransferPacketsNum()
+double BulkPackets::getTransmitNum()
 {
-	return this->_transferPacketsNum;
+	return this->_transmitNum;
 }
 
 /**
@@ -164,15 +167,10 @@ BulkPackets& BulkPackets::operator = (const BulkPackets& bulkPackets)
 {
 	if (this != &bulkPackets) {
 		BulkPackets bulkPacketsTemp(bulkPackets);
-		this->_transferPacketsNum = bulkPacketsTemp._transferPacketsNum;
-			
-		BulkGraphNode* pHeadTemp = bulkPacketsTemp._sourceNode;
-		bulkPacketsTemp._sourceNode = this->_sourceNode;
-		this->_sourceNode = pHeadTemp;
-
-		BulkGraphNode* pTailTemp = bulkPacketsTemp._sinkNode;
-		bulkPacketsTemp._sinkNode = this->_sinkNode;
-		this->_sinkNode = pTailTemp;
+		this->_transmitNum = bulkPacketsTemp._transmitNum;
+		this->_sourceId = bulkPacketsTemp._sourceId;
+		this->_sinkId = bulkPacketsTemp._sinkId;
+		this->_ptr = bulkPacketsTemp._ptr;
 
 		BulkPacket* pModel = bulkPacketsTemp._model;
 		bulkPacketsTemp._model = this->_model;
@@ -181,13 +179,41 @@ BulkPackets& BulkPackets::operator = (const BulkPackets& bulkPackets)
 	return *this;
 }
 
+/**
+ * @brief addPtr 
+ * 增加引用计数
+ * @return {BulkPackets}
+ */
+BulkPackets& BulkPackets::addPtr()
+{
+	this->_ptr++;
+	return *this;
+}
+
+/**
+ * @brief reducePtr 
+ * 减少引用计数
+ * @return 
+ */
+BulkPackets& BulkPackets::reducePtr()
+{
+	this->_ptr--;
+	return *this;
+}
+
+/**
+ * @brief getPtr 
+ * 获得引用计数
+ * @return 
+ */
+int BulkPackets::getPtr()
+{
+	return _ptr;
+}
+
 BulkPackets::~BulkPackets()
 {
-	delete _sourceNode;
-	delete _sinkNode;
 	delete _model;
 	//cout<<"Decontructor BulkPackets"<<endl;
-	this->_sourceNode = NULL;
-	this->_sinkNode = NULL;
 	this->_model = NULL;
 }

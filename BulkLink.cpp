@@ -4,7 +4,7 @@ BulkLink::BulkLink(int from, int to):BulkGraphEdge(from, to)
 	this->_defaultInit();
 }
 
-BulkLink::BulkLink(int from, int to, int weight, int capacity):BulkGraphEdge(from, to, weight, capacity)
+BulkLink::BulkLink(int from, int to, double weight, double capacity):BulkGraphEdge(from, to, weight, capacity)
 {
 	this->_defaultInit();
 }
@@ -43,6 +43,7 @@ void BulkLink::_defaultInit()
  */
 void BulkLink::pushHeadToTail(int numPackets, int sId)
 {
+	
 	slist<BulkSession>::iterator iter;
 	for (int i = 0; i < numPackets; i++) {
 		BulkPackets& packets = tail_[sId]->front();
@@ -122,6 +123,23 @@ int BulkLink::diffPackets(int sId)
 }
 
 /**
+ * @brief getCapacity 
+ * 获得时刻改变的链路带宽
+ * @return {double}
+ */
+double BulkLink::getCapacity()
+{
+	double w = getWeight();
+	if (w > 0) {
+		double c = RandomGenerator::genPoissonDouble(w);
+		setCapacity(c);
+		return c;
+	} else {
+		return BulkGraphEdge::getCapacity();
+	}
+}
+
+/**
  * @brief getHead 
  * get the head_ packets from the link
  * @param {interge} sId
@@ -155,9 +173,7 @@ queue<BulkPackets>* BulkLink::getTail(int sId)
 void BulkLink::setHeadPackets(int sId, int num, BulkPackets* packets)
 {
 	if (packets == NULL) {
-		BulkGraphNode* pSource = new BulkGraphNode(getGraphEdgeSource());
-		BulkGraphNode* pSink = new BulkGraphNode(getGraphEdgeSink());
-		packets = new BulkPackets(0, pSource, pSink);
+		packets = new BulkPackets(0, getGraphEdgeSource(), getGraphEdgeSink());
 	} 
 	if (num <= 0) {
 		num = 1;
@@ -179,9 +195,7 @@ void BulkLink::setHeadPackets(int sId, int num, BulkPackets* packets)
 void BulkLink::setTailPackets(int sId, int num, BulkPackets* packets)
 {	
 	if (packets == NULL) {
-		BulkGraphNode* pSource = new BulkGraphNode(getGraphEdgeSource());
-		BulkGraphNode* pSink = new BulkGraphNode(getGraphEdgeSink());
-		packets = new BulkPackets(0, pSource, pSink);
+		packets = new BulkPackets(0, getGraphEdgeSource(), getGraphEdgeSink());
 	}
 	if (num <= 0) {
 		num = 1;
@@ -235,4 +249,8 @@ bool BulkLink::isUnderConstraints()
 	for (iter = session_->begin(); iter != session_->end(); iter++) {
 		sumFlow += iter->flow_;
 	}
+	if (sumFlow < getCapacity()) {
+		return true;
+	}
+	return false;
 }

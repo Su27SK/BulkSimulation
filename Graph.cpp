@@ -278,7 +278,7 @@ size_t Graph::_extractInfo(char* message, Graph* graph)
 			double weight, capacity;
 			source = atoi(s.substr(2,1).c_str());
 			sink = atoi(s.substr(4,1).c_str());
-			weight = 0;
+			weight = atoi(s.substr(6,1).c_str());
 			capacity = 0;
 			graph->putEdge(source, sink, weight, capacity);
 			return -1;

@@ -114,11 +114,11 @@ slist<BulkGraphEdge>* BulkGraphNode::getTailEdge() const
 bool BulkGraphNode::addBulkEdge(BulkGraphEdge* edge)
 {
 	if (this->id == edge->getGraphEdgeSource()) {
-		this->headEdge->push_front(*edge);
+		this->tailEdge->push_front(*edge);
 		this->numHeadQueue++;
 		return true;
 	} else if (this->id == edge->getGraphEdgeSink()) {
-		this->tailEdge->push_front(*edge);
+		this->headEdge->push_front(*edge);
 		this->numTailQueue++;
 		return true;
 	} else {

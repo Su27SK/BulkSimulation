@@ -5,39 +5,34 @@
 #include "BulkNode.h"
 #include "BulkPool.h"
 #include "Application.h"
-class BulkSession : public Application<BulkPackets>
+#include "RandomGenerator.h"
+class BulkLink;
+class BulkSession 
 {
 	private: 
-		static BulkPool bulkPool_;  
-		static BulkPackets bulkpackets;
+		static BulkPool bulkPool;  
+		static BulkPackets initPackets;
+		double _demand; //sink to the meeting point v 平均值
 	public:
 		BulkNode* sourceNode_;
 		BulkNode* sinkNode_;
 		int id_;       //该session中的id
 		double flow_;  //该session传输flow_大小(packets num)
-		static void initPool() {
-			bulkPool_.setPacketsType(&bulkpackets);
-			bulkPool_.init(); //内存池初始化
+		static void initPool(BulkPackets& model) {
+			bulkPool.setPacketsType(&model);
+			bulkPool.init(); //内存池初始化
 		}
-		BulkSession():Application(), sourceNode_(NULL), sinkNode_(NULL) {
-			id_ = -1;
-			running_ = 0;
-			flow_ = 0.0;
-		}
-		BulkSession(int id, BulkNode* source, BulkNode* sink):Application() {
-			this->sourceNode_ = source;
-			this->sinkNode_ = sink;
-			id_ = id;
-			running_ = 0;
-			flow_ = 0.0;
-		}
+		BulkSession();
+		BulkSession(int id, BulkNode* source, BulkNode* sink);
 		bool isSessionEqualLink(int bId, int eId, int sId);
-		void initDistribute();
-		virtual void send(int npackets);
+		BulkSession& setDemand(double demand);
+		double getDemand();
+		virtual void send(int npackets, BulkLink& link);
 		virtual void recv(int npackets);
-	protected:
-		int running_;
 		void start();
 		void stop();
+	protected:
+		int running_;
+		void running();
 };
 #endif

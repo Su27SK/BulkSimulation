@@ -21,6 +21,4 @@ class Timer
 			now_ += interval;
 		}
 };
-double Timer::now_ = 0.0;
-double Timer::interval_ = 1.0;
 #endif

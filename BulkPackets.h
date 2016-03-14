@@ -6,27 +6,31 @@
 class BulkPackets
 {
 	private:
-		double _transferPacketsNum;
-		BulkGraphNode* _sourceNode;
-		BulkGraphNode* _sinkNode;
+		double _transmitNum;
+		int _sourceId;
+		int _sinkId;
+		int _ptr;
 		BulkPacket* _model;
 	public: 
-		BulkPackets(): _transferPacketsNum(0), _sourceNode(new BulkGraphNode()), _sinkNode(new BulkGraphNode()) {
+		BulkPackets(): _transmitNum(1), _sourceId(-1), _sinkId(-1), _ptr(1) {
 			this->_model = new BulkPacket();
 		};
 		BulkPackets(double number, BulkPacket* packet = NULL);
-		BulkPackets(double number, BulkGraphNode* source, BulkGraphNode* sink, BulkPacket* packet = NULL);
+		BulkPackets(double number, int source, int sink, BulkPacket* packet = NULL);
 		explicit BulkPackets(const BulkPackets& P);
 		BulkPackets(BulkPackets& P);
 		~BulkPackets();
 		double getBulkPacketsSize();
 		double getBulkPacketsSize(unit type);
-		double getTransferPacketsNum();
+		double getTransmitNum();
 		BulkPacket* getModel() const;
 		string getBulkPacketsInfo();
-		BulkPackets& setTransferPacketsNum(double number);
-		BulkPackets& setSourceNode(BulkGraphNode* source);
-		BulkPackets& setSinkNode(BulkGraphNode* sink);
+		BulkPackets& setTransmitNum(double number);
+		BulkPackets& setSourceNode(int source);
+		BulkPackets& setSinkNode(int sink);
 		BulkPackets& operator = (const BulkPackets& bulkPackets);
+		BulkPackets& addPtr();
+		BulkPackets& reducePtr();
+		int getPtr();
 };
 #endif

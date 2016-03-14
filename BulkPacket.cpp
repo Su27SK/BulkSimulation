@@ -119,13 +119,13 @@ BulkPacket& BulkPacket::operator = (const BulkPacket& packet)
  * @brief convertToType 
  * from one unit to anther type;
  * @param {interge} degree (放大或者缩小倍数 base is 10)
- * @param {boolean} isLarge(true:放大, false:缩小)
+ * @param {boolean} isLarge(true:单位放大, false:单位缩小)
  *
  * @return {boolean} false/true
  */
 bool BulkPacket::convertToType(int degree, bool isLarge)
 {
-	int nowType = isLarge? this->_type + degree: this->_type -degree;
+	int nowType = isLarge? this->_type + degree: this->_type - degree;
 	if (nowType >= 1 && nowType <=4) {
 		switch (nowType) {
 			case 1:
@@ -142,9 +142,9 @@ bool BulkPacket::convertToType(int degree, bool isLarge)
 				break;
 		}
 		if (isLarge) {
-			_size = _size * degree * 1024;
+			_size = _size / pow(1024, degree);
 		} else {
-			_size = _size / degree / 1024;
+			_size = _size * pow(1024, degree);
 		}
 		return true;
 	} else {

@@ -131,6 +131,17 @@ int RandomGenerator::genPoissonInt(double mu)
 	return (int)k;	
 }
 
+/**
+ * @brief genPoissonDouble 
+ * 产生泊松分布
+ * @param {double} mu
+ *
+ * @return {double}
+ */
+double RandomGenerator::genPoissonDouble(double mu)
+{
+	return gsl_ran_poisson(r, mu);
+}
 
 double RandomGenerator::genParetoDouble(double a, double b)
 {

@@ -24,8 +24,7 @@ void BulkNetwork::init()
 		int n = this->_topology->getVertices();
 		BulkGraphNode* aList = this->_topology->getList();
 		nList_ = new BulkNode*[n + 1];
-		int i;
-		for (i = 0; i < n; i++) {
+		for (int i = 1; i < n + 1; i++) {
 			int nodeId = aList[i].getNodeId();
 			nList_[nodeId] = new BulkNode(aList[i]);
 			slist<BulkGraphEdge>* outputEdge = aList[i].getTailEdge();
@@ -44,16 +43,19 @@ void BulkNetwork::init()
 /**
  * @brief setSourceNode 
  * 设置packets数据包从Id节点进入
- * @param {BulkNode} node
+ * @param {interge} id
  * 
  * @return {BulkNetwork}
  */
-BulkNetwork& BulkNetwork::setSourceNode(BulkNode& node)
+BulkNetwork& BulkNetwork::setSourceNode(int id)
 {
-	int id = node.getNodeId();
+	int n = this->_topology->getVertices();
+	if (id > n || id < 0) {
+		return *this;
+	}
 	if (this->_topology != NULL) {
-		this->_lSourceList->insert(pair<int, BulkNode>(id, node));
-		node.setOriginal();
+		this->_lSourceList->insert(pair<int, BulkNode>(id, *nList_[id]));
+		nList_[id]->setOriginal();
 		this->_nSource++;
 	}
 	return *this;
@@ -62,16 +64,20 @@ BulkNetwork& BulkNetwork::setSourceNode(BulkNode& node)
 /**
  * @brief setSinkNode 
  * 设置数据包packets从Id节点流出
- * @param {BulkNode} node
+ * @param {interge} id
  *
  * @return {BulkNetwork}
  */
-BulkNetwork& BulkNetwork::setSinkNode(BulkNode& node)
+BulkNetwork& BulkNetwork::setSinkNode(int id)
 {
-	int id =node.getNodeId();
+	int n = this->_topology->getVertices();
+	if (id > n || id < 0) {
+		return *this;
+	}
 	if (this->_topology != NULL) {
-		this->_lSinkList->insert(pair<int, BulkNode>(id, node));
-		node.setTerminal();
+		//cout<<"insert the BulkNode"<<endl;
+		this->_lSinkList->insert(pair<int, BulkNode>(id, *nList_[id]));
+		nList_[id]->setTerminal();
 		this->_nSink++;
 	}
 	return *this;
@@ -82,17 +88,19 @@ BulkNetwork& BulkNetwork::setSinkNode(BulkNode& node)
  * 通过节点ID获得关于该节点的相关信息，以及邻居信息
  * @param {integer} id
  *
- * @return {BulkNode&}
+ * @return {BulkNode}
  */
 BulkNode* BulkNetwork::getSourceNodeById(int id) const
 {
 	if (!this->_lSourceList->empty()) {
+		//cout<<"It's Not Null"<<endl;
 		map<int, BulkNode>::iterator iter;
 		iter = this->_lSourceList->find(id);
 		if (iter != _lSourceList->end()) {
 			return &iter->second;
 		}
 	}
+	//cout<<"It's Null"<<endl;
 	return NULL;
 }
 
@@ -101,7 +109,7 @@ BulkNode* BulkNetwork::getSourceNodeById(int id) const
  * 通过节点ID获得关于该节点的相关信息，以及邻居信息
  * @param {integer} id
  *
- * @return {BulkNode&}
+ * @return {BulkNode}
  */
 BulkNode* BulkNetwork::getSinkNodeById(int id) const
 {
@@ -113,6 +121,22 @@ BulkNode* BulkNetwork::getSinkNodeById(int id) const
 		}
 	}
 	return NULL;
+}
+
+/**
+ * @brief getNodeById 
+ * 通过节点id获得相应节点
+ * @param {interge} id
+ *
+ * @return {BulkNode}
+ */
+BulkNode* BulkNetwork::getNodeById(int id) const
+{
+	int n = this->_topology->getVertices();
+	if (id > n || id < 0) {
+		return NULL;
+	}
+	return nList_[id];
 }
 
 /**
@@ -129,31 +153,46 @@ void BulkNetwork::setGraph(Graph* graph)
 
 /**
  * @brief startSession 
- * 开始一个session(增加一个新session)
+ * 网络中开启一个session(增加一个新session)
  * @param {BulkSession} session
  */
 void BulkNetwork::startSession(BulkSession& session)
 {
+	session.start();
 	int sNode = session.sourceNode_->getNodeId();
 	int eNode = session.sinkNode_->getNodeId();
 	if (getSourceNodeById(sNode) == NULL) {
-		this->setSourceNode(*session.sourceNode_);
+		this->setSourceNode(session.id_);
 	}
 	if (getSinkNodeById(eNode) == NULL) {
-		this->setSinkNode(*session.sinkNode_);
+		this->setSinkNode(session.id_);
 	}
+}
+
+/**
+ * @brief stopSession 
+ * 网络中关闭一个session(减少一个session)
+ * @param {BulkSession} session
+ */
+void BulkNetwork::stopSession(BulkSession& session)
+{
+	session.stop();
+	int sNode = session.sourceNode_->getNodeId();
+	int eNode = session.sinkNode_->getNodeId();
+	_lSourceList->erase(_lSourceList->find(sNode));
+	_lSinkList->erase(_lSinkList->find(eNode));
 }
 
 /**
  * @brief inputPackets 
  * 向系统导入数据包
- * @param {double} m
  * @param {BulkSession} session
  */
-void BulkNetwork::inputPackets(double m, BulkSession& session)
+void BulkNetwork::inputPackets(BulkSession& session)
 {
-	int nPack = RandomGenerator::genPoissonInt(m);
-	session.recv(nPack);
+	int m = session.getDemand();
+	if (m != 0) {
+		int nPack = RandomGenerator::genPoissonInt(m);
+		session.recv(nPack);
+	}
 }
-
-

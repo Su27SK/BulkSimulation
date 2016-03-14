@@ -35,6 +35,8 @@ class RandomGenerator
 		//This function returns a random integer from the Poisson distribution with mean mu.
 		static int genPoissonInt(double mu);
 
+		static double genPoissonDouble(double mu);
+
 		//This function returns a random variate from the Pareto distribution of order a.
 		static double genParetoDouble(double a, double b);
 

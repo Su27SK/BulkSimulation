@@ -27,9 +27,60 @@ void BulkBackPressure::dynamicPush(BulkLink& link)
 {
 	slist<BulkSession>* pSession = link.session_;
 	slist<BulkSession>::iterator iter;
+	int M = this->_topology->getVertices();
+	cout<<"Link:"<<link.getCapacity()<<endl;
+	map<double, int> sorted; 
+	//遍历session
 	for (iter = pSession->begin(); iter != pSession->end(); iter++) {
-		double difference = link.diffPackets(sId);
+		double difference = link.diffPackets(iter->id_);
+		double demand = iter->getDemand();
+		double value;
+		cout<<"difference:"<<difference<<endl;
+		if (link.getCapacity() > THRESHOLD * demand / M && difference > 0) {
+			value = difference / pow(demand, 2);
+		} else {
+			iter->flow_ = 0.0;
+			value = 0.0;
+		}
+		sorted.insert(pair<double, int>(value, iter->id_)); //存储 diff/demand^2 => sId
 	}
+	double s = _computeS(sorted, link);
+	map<double, int>::iterator iterS;
+	for (iterS = sorted.begin(); iterS != sorted.end(); iterS++) {
+		int sId = iterS->second;
+		BulkSession* qSession;
+		if ((qSession = link.findSession(sId)) != 0) { 
+			double difference = link.diffPackets(sId);
+			double demand = qSession->getDemand();
+			int fi = (difference - s * pow(demand, 2)) / 2;
+			qSession->send(fi, link);
+		}
+	}
+}
+
+/**
+ * @brief _computeS 
+ * back算法配套的排序函数(求出S+集合域), 并求出s
+ * @param {map<double, int>} sorted //map遍历，从小到大
+ * @param {BulkLink} link //边
+ * @return {double} 返回计算之后的s
+ */
+double BulkBackPressure::_computeS(map<double, int> sorted, BulkLink link)
+{
+	map<double, int>::iterator iter;
+	double sfake = sorted.begin()->first;
+	double sum = 0.0, over = 0.0, low = 0.0;
+	for (iter = sorted.begin(); iter != sorted.end(); iter++) {
+		int sId = iter->second;
+		BulkSession* p =  link.findSession(sId);
+		double demand = p->getDemand();
+		sum += link.diffPackets(sId) - sfake * pow(demand, 2) / 2;
+		if (sum <= link.getCapacity()) {
+			over += link.diffPackets(sId) - 2 * link.getCapacity();
+			low  += pow(demand, 2);
+		}
+	}
+	return over/low < 0.0 ? 0.0 : over/low;
 }
 
 /**
@@ -45,6 +96,7 @@ void BulkBackPressure::propagate(queue<int>* q, int* visited)
 	while (!q->empty()) {
 		int u = q->front();  //get the front
 		pushPacketsOut(u);   //push the packets out of the node 
+		cout<<"-----------"<<endl;
 		slist<BulkLink>* pLink = nList_[u]->getOutputLink();
 		for (iter = pLink->begin(); iter != pLink->end(); iter++) {
 			int iSink = iter->getGraphEdgeSink();
@@ -64,25 +116,35 @@ void BulkBackPressure::propagate(queue<int>* q, int* visited)
  */
 void BulkBackPressure::pushPacketsOut(int nodeId)
 {
+	cout<<"sourceId:"<<nodeId<<endl;
 	BulkNode* pSourceNode = nList_[nodeId];
 	pSourceNode->reallocAll();
 	slist<BulkLink>* outlink = pSourceNode->getOutputLink();
 	slist<BulkLink>::iterator iterLink; //遍历link
 	vector<int>::iterator iterId;       //遍历sId (session id)
-	for (iterLink = outlink->begin(); iterLink != outlink->end(); iterLink++ ) {
+	//遍历outlink
+	for (iterLink = outlink->begin(); iterLink != outlink->end(); iterLink++) {
 		int iSinkId = iterLink->getGraphEdgeSink();
+		cout<<"iSinkId:"<<iSinkId<<endl;
 		BulkNode* pSinkNode = nList_[iSinkId];
-		for (iterId = sVector.begin(); iterId != sVector.end(); iterId++) {
+		//outlink上的session
+		for (iterId = pSourceNode->sVector.begin(); iterId != pSourceNode->sVector.end(); iterId++) {
 			BulkSession* nSession = iterLink->findSession(*iterId);
-			int nStore = pSourceNode->getStoreSize(*iterId); //增加或者删除session
+			int nStore = pSourceNode->getStoreAmount(*iterId); //增加或者删除session
 			if (nSession == NULL && nStore != 0) {
-				BulkSession* pSession = new BulkSession(sId, pSourceNode, pSinkNode);
+				BulkSession* pSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
+				double demand = *pSourceNode->demand_[*iterId];
+				pSession->setDemand(demand);
 				iterLink->addSession(*pSession);
 			} else if (nSession != NULL && nStore == 0) {
-				iterLink->deleteSession(sId);
+				iterLink->deleteSession(*iterId);
+				pSourceNode->sVector.erase(iterId);
+			} 
+			if (!pSinkNode->sIdExisted(*iterId)) {
+				pSinkNode->sVector.push_back(*iterId);
 			}
 		}
-		dynamicPush(*iter);
+		dynamicPush(*iterLink);
 	}
 }
 

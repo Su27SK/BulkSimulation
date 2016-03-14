@@ -1,9 +1,10 @@
 #ifndef _BULKPACKET_H_
 #define _BULKPACKET_H_
-#include<stdlib.h>
-#include<sstream>
-#include<string>
-#include<iostream>
+#include <stdlib.h>
+#include <sstream>
+#include <string>
+#include <iostream>
+#include <math.h>
 using namespace std;
 enum unit{
 	Byte = 1,
@@ -17,7 +18,7 @@ class BulkPacket
 		double _size;
 		unit _type;
 	public:
-		BulkPacket():_size(1), _type(Kb){}
+		BulkPacket():_size(1), _type(Kb) {}
 		BulkPacket(double size, unit type);
 		BulkPacket& setPacketSize(double size);
 		BulkPacket& setPacketType(unit type);

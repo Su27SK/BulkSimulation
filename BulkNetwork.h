@@ -10,14 +10,13 @@ class BulkSession;
 using namespace std;
 class BulkNetwork
 {
-	private:
-		Graph* _topology;
 	protected:
 		int _nSource; //有几个Source流入点
 		int _nSink;   //有几个Sink流出点
 		map<int, BulkNode>* _lSourceList; //具体流入source数据包节点索引
 		map<int, BulkNode>* _lSinkList;   //具体流出sink数据包节点索引
 		BulkNode** nList_;
+		Graph* _topology;
 	public:
 		BulkNetwork():_nSource(0), _nSink(0) {
 			this->_lSourceList = new map<int, BulkNode>;
@@ -28,11 +27,13 @@ class BulkNetwork
 		void init();
 		void setGraph(Graph* graph);
 		void startSession(BulkSession& session);
-		void inputPackets(double m, BulkSession& session);
-		virtual void dynamicPush(BulkLink* link) = 0;
+		void stopSession(BulkSession& session);
+		void inputPackets(BulkSession& session);
+		virtual void dynamicPush(BulkLink& link) = 0;
 		BulkNetwork(Graph* graph);
-		BulkNetwork& setSourceNode(BulkNode& node);
-		BulkNetwork& setSinkNode(BulkNode& node);
+		BulkNetwork& setSourceNode(int id);
+		BulkNetwork& setSinkNode(int id);
+		BulkNode* getNodeById(int id) const;
 		BulkNode* getSourceNodeById(int id) const;
 		BulkNode* getSinkNodeById(int id) const;
 		~BulkNetwork(){};

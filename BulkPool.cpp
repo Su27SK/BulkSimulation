@@ -8,6 +8,7 @@ BulkPool::BulkPool(BulkPackets* packetsModel)
 {
 	this->_pool = new slist<BulkPackets>(0);
 	this->_packets = packetsModel;
+	this->_packets->addPtr();
 }
 
 /**
@@ -16,8 +17,7 @@ BulkPool::BulkPool(BulkPackets* packetsModel)
  */
 void BulkPool::init()
 {
-	int i;
-	for (i = 0; i < this->INITSIZE; i++) {
+	for (int i = 0; i < this->INITSIZE; i++) {
 		BulkPackets* newPackets = new BulkPackets();
 		*newPackets  = *this->_packets;
 		this->_pool->push_front(*newPackets);
@@ -63,9 +63,8 @@ BulkPackets* BulkPool::getPacketsFromPool()
 		return packets;
 	} else {
 		this->init();
-		this->getPacketsFromPool();
+		return this->getPacketsFromPool();
 	}
-	return NULL;
 }
 
 void BulkPool::setPacketsType(BulkPackets* type)
@@ -75,7 +74,11 @@ void BulkPool::setPacketsType(BulkPackets* type)
 
 BulkPool::~BulkPool()
 {
-	delete this->_packets;
+	if (this->_packets->getPtr() == 1) {
+		delete this->_packets;
+	} else {
+		this->_packets->reducePtr();
+	}
 	//cout<<"Delete Pool"<<endl;
 	this->_pool->~slist();
 	this->_packets = NULL;
