@@ -24,7 +24,7 @@ BulkLink::BulkLink(BulkGraphEdge& edge):BulkGraphEdge(edge)
  */
 void BulkLink::_defaultInit()
 {
-	session_ = new slist<BulkSession>;
+	session_ = new slist<BulkSession*>;
 	head_ = new queue<BulkPackets>*[MAX_SIZE];
 	for (int i = 0; i < MAX_SIZE; i++) {
 		head_[i] = new queue<BulkPackets>;
@@ -43,12 +43,11 @@ void BulkLink::_defaultInit()
  */
 void BulkLink::pushHeadToTail(int numPackets, int sId)
 {
-	
 	slist<BulkSession>::iterator iter;
 	for (int i = 0; i < numPackets; i++) {
 		BulkPackets& packets = tail_[sId]->front();
-		tail_[sId]->pop();
 		head_[sId]->push(packets);
+		tail_[sId]->pop();
 	}
 }
 
@@ -65,7 +64,7 @@ bool BulkLink::addSession(BulkSession& session)
 	int sink = this->getGraphEdgeSink();
 	int sId = session.id_;
 	if (session.isSessionEqualLink(source, sink, sId)) {
-		session_->push_front(session);
+		session_->push_front(&session);
 		return true;
 	}
 	return false;
@@ -81,9 +80,9 @@ bool BulkLink::addSession(BulkSession& session)
 bool BulkLink::deleteSession(int sId)
 {
 	bool isFound = false;
-	slist<BulkSession>::iterator iter;
+	slist<BulkSession*>::iterator iter;
 	for (iter = session_->begin(); iter != session_->end(); iter++) {
-		if (iter->id_ == sId) {
+		if ((*iter)->id_ == sId) {
 			session_->erase(iter);
 			isFound = true;
 			break;
@@ -101,10 +100,10 @@ bool BulkLink::deleteSession(int sId)
  */
 BulkSession* BulkLink::findSession(int sId)
 {
-	slist<BulkSession>::iterator iter;
+	slist<BulkSession*>::iterator iter;
 	for (iter = session_->begin(); iter != session_->end(); iter++) {
-		if (iter->id_ == sId) {
-			return &*iter;
+		if ((*iter)->id_ == sId) {
+			return *iter;
 		}
 	}
 	return NULL;
@@ -245,9 +244,9 @@ void BulkLink::clearTailPackets(int sId)
 bool BulkLink::isUnderConstraints()
 {
 	double sumFlow = 0;
-	slist<BulkSession>::iterator iter;
+	slist<BulkSession*>::iterator iter;
 	for (iter = session_->begin(); iter != session_->end(); iter++) {
-		sumFlow += iter->flow_;
+		sumFlow += (*iter)->flow_;
 	}
 	if (sumFlow < getCapacity()) {
 		return true;

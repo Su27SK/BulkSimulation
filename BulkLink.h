@@ -35,7 +35,7 @@ class BulkLink:public BulkGraphEdge
 		bool isUnderConstraints();
 		~BulkLink(){};
 	public:
-		slist<BulkSession>* session_;
+		slist<BulkSession*>* session_;
 		queue<BulkPackets>** head_;
 		queue<BulkPackets>** tail_;
 };

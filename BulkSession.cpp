@@ -31,18 +31,18 @@ BulkSession::BulkSession(int id, BulkNode* source, BulkNode* sink) {
  */
 void BulkSession::send(int npackets, BulkLink& link)
 {
-	cout<<"running:"<<running_<<endl;
-	if (sinkNode_ == NULL || id_ == -1 || running_ == 0) {
+	if (sinkNode_ == NULL || id_ == -1 || running_ == 0 || npackets <= 0) {
 		return;
 	}
 	bool flag = sinkNode_->getTerminal();
 	if (link.getGraphEdgeSink() == sinkNode_->getNodeId()) {
+		cout<<"sinkId:"<<sinkNode_->getNodeId()<<endl;
 		cout<<"push from to the sink"<<endl;
 		link.pushHeadToTail(npackets, id_);
-		*(sourceNode_->demand_[id_]) = _demand;  
-		*(sinkNode_->demand_[id_]) = _demand; 
+		*sourceNode_->demand_[id_] = *sinkNode_->demand_[id_] = _demand;  
+		cout<<"after,sourceNodeStore:"<<sourceNode_->getStoreAmount(id_)<<endl;
+		cout<<"after,sinkNodeStore:"<<sinkNode_->getStoreAmount(id_)<<endl;
 		if (flag) {
-			flow_ = npackets;
 			while(!link.head_[id_]->empty()) {
 				BulkPackets& packets = link.head_[id_]->front();
 				bulkPool.placePacketsToPool(&packets);

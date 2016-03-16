@@ -24,17 +24,28 @@ void BulkNetwork::init()
 		int n = this->_topology->getVertices();
 		BulkGraphNode* aList = this->_topology->getList();
 		nList_ = new BulkNode*[n + 1];
+		int *visited = new int[n + 1];
+		queue<BulkGraphNode> q;
 		for (int i = 1; i < n + 1; i++) {
-			int nodeId = aList[i].getNodeId();
-			nList_[nodeId] = new BulkNode(aList[i]);
+			visited[i] = 0;
+		}
+		for (int i = 1; i < n + 1; i++) {
+			int bNodeId = aList[i].getNodeId();
+			if (!visited[i]) {
+				nList_[bNodeId] = new BulkNode(aList[i]);
+				visited[i] = 1;
+			}
 			slist<BulkGraphEdge>* outputEdge = aList[i].getTailEdge();
-			slist<BulkGraphEdge>* inputEdge = aList[i].getHeadEdge();
 			slist<BulkGraphEdge>::iterator iter;
 			for (iter = outputEdge->begin(); iter != outputEdge->end();iter++) {
-					nList_[nodeId]->addOutputLink(&*iter);
-			}
-			for (iter = inputEdge->begin(); iter != inputEdge->end();iter++) {
-					nList_[nodeId]->addInputLink(&*iter);
+				BulkLink* link = new BulkLink(*iter);
+				int eNodeId = iter->getGraphEdgeSink();
+				if (!visited[eNodeId]) {
+					nList_[eNodeId] = new BulkNode(aList[eNodeId]);
+					visited[eNodeId] = 1;
+				}
+				nList_[bNodeId]->addOutputLink(link);
+				nList_[eNodeId]->addInputLink(link);
 			}
 		}
 	}
@@ -93,14 +104,12 @@ BulkNetwork& BulkNetwork::setSinkNode(int id)
 BulkNode* BulkNetwork::getSourceNodeById(int id) const
 {
 	if (!this->_lSourceList->empty()) {
-		//cout<<"It's Not Null"<<endl;
 		map<int, BulkNode>::iterator iter;
 		iter = this->_lSourceList->find(id);
 		if (iter != _lSourceList->end()) {
 			return &iter->second;
 		}
 	}
-	//cout<<"It's Null"<<endl;
 	return NULL;
 }
 

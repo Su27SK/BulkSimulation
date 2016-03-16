@@ -19,8 +19,8 @@ class BulkNode:public BulkGraphNode
 		double _getAllWeight();  //对I(v) U O(v)求weight倒数之和
 		void _reallocSize(queue<BulkPackets> *p, double size, unit type);
 	protected:
-		slist<BulkLink>* output_; //链路出去
-		slist<BulkLink>* input_;  //链路进来
+		slist<BulkLink*>* output_; //链路出去
+		slist<BulkLink*>* input_;  //链路进来
 	public: 
 		vector<int> sVector;      //存放session id
 		double** demand_;         //key(sId) => value(demand)  
@@ -42,10 +42,10 @@ class BulkNode:public BulkGraphNode
 		void reallocPackets(int sId);
 		void initNodePackets(int sId, queue<BulkPackets> *recv);
 		void reallocAll();
-		slist<BulkLink>* getOutputLink();
-		slist<BulkLink>* getInputLink();
-		void addOutputLink(BulkGraphEdge* edge);
-		void addInputLink(BulkGraphEdge* edge);
+		slist<BulkLink*>* getOutputLink();
+		slist<BulkLink*>* getInputLink();
+		void addOutputLink(BulkLink* link);
+		void addInputLink(BulkLink* link);
 		BulkNode& setTerminal();
 		BulkNode& setOriginal();
 };

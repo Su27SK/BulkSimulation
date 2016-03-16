@@ -25,24 +25,24 @@ void BulkBackPressure::handle()
  */
 void BulkBackPressure::dynamicPush(BulkLink& link)
 {
-	slist<BulkSession>* pSession = link.session_;
-	slist<BulkSession>::iterator iter;
+	slist<BulkSession*>* pSession = link.session_;
+	slist<BulkSession*>::iterator iter;
 	int M = this->_topology->getVertices();
 	cout<<"Link:"<<link.getCapacity()<<endl;
 	map<double, int> sorted; 
 	//遍历session
 	for (iter = pSession->begin(); iter != pSession->end(); iter++) {
-		double difference = link.diffPackets(iter->id_);
-		double demand = iter->getDemand();
+		double difference = link.diffPackets((*iter)->id_);
+		double demand = (*iter)->getDemand();
 		double value;
 		cout<<"difference:"<<difference<<endl;
 		if (link.getCapacity() > THRESHOLD * demand / M && difference > 0) {
 			value = difference / pow(demand, 2);
 		} else {
-			iter->flow_ = 0.0;
+			(*iter)->flow_ = 0.0;
 			value = 0.0;
 		}
-		sorted.insert(pair<double, int>(value, iter->id_)); //存储 diff/demand^2 => sId
+		sorted.insert(pair<double, int>(value, (*iter)->id_)); //存储 diff/demand^2 => sId
 	}
 	double s = _computeS(sorted, link);
 	map<double, int>::iterator iterS;
@@ -55,7 +55,6 @@ void BulkBackPressure::dynamicPush(BulkLink& link)
 			int fi = ROUND((difference - s * pow(demand, 2)) / 2);
 			cout<<"fi:"<<fi<<endl;
 			qSession->send(fi, link);
-			cout<<"sink_packets:"<<qSession->sinkNode_->getStoreAmount(1)<<endl;
 		}
 	}
 }
@@ -94,14 +93,14 @@ double BulkBackPressure::_computeS(map<double, int> sorted, BulkLink link)
  */
 void BulkBackPressure::propagate(queue<int>* q, int* visited)
 {
-	slist<BulkLink>::iterator iter;
+	slist<BulkLink*>::iterator iter;
 	while (!q->empty()) {
 		int u = q->front();  //get the front
 		pushPacketsOut(u);   //push the packets out of the node 
 		cout<<"-----------"<<endl;
-		slist<BulkLink>* pLink = nList_[u]->getOutputLink();
+		slist<BulkLink*>* pLink = nList_[u]->getOutputLink();
 		for (iter = pLink->begin(); iter != pLink->end(); iter++) {
-			int iSink = iter->getGraphEdgeSink();
+			int iSink = (*iter)->getGraphEdgeSink();
 			if (!visited[iSink]) {
 				q->push(iSink);
 				visited[iSink] = 1;
@@ -121,48 +120,39 @@ void BulkBackPressure::pushPacketsOut(int nodeId)
 	cout<<"sourceId:"<<nodeId<<endl;
 	BulkNode* pSourceNode = nList_[nodeId];
 	pSourceNode->reallocAll();
-	slist<BulkLink>* outlink = pSourceNode->getOutputLink();
-	slist<BulkLink>::iterator iterLink; //遍历link
-	vector<int>::iterator iterId;       //遍历sId (session id)
+	slist<BulkLink*>* outlink = pSourceNode->getOutputLink();
+	slist<BulkLink*>::iterator iterLink; //遍历link
+	vector<int>::iterator iterId;        //遍历sId (session id)
 	//遍历outlink
 	for (iterLink = outlink->begin(); iterLink != outlink->end(); iterLink++) {
-		int iSinkId = iterLink->getGraphEdgeSink();
+		int iSinkId = (*iterLink)->getGraphEdgeSink();
 		cout<<"iSinkId:"<<iSinkId<<endl;
 		BulkNode* pSinkNode = nList_[iSinkId];
 		//outlink上的session
 		for (iterId = pSourceNode->sVector.begin(); iterId != pSourceNode->sVector.end(); iterId++) {
-			BulkSession* nSession = iterLink->findSession(*iterId);
+			BulkSession* nSession = (*iterLink)->findSession(*iterId);
 			int nStore = pSourceNode->getStoreAmount(*iterId); //增加或者删除session
 			cout<<"nStore:"<<nStore<<endl;
-			//if (nSession == NULL && nStore != 0) {
-				//nSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
-				//double demand = *pSourceNode->demand_[*iterId];
-				//nSession->setDemand(demand);
-				//iterLink->addSession(*nSession);
-			//} else if (nSession != NULL && nStore == 0) {
-				////iterLink->deleteSession(*iterId);
-				//pSourceNode->sVector.erase(iterId);
-			//} 
 			if (nStore != 0) {
 				if (nSession == NULL) {
 					nSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
 					double demand = *pSourceNode->demand_[*iterId];
 					nSession->setDemand(demand);
-					iterLink->addSession(*nSession);
+					(*iterLink)->addSession(*nSession);
 				}
-				iterLink->findSession(*iterId)->start();  
+				nSession->start();
 			} else {
 				if (nSession != NULL) {
-					iterLink->findSession(*iterId)->stop();
+					nSession->stop();
 					pSourceNode->sVector.erase(iterId);
 				}
-			} //启动session(use the start and stop function in session)
-
+			} //启动session(use the start and stop functions in session)
+			
 			if (!pSinkNode->sIdExisted(*iterId)) {
 				pSinkNode->sVector.push_back(*iterId);
 			}
 		}
-		dynamicPush(*iterLink);
+		dynamicPush(**iterLink);
 	}
 }
 

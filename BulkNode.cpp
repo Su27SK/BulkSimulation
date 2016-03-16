@@ -6,8 +6,8 @@
  */
 void BulkNode::_defaultInit()
 {
-	output_ = new slist<BulkLink>(0);
-	input_ = new slist<BulkLink>(0);
+	output_ = new slist<BulkLink*>(0);
+	input_ = new slist<BulkLink*>(0);
 	_isTerminal = false;
 	_isOriginal = false;
 	demand_ = new double* [MAX_SIZE];
@@ -24,14 +24,14 @@ void BulkNode::_defaultInit()
  */
 double BulkNode::_getAllWeight()
 {
-	slist<BulkLink>::iterator iter;
+	slist<BulkLink*>::iterator iter;
 	double sumWeight = 0;
 	double singleWeight;
 	int i = 0;
-	slist<BulkLink>* pLink = output_;
+	slist<BulkLink*>* pLink = output_;
 	while (i < 2) {
 		for (iter = pLink->begin(); iter != pLink->end(); iter++) {
-			if ((singleWeight = iter->getWeight()) != 0) {
+			if ((singleWeight = (*iter)->getWeight()) != 0) {
 				sumWeight  += 1/singleWeight;
 			}
 		}
@@ -74,9 +74,9 @@ double BulkNode::getStoreSize(int sId, unit type)
 {
 	double amount = 0;
 	int i = 0;
-	slist<BulkLink>::iterator sIter;
+	slist<BulkLink*>::iterator sIter;
 	for (sIter = input_->begin(); sIter != input_->end(); sIter++) {
-		queue<BulkPackets>* pHead = sIter->getHead(sId);
+		queue<BulkPackets>* pHead = (*sIter)->getHead(sId);
 		int nSize = pHead->size();
 		while (i < nSize) {
 			BulkPackets& p = pHead->front();
@@ -88,7 +88,7 @@ double BulkNode::getStoreSize(int sId, unit type)
 	}
 	i = 0;
 	for (sIter = output_->begin(); sIter != output_->end(); sIter++) {
-		queue<BulkPackets>* pTail = sIter->getTail(sId);
+		queue<BulkPackets>* pTail = (*sIter)->getTail(sId);
 		int nSize = pTail->size();
 		while (i < nSize) {
 			BulkPackets& p = pTail->front();
@@ -111,17 +111,17 @@ queue<BulkPackets>* BulkNode::getStore(int sId)
 {
 	//double amount = 0;
 	queue<BulkPackets>* q = new queue<BulkPackets>;
-	slist<BulkLink>::iterator sIter;
+	slist<BulkLink*>::iterator sIter;
 	int i = 0;
-	slist<BulkLink>* pLink = input_;
+	slist<BulkLink*>* pLink = input_;
 	while (i < 2) {
 		for (sIter = pLink->begin(); sIter != pLink->end(); sIter++) {
 			queue<BulkPackets>* p; 
 			if (i) {
-				p = sIter->tail_[sId];
+				p = (*sIter)->tail_[sId];
 				//amount += p->size();
 			} else {
-				p = sIter->head_[sId];
+				p = (*sIter)->head_[sId];
 				//amount += p->size();
 			}
 			while (!p->empty()) {
@@ -146,17 +146,17 @@ queue<BulkPackets>* BulkNode::getStore(int sId)
 int BulkNode::getStoreAmount(int sId)
 {
 	int amount = 0;
-	slist<BulkLink>::iterator sIter;
+	slist<BulkLink*>::iterator sIter;
 	int i = 0;
-	slist<BulkLink>* pLink = input_;
+	slist<BulkLink*>* pLink = input_;
 	while (i < 2) {
 		for (sIter = pLink->begin(); sIter != pLink->end(); sIter++) {
 			queue<BulkPackets>* p; 
 			if (i) {
-				p = sIter->tail_[sId];
+				p = (*sIter)->tail_[sId];
 				amount += p->size();
 			} else {
-				p = sIter->head_[sId];
+				p = (*sIter)->head_[sId];
 				amount += p->size();
 			}
 		}
@@ -229,7 +229,7 @@ bool BulkNode::getOriginal()
  * get the link that to the next route
  * @return slist<BulkLink>
  */
-slist<BulkLink>* BulkNode::getOutputLink()
+slist<BulkLink*>* BulkNode::getOutputLink()
 {
 	return output_;
 }
@@ -239,7 +239,7 @@ slist<BulkLink>* BulkNode::getOutputLink()
  * get the link that from the prev route
  * @return slist<BulkLink>
  */
-slist<BulkLink>* BulkNode::getInputLink()
+slist<BulkLink*>* BulkNode::getInputLink()
 {
 	return input_;
 }
@@ -253,31 +253,31 @@ void BulkNode::reallocSize(int sId)
 {
 	unit type = Kb;
 	double qsv = this->getStoreSize(sId, type);
-	slist<BulkLink>::iterator iter;
+	slist<BulkLink*>::iterator iter;
 	double singleWeight;
 	double allWeight = this->_getAllWeight();
 	for (iter = output_->begin(); iter != output_->end(); iter++) {
-		if ((singleWeight = iter->getWeight()) != 0) {
+		if ((singleWeight = (*iter)->getWeight()) != 0) {
 			double proportion = (1/singleWeight) / allWeight;
 			double size = ROUND(qsv * proportion);
-			if (iter->tail_[sId]->size() == 0) {
-				iter->setTailPackets(sId, 4);
+			if ((*iter)->tail_[sId]->size() == 0) {
+				(*iter)->setTailPackets(sId, 4);
 			}
-			this->_reallocSize(iter->tail_[sId], size, type); 
+			this->_reallocSize((*iter)->tail_[sId], size, type); 
 		} else {
-			iter->clearTailPackets(sId);
+			(*iter)->clearTailPackets(sId);
 		}
 	}
 	for (iter = input_->begin(); iter != input_->end(); iter++) {
-		if ((singleWeight = iter->getWeight()) != 0) {
+		if ((singleWeight = (*iter)->getWeight()) != 0) {
 			double proportion = (1/singleWeight) / allWeight;
 			double size = ROUND(qsv * proportion);
-			if (iter->head_[sId]->size() == 0) {
-				iter->setHeadPackets(sId, 4);
+			if ((*iter)->head_[sId]->size() == 0) {
+				(*iter)->setHeadPackets(sId, 4);
 			}
-			this->_reallocSize(iter->head_[sId], size, type); 
+			this->_reallocSize((*iter)->head_[sId], size, type); 
 		} else {
-			iter->clearHeadPackets(sId);
+			(*iter)->clearHeadPackets(sId);
 		}
 	}
 }
@@ -294,23 +294,21 @@ void BulkNode::reallocPackets(int sId)
 	queue<BulkPackets>* p;
 	double sum = qsv->size();
 	cout<<"sum:"<<sum<<endl;
-	slist<BulkLink>::iterator sIter;
+	slist<BulkLink*>::iterator sIter;
 	double singleWeight;
 	double allWeight = this->_getAllWeight();
 	int i = 0, j;
-	slist<BulkLink>* pLink = input_;
+	slist<BulkLink*>* pLink = input_;
 	cout<<"allWeight:"<<allWeight<<endl;
 	while (i < 2) {
 		for (sIter = pLink->begin(); sIter != pLink->end(); sIter++) {
-			if ((singleWeight = sIter->getWeight()) != 0) {
-				cout<<"singleWeight:"<<singleWeight<<" ";
+			if ((singleWeight = (*sIter)->getWeight()) != 0) {
 				double proportion = (1/singleWeight) / allWeight;
 				double num = ROUND(sum * proportion);
-				cout<<"num:"<<num<<endl;
 				if (i) {
-					p = sIter->tail_[sId];
+					p = (*sIter)->tail_[sId];
 				} else {
-					p = sIter->head_[sId];
+					p = (*sIter)->head_[sId];
 				}
 				j = 0;
 				while (j < num && !qsv->empty()) {
@@ -320,6 +318,28 @@ void BulkNode::reallocPackets(int sId)
 					j++;
 				}
 			}
+		}
+		pLink = output_;
+		i++;
+	}
+	if (!qsv->empty()) {
+		BulkPackets& packets = qsv->front(); 
+		p->push(packets);
+		qsv->pop();
+	}
+
+	i = 0;
+	pLink = input_;
+	while (i < 2) {
+		for (sIter = pLink->begin(); sIter != pLink->end(); sIter++) {
+			singleWeight = (*sIter)->getWeight();
+			cout<<"singleWeight:"<<singleWeight<<" ";
+			if (i) {
+				p = (*sIter)->tail_[sId];
+			} else {
+				p = (*sIter)->head_[sId];
+			}
+			cout<<"num:"<<p->size()<<endl;
 		}
 		pLink = output_;
 		i++;
@@ -348,16 +368,16 @@ void BulkNode::initNodePackets(int sId, queue<BulkPackets>* recv)
 		mean = numPackets / numLink;
 		more = numPackets % numLink;
 	}
-	slist<BulkLink>* pLink = input_;
-	slist<BulkLink>::iterator iter;
+	slist<BulkLink*>* pLink = input_;
+	slist<BulkLink*>::iterator iter;
 	int i = 0, count = 1;
 	bool flag = false;
 	while (i < 2) {
 		for (iter = pLink->begin(); iter != pLink->end(); iter++) {
 			if (i) {
-				p = iter->tail_[sId];
+				p = (*iter)->tail_[sId];
 			} else {
-				p = iter->head_[sId];
+				p = (*iter)->head_[sId];
 			}
 			for (int j = 0; j < mean; j++) {
 				if (more != 0.0 && count == numLink && !flag) {
@@ -417,22 +437,22 @@ void BulkNode::_reallocSize(queue<BulkPackets>* p, double size, unit type)
 /**
  * @brief addOutputLink 
  * 增加下一跳链路
- * @param {BulkGraphEdge*} edge
+ * @param {BulkLink*} edge
  */
-void BulkNode::addOutputLink(BulkGraphEdge* edge)
+void BulkNode::addOutputLink(BulkLink* link)
 {
-	BulkLink* link = new BulkLink(*edge);
-	this->output_->push_front(*link);
+	//BulkLink* link = new BulkLink(*edge);
+	this->output_->push_front(link);
 }
 
 /**
  * @brief addInputLink 
  * 增加进到该点链路
- * @param {BulkGraphEdge} edge
+ * @param {BulkLink*} edge
  */
-void BulkNode::addInputLink(BulkGraphEdge* edge)
+void BulkNode::addInputLink(BulkLink* link)
 {
-	BulkLink* link = new BulkLink(*edge);
-	this->input_->push_front(*link);
+	//BulkLink* link = new BulkLink(*edge);
+	this->input_->push_front(link);
 }
 

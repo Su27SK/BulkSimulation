@@ -26,6 +26,7 @@ int main()
 	one.setDemand(10);
 	test.startSession(one);
 	test.inputPackets(one);
+	test.inputPackets(one);
 	test.handle();
 	/*BulkPacket modelPacket(4.0, Mb);*/
 	/*cout<<modelPacket.convertToType(2, false)<<endl;*/
