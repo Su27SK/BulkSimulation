@@ -25,7 +25,7 @@ class BulkLink:public BulkGraphEdge
 		bool deleteSession(int sId);
 		void pushHeadToTail(int numPackets, int sId);
 		int  diffPackets(int sId);
-		double getCapacity();
+		double getVaryCapacity();
 		queue<BulkPackets>* getHead(int sId);
 		queue<BulkPackets>* getTail(int sId);
 		void setHeadPackets(int sId, int num, BulkPackets* packets = NULL);

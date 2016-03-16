@@ -6,7 +6,7 @@
 class BulkBackPressure: public BulkBackHandle, public BulkNetwork
 {
 	private:
-		double _computeS(map<double, int> sorted, BulkLink link);
+		double _computeS(map<double, int>& sorted, BulkLink link, double capacity);
 	public:
 		BulkBackPressure():BulkBackHandle(), BulkNetwork(){}
 		virtual void handle();

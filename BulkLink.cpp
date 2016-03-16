@@ -60,6 +60,14 @@ void BulkLink::pushHeadToTail(int numPackets, int sId)
  */
 bool BulkLink::addSession(BulkSession& session)
 {
+	/**
+	 * test start()
+	 */
+	session_->push_front(&session);
+	return true;
+	/**
+	 * test end()
+	 */
 	int source = this->getGraphEdgeSource();
 	int sink = this->getGraphEdgeSink();
 	int sId = session.id_;
@@ -126,7 +134,7 @@ int BulkLink::diffPackets(int sId)
  * 获得时刻改变的链路带宽
  * @return {double}
  */
-double BulkLink::getCapacity()
+double BulkLink::getVaryCapacity()
 {
 	double w = getWeight();
 	if (w > 0) {

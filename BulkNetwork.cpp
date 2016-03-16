@@ -171,10 +171,10 @@ void BulkNetwork::startSession(BulkSession& session)
 	int sNode = session.sourceNode_->getNodeId();
 	int eNode = session.sinkNode_->getNodeId();
 	if (getSourceNodeById(sNode) == NULL) {
-		this->setSourceNode(session.id_);
+		this->setSourceNode(sNode);
 	}
 	if (getSinkNodeById(eNode) == NULL) {
-		this->setSinkNode(session.id_);
+		this->setSinkNode(eNode);
 	}
 }
 

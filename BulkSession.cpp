@@ -36,13 +36,12 @@ void BulkSession::send(int npackets, BulkLink& link)
 	}
 	bool flag = sinkNode_->getTerminal();
 	if (link.getGraphEdgeSink() == sinkNode_->getNodeId()) {
-		cout<<"sinkId:"<<sinkNode_->getNodeId()<<endl;
-		cout<<"push from to the sink"<<endl;
 		link.pushHeadToTail(npackets, id_);
 		*sourceNode_->demand_[id_] = *sinkNode_->demand_[id_] = _demand;  
 		cout<<"after,sourceNodeStore:"<<sourceNode_->getStoreAmount(id_)<<endl;
 		cout<<"after,sinkNodeStore:"<<sinkNode_->getStoreAmount(id_)<<endl;
 		if (flag) {
+			cout<<"push into the sink"<<endl;
 			while(!link.head_[id_]->empty()) {
 				BulkPackets& packets = link.head_[id_]->front();
 				bulkPool.placePacketsToPool(&packets);
@@ -66,7 +65,6 @@ void BulkSession::recv(int npackets)
 	queue<BulkPackets> q;
 	bool flag = sourceNode_->getOriginal();
 	if (flag) {
-		_demand = npackets;
 		for (int i = 0; i < npackets; i++) {
 			BulkPackets* packets = bulkPool.getPacketsFromPool();
 			//cout<<packets->getBulkPacketsInfo()<<endl;
