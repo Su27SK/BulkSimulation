@@ -74,23 +74,31 @@ void BulkBackPressure::dynamicPush(BulkLink& link)
  */
 double BulkBackPressure::_computeS(map<double, int>& sorted, BulkLink link, double capacity)
 {
-	map<double, int>::iterator iter;
-	float sfake = sorted.begin()->first;
+	map<double, int>::reverse_iterator rIter;
+	float sfake = sorted.rbegin()->first;
 	float sum = 0.0, over = 0.0, low = 0.0;
-	for (iter = sorted.begin(); iter != sorted.end(); iter++) {
-		int sId = iter->second;
+	for (rIter = sorted.rbegin(); rIter != sorted.rend(); rIter++) {
+		int sId = rIter->second;
 		BulkSession* p =  link.findSession(sId);
 		double demand = p->getDemand();
 		float difference = link.diffPackets(sId);
 		cout<<"sId:"<<sId<<" ";
-		cout<<"diff:"<<iter->first<<endl;
-		sum += (difference - sfake * pow(demand, 2)) / 2;
+		cout<<"sfake:"<<sfake<<" ";
+		cout<<"diff:"<<rIter->first<<endl;
+		double temp = (difference - sfake * pow(demand, 2)) / 2;
+		if (temp >= 0) {
+			sum += temp;
+		} else {
+			break;
+		}
 		cout<<"sum:"<<sum<<endl;
 		if (sum <= capacity) {
 			over += link.diffPackets(sId) - 2 * capacity;
 			low  += pow(demand, 2);
+			//sfake = rIter->first;
 		} else {
-			break;
+			//sorted.erase(rIter);
+			//break; 
 		}
 	}
 	//cout<<"over:"<<over<<endl;
