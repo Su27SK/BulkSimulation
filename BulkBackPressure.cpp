@@ -7,15 +7,30 @@ void BulkBackPressure::handle()
 {
 	map<int, BulkNode>::iterator mIter;
 	queue<int> q;
-	int visited[MAX];
-	for (int i = 1; i <= MAX; i++) {
+	int visited[MAXNODE];
+	for (int i = 1; i <= MAXNODE; i++) {
 		visited[i] = 0;
 	}
 	for (mIter = _lSourceList->begin(); mIter != _lSourceList->end(); mIter++) {
 		q.push(mIter->first); 
 		visited[mIter->first] = 1;
 	}
+	_realloc();
 	this->propagate(&q, visited);
+}
+
+/**
+ * @brief _realloc 
+ */
+void BulkBackPressure::_realloc()
+{
+	if (this->_topology != NULL) {
+		int N = this->_topology->getVertices();
+		for (int nodeId = 1; nodeId <= N; nodeId++) {
+			BulkNode* pNode = nList_[nodeId];
+			pNode->reallocAll();
+		}
+	}
 }
 
 /**
@@ -23,45 +38,48 @@ void BulkBackPressure::handle()
  * 对每条链路动态推送数据包
  * @param {Bulklink} link
  */
-void BulkBackPressure::dynamicPush(BulkLink& link)
+//void BulkBackPressure::dynamicPush(BulkLink& link)
+float BulkBackPressure::dynamicPush(BulkLink& link)
 {
 	slist<BulkSession*>* pSession = link.session_;
 	slist<BulkSession*>::iterator iter;
 	int M = this->_topology->getVertices();
 	double nowCapacity = link.getVaryCapacity();
+	double fiNum = 0;
 	map<double, int> sorted;
 	//遍历session
 	for (iter = pSession->begin(); iter != pSession->end(); iter++) {
 		double difference = link.diffPackets((*iter)->id_);
 		double demand = (*iter)->getDemand();
 		double value;
-		cout<<"sId:"<<(*iter)->id_<<" ";
-		cout<<"demand:"<<demand<<" ";
-		cout<<"Link:"<<nowCapacity<<" ";
-		cout<<"difference:"<<difference<<endl;
 		if (nowCapacity > (THRESHOLD * demand / M) && difference > 0) {
 			value = difference / pow(demand, 2);
-		} else {
-			(*iter)->flow_ = 0.0;
-			value = 0.0;
+			sorted.insert(pair<double, int>(value, (*iter)->id_)); //存储 diff/demand^2 => sId
 		}
-		sorted.insert(pair<double, int>(value, (*iter)->id_)); //存储 diff/demand^2 => sId
 	}
 	double s = _computeS(sorted, link, nowCapacity);
-	cout<<"s:"<<s<<endl;
-	map<double, int>::iterator iterS;
-	for (iterS = sorted.begin(); iterS != sorted.end(); iterS++) {
+	map<double, int>::reverse_iterator iterS;
+	float fsum = 0;
+	for (iterS = sorted.rbegin(); iterS != sorted.rend(); iterS++) {
 		int sId = iterS->second;
 		BulkSession* qSession;
 		if ((qSession = link.findSession(sId)) != 0 && iterS->first != 0) { 
 			double difference = link.diffPackets(sId);
 			double demand = qSession->getDemand();
 			int fi = ROUND((difference - s * pow(demand, 2)) / 2);
-			cout<<"sId:"<<sId<<" ";
-			cout<<"fi:"<<fi<<endl;
-			//qSession->send(fi, link);
+			if (fi <= 0) {
+				fi = 0;
+			}
+			fiNum += fi;
+			while (fiNum > nowCapacity) {
+				fi--;
+				fiNum--;
+			}
+		    fsum += fi * (difference - fi) / pow (demand, 2);
+			qSession->send(fi, link);
 		}
 	}
+	return fsum;
 }
 
 /**
@@ -75,34 +93,51 @@ void BulkBackPressure::dynamicPush(BulkLink& link)
 double BulkBackPressure::_computeS(map<double, int>& sorted, BulkLink link, double capacity)
 {
 	map<double, int>::reverse_iterator rIter;
-	float sfake = sorted.rbegin()->first;
 	float sum = 0.0, over = 0.0, low = 0.0;
+	vector<double> unsearch;
+	int* difference = new int[sorted.size()];
+	double* demand = new double[sorted.size()];
+	int i = 0;
 	for (rIter = sorted.rbegin(); rIter != sorted.rend(); rIter++) {
+		unsearch.push_back(rIter->first);   //从大到小排序
 		int sId = rIter->second;
+		difference[i] = link.diffPackets(sId);
 		BulkSession* p =  link.findSession(sId);
-		double demand = p->getDemand();
-		float difference = link.diffPackets(sId);
-		cout<<"sId:"<<sId<<" ";
-		cout<<"sfake:"<<sfake<<" ";
-		cout<<"diff:"<<rIter->first<<endl;
-		double temp = (difference - sfake * pow(demand, 2)) / 2;
-		if (temp >= 0) {
-			sum += temp;
+		demand[i] = p->getDemand();
+		i++;
+	}
+	int lowIndex = 0, highIndex = i - 1, mid;
+	while (lowIndex <= highIndex) {  //二分查找法
+		mid = lowIndex + ((highIndex - lowIndex) / 2);
+		sum = 0.0; 
+		float sfake = unsearch.at(mid);
+		for (int j = 0 ; j <= mid; j++) {
+			float temp = (difference[j] - sfake * pow(demand[j], 2)) / 2;
+			if (temp >= 0) {
+				sum += temp;
+			} else {
+				break;
+			}
+		}
+		if (sum < capacity) {
+			lowIndex = mid + 1;
+		} else if (sum > capacity) {
+			highIndex = mid - 1;
 		} else {
 			break;
 		}
-		cout<<"sum:"<<sum<<endl;
-		if (sum <= capacity) {
-			over += link.diffPackets(sId) - 2 * capacity;
-			low  += pow(demand, 2);
-			//sfake = rIter->first;
-		} else {
-			//sorted.erase(rIter);
-			//break; 
-		}
 	}
-	//cout<<"over:"<<over<<endl;
-	//cout<<"low:"<<low<<endl;
+	if (sum > capacity) {
+		mid = mid - 1;
+	} 
+	for (int j = 0; j <= mid; j++) {
+		over += difference[j];
+		low  += pow(demand[j], 2);
+	}
+	over -= 2 * capacity;
+	if (low == 0.0) {
+		return 0.0;
+	}
 	return over/low <= 0.0 ? 0.0 : over/low;
 }
 
@@ -119,7 +154,6 @@ void BulkBackPressure::propagate(queue<int>* q, int* visited)
 	while (!q->empty()) {
 		int u = q->front();  //get the front
 		pushPacketsOut(u);   //push the packets out of the node 
-		cout<<"-----------"<<endl;
 		slist<BulkLink*>* pLink = nList_[u]->getOutputLink();
 		for (iter = pLink->begin(); iter != pLink->end(); iter++) {
 			int iSink = (*iter)->getGraphEdgeSink();
@@ -139,22 +173,20 @@ void BulkBackPressure::propagate(queue<int>* q, int* visited)
  */
 void BulkBackPressure::pushPacketsOut(int nodeId)
 {
-	cout<<"sourceId:"<<nodeId<<endl;
 	BulkNode* pSourceNode = nList_[nodeId];
-	pSourceNode->reallocAll();
+	//pSourceNode->reallocAll();
 	slist<BulkLink*>* outlink = pSourceNode->getOutputLink();
 	slist<BulkLink*>::iterator iterLink; //遍历link
 	vector<int>::iterator iterId;        //遍历sId (session id)
 	//遍历outlink
 	for (iterLink = outlink->begin(); iterLink != outlink->end(); iterLink++) {
 		int iSinkId = (*iterLink)->getGraphEdgeSink();
-		cout<<"iSinkId:"<<iSinkId<<endl;
 		BulkNode* pSinkNode = nList_[iSinkId];
 		//outlink上的session
 		for (iterId = pSourceNode->sVector.begin(); iterId != pSourceNode->sVector.end(); iterId++) {
 			BulkSession* nSession = (*iterLink)->findSession(*iterId);
 			int nStore = pSourceNode->getStoreAmount(*iterId); //增加或者删除session
-			cout<<"nStore:"<<nStore<<endl;
+			//cout<<"nStore:"<<nStore<<endl;
 			if (nStore != 0) {
 				if (nSession == NULL) {
 					nSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
@@ -166,7 +198,7 @@ void BulkBackPressure::pushPacketsOut(int nodeId)
 			} else {
 				if (nSession != NULL) {
 					nSession->stop();
-					pSourceNode->sVector.erase(iterId);
+					//pSourceNode->sVector.erase(iterId);
 				}
 			} //启动session(use the start and stop functions in session)
 			

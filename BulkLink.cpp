@@ -60,14 +60,6 @@ void BulkLink::pushHeadToTail(int numPackets, int sId)
  */
 bool BulkLink::addSession(BulkSession& session)
 {
-	/**
-	 * test start()
-	 */
-	session_->push_front(&session);
-	return true;
-	/**
-	 * test end()
-	 */
 	int source = this->getGraphEdgeSource();
 	int sink = this->getGraphEdgeSink();
 	int sId = session.id_;

@@ -222,11 +222,11 @@ Graph* Graph::importGraph(string cfilename)
 	int i, nPos = 1;
 	BulkFile* inFile = new BulkFile("Bulk_Config_File");
 	//inFile->addFile(cfilename, "Bulk_Config_File");
-	char** msgBuf = (char**)malloc(50 * sizeof(char*));
-	for (i = 0; i < 50; i++) {
-		msgBuf[i] = (char*)malloc(30 * sizeof(char));
+	char** msgBuf = (char**)malloc(LINEMAX * sizeof(char*));
+	for (i = 0; i < LINEMAX; i++) {
+		msgBuf[i] = (char*)malloc(50 * sizeof(char));
 	}
-	inFile->getlines(msgBuf, 50, cfilename);
+	inFile->getlines(msgBuf, LINEMAX, cfilename);
 
 	Graph* g = new Graph();
 	
@@ -255,33 +255,54 @@ size_t Graph::_extractInfo(char* message, Graph* graph)
 		case 't':
 			int vertices;
 			vertices = atoi(s.substr(2).c_str());
+			//cout<<"vertices:"<<vertices<<endl;
 			graph->setVertices(vertices);
 			return -1;
 		case 'T':
 			int edges;
 			edges = atoi(s.substr(2).c_str());
+			//cout<<"edges:"<<edges<<endl;
 			if (edges > 0) {
 				return -1;
 			} else {
 				return -2;
 			}
 		case '?':
-			int index, id;
-			BulkGraphNode* list;
-			index = atoi(s.substr(2,1).c_str());
-			id = atoi(s.substr(4,1).c_str());
-			list = graph->getList();
-			list[index].setId(id);
-			return -1;
+			{
+				int index, id;
+				BulkGraphNode* list;
+				string latter = s.substr(2);
+				int len = latter.find(" ");
+				index = atoi(latter.substr(0, len).c_str());
+				id = atoi(latter.substr(len + 1).c_str());
+				//cout<<"index:"<<index<<" id:"<<id<<endl;
+				list = graph->getList();
+				list[index].setId(id);
+				return -1;
+			}
 		case 'L':
-			int source, sink;
-			double weight, capacity;
-			source = atoi(s.substr(2,1).c_str());
-			sink = atoi(s.substr(4,1).c_str());
-			weight = atoi(s.substr(6,1).c_str());
-			capacity = 0;
-			graph->putEdge(source, sink, weight, capacity);
-			return -1;
+			{
+				int source, sink;
+				double weight, capacity;
+				string latter = s.substr(2);
+				int index = latter.find(" ");
+				latter = s.substr(3 + index);
+
+				int sourceLen = latter.find(" ");
+				source = atoi(latter.substr(0, sourceLen).c_str());
+
+				latter = s.substr(4 + index + sourceLen);
+				int sinkLen = latter.find(" ");
+				sink = atoi(latter.substr(0, sinkLen).c_str());
+
+				latter = s.substr(5 + index + sourceLen + sinkLen);
+				int wLen = latter.find(" ");
+				weight = atoi(latter.substr(0, wLen).c_str());
+				//cout<<"source:"<<source<<" sink:"<<sink<<" weight:"<<weight<<endl;
+				capacity = 0;
+				graph->putEdge(source, sink, weight, capacity);
+				return -1;
+			}
 		default:break;
 	}
 	return -2;

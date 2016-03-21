@@ -7,7 +7,7 @@
 #include <queue>
 #include <vector>
 #include <algorithm>
-#define MAX_SIZE 100
+#define MAX_SIZE 1000
 #define ROUND(x) ((x) > 0.0 ? floor((x) + 0.5) : ceil((x) - 0.5));
 class BulkLink;
 class BulkNode:public BulkGraphNode
@@ -24,6 +24,7 @@ class BulkNode:public BulkGraphNode
 	public: 
 		vector<int> sVector;      //存放session id
 		double** demand_;         //key(sId) => value(demand)  
+		double time_;
 		BulkNode():BulkGraphNode() {
 			this->_defaultInit();
 		}
@@ -39,7 +40,7 @@ class BulkNode:public BulkGraphNode
 		bool getTerminal();
 		bool getOriginal();
 		void reallocSize(int sId);
-		void reallocPackets(int sId);
+		int reallocPackets(int sId);
 		void initNodePackets(int sId, queue<BulkPackets> *recv);
 		void reallocAll();
 		slist<BulkLink*>* getOutputLink();

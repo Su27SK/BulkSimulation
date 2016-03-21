@@ -10,6 +10,7 @@ void BulkNode::_defaultInit()
 	input_ = new slist<BulkLink*>(0);
 	_isTerminal = false;
 	_isOriginal = false;
+	time_ = 0.0;
 	demand_ = new double* [MAX_SIZE];
 	for (int i = 0; i < MAX_SIZE; i++) {
 		demand_[i] = new double;
@@ -287,7 +288,7 @@ void BulkNode::reallocSize(int sId)
  * 对在BulkNode中特定的session重新分配packets数量
  * @param {interge} sId
  */
-void BulkNode::reallocPackets(int sId)
+int BulkNode::reallocPackets(int sId)
 {
 	cout<<"sId:"<<sId<<endl;
 	queue<BulkPackets>* qsv = this->getStore(sId);
@@ -344,6 +345,7 @@ void BulkNode::reallocPackets(int sId)
 		pLink = output_;
 		i++;
 	}
+	return sum;
 }
 
 /**

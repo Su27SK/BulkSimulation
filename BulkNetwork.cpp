@@ -1,4 +1,5 @@
 #include"BulkNetwork.h"
+Timer BulkNetwork::timer;
 /**
  * @brief BulkNetwork 
  * construct function

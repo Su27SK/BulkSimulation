@@ -8,7 +8,7 @@ BulkPool BulkSession::bulkPool(&initPackets);
 BulkSession::BulkSession():sourceNode_(NULL), sinkNode_(NULL) {
 	id_ = -1;
 	running_ = 0;
-	flow_ = _demand = 0.0;
+	flow_ = _demand = time_ = 0.0;
 }
 
 /**
@@ -20,7 +20,7 @@ BulkSession::BulkSession(int id, BulkNode* source, BulkNode* sink) {
 	sinkNode_ = sink;
 	id_ = id;
 	running_ = 0;
-	flow_ = _demand = 0.0;
+	flow_ = _demand = time_ = 0.0;
 }
 
 /**
@@ -38,10 +38,7 @@ void BulkSession::send(int npackets, BulkLink& link)
 	if (link.getGraphEdgeSink() == sinkNode_->getNodeId()) {
 		link.pushHeadToTail(npackets, id_);
 		*sourceNode_->demand_[id_] = *sinkNode_->demand_[id_] = _demand;  
-		cout<<"after,sourceNodeStore:"<<sourceNode_->getStoreAmount(id_)<<endl;
-		cout<<"after,sinkNodeStore:"<<sinkNode_->getStoreAmount(id_)<<endl;
 		if (flag) {
-			cout<<"push into the sink"<<endl;
 			while(!link.head_[id_]->empty()) {
 				BulkPackets& packets = link.head_[id_]->front();
 				bulkPool.placePacketsToPool(&packets);
@@ -55,10 +52,10 @@ void BulkSession::send(int npackets, BulkLink& link)
  * @brief recv 
  * 该session每次从originNode获得npackets的数据
  * @param {interge} npackets
+ * @param {double} time
  */
 void BulkSession::recv(int npackets)
 {
-	cout<<"npackets:"<<npackets<<endl;
 	if (sourceNode_ == NULL || id_ == -1 || running_ == 0) {
 		return;
 	}
@@ -67,7 +64,6 @@ void BulkSession::recv(int npackets)
 	if (flag) {
 		for (int i = 0; i < npackets; i++) {
 			BulkPackets* packets = bulkPool.getPacketsFromPool();
-			//cout<<packets->getBulkPacketsInfo()<<endl;
 			q.push(*packets);
 		}
 		*(sourceNode_->demand_[id_]) = _demand;  
@@ -130,6 +126,6 @@ void BulkSession::start()
 void BulkSession::stop()
 {
 	running_ = 0;
-	flow_ = 0.0;
+	flow_ = time_ = 0.0;
 }
 

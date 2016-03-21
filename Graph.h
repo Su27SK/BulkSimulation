@@ -9,10 +9,10 @@
 #include "BulkGraphEdge.h"
 #include "BulkGraphNode.h"
 #include "BulkFile.h"
+#define LINEMAX 1500
 //#include "RandomGenerator.h"
 using namespace std;
 using namespace __gnu_cxx;
-
 class Graph  
 {
 	private:

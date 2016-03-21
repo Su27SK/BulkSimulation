@@ -1,9 +1,10 @@
 #ifndef  _BULKNETWORK_H_ 
 #define  _BULKNETWORK_H_
-#define MAX 100
+#define MAXNODE 100
 #include "Graph.h"
 #include "BulkNode.h"
 #include "RandomGenerator.h"
+#include "Timer.h"
 #include <map>
 class BulkLink;
 class BulkSession;
@@ -18,6 +19,7 @@ class BulkNetwork
 		BulkNode** nList_;
 		Graph* _topology;
 	public:
+		static Timer timer;  
 		BulkNetwork():_nSource(0), _nSink(0) {
 			this->_lSourceList = new map<int, BulkNode>;
 			this->_lSinkList = new map<int, BulkNode>;
@@ -29,7 +31,7 @@ class BulkNetwork
 		void startSession(BulkSession& session);
 		void stopSession(BulkSession& session);
 		void inputPackets(BulkSession& session);
-		virtual void dynamicPush(BulkLink& link) = 0;
+		virtual float dynamicPush(BulkLink& link) = 0;
 		BulkNetwork(Graph* graph);
 		BulkNetwork& setSourceNode(int id);
 		BulkNetwork& setSinkNode(int id);
