@@ -8,6 +8,7 @@ BulkNetwork::BulkNetwork(Graph* graph):_nSource(0), _nSink(0)
 {
 	this->_lSourceList = new map<int, BulkNode>;
 	this->_lSinkList = new map<int, BulkNode>;
+	_sourceHandle = NULL;
 	if (graph != NULL) {
 		this->_topology = graph;
 		this->init();
@@ -203,6 +204,10 @@ void BulkNetwork::inputPackets(BulkSession& session)
 	int m = session.getDemand();
 	if (m != 0) {
 		int nPack = RandomGenerator::genPoissonInt(m);
-		session.recv(nPack);
+		double nowTime = timer.getTime();
+		if (_sourceHandle == NULL) {
+			_sourceHandle = fopen("Bulk_Log/SourceInfo.txt", "w+");
+		}
+		session.recv(nPack, nowTime + 1, _sourceHandle);
 	}
 }

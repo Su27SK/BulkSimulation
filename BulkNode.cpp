@@ -290,17 +290,17 @@ void BulkNode::reallocSize(int sId)
  */
 int BulkNode::reallocPackets(int sId)
 {
-	cout<<"sId:"<<sId<<endl;
+	//cout<<"sId:"<<sId<<endl;
 	queue<BulkPackets>* qsv = this->getStore(sId);
 	queue<BulkPackets>* p;
 	double sum = qsv->size();
-	cout<<"sum:"<<sum<<endl;
+	//cout<<"sum:"<<sum<<endl;
 	slist<BulkLink*>::iterator sIter;
 	double singleWeight;
 	double allWeight = this->_getAllWeight();
 	int i = 0, j;
 	slist<BulkLink*>* pLink = input_;
-	cout<<"allWeight:"<<allWeight<<endl;
+	//cout<<"allWeight:"<<allWeight<<endl;
 	while (i < 2) {
 		for (sIter = pLink->begin(); sIter != pLink->end(); sIter++) {
 			if ((singleWeight = (*sIter)->getWeight()) != 0) {
@@ -323,7 +323,7 @@ int BulkNode::reallocPackets(int sId)
 		pLink = output_;
 		i++;
 	}
-	if (!qsv->empty()) {
+	while (!qsv->empty()) {
 		BulkPackets& packets = qsv->front(); 
 		p->push(packets);
 		qsv->pop();
@@ -334,13 +334,13 @@ int BulkNode::reallocPackets(int sId)
 	while (i < 2) {
 		for (sIter = pLink->begin(); sIter != pLink->end(); sIter++) {
 			singleWeight = (*sIter)->getWeight();
-			cout<<"singleWeight:"<<singleWeight<<" ";
+			//cout<<"singleWeight:"<<singleWeight<<" ";
 			if (i) {
 				p = (*sIter)->tail_[sId];
 			} else {
 				p = (*sIter)->head_[sId];
 			}
-			cout<<"num:"<<p->size()<<endl;
+			//cout<<"num:"<<p->size()<<endl;
 		}
 		pLink = output_;
 		i++;
@@ -404,12 +404,14 @@ void BulkNode::initNodePackets(int sId, queue<BulkPackets>* recv)
 /**
  * @brief reallocAll 
  */
-void BulkNode::reallocAll()
+void BulkNode::reallocAll(FILE* handle)
 {
+	int id = getNodeId();
 	vector<int>::iterator iterId;
 	for (iterId = sVector.begin(); iterId != sVector.end(); iterId++) {
 		//reallocSize(*iterId);
-		reallocPackets(*iterId);
+		int sum = reallocPackets(*iterId);
+		fprintf(handle, "time:%f, NodeId:%d, sId:%d, StoreNum:%d\n", time_, id, *iterId, sum);
 	}
 }
 

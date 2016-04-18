@@ -10,9 +10,10 @@ class BulkPackets
 		int _sourceId;
 		int _sinkId;
 		int _ptr;
+		double _startTime;
 		BulkPacket* _model;
 	public: 
-		BulkPackets(): _transmitNum(1), _sourceId(-1), _sinkId(-1), _ptr(1) {
+		BulkPackets(): _transmitNum(10), _sourceId(-1), _sinkId(-1), _ptr(1), _startTime(-1) {
 			this->_model = new BulkPacket();
 		};
 		BulkPackets(double number, BulkPacket* packet = NULL);
@@ -28,9 +29,13 @@ class BulkPackets
 		BulkPackets& setTransmitNum(double number);
 		BulkPackets& setSourceNode(int source);
 		BulkPackets& setSinkNode(int sink);
+		BulkPackets& setStartTime(double time);
 		BulkPackets& operator = (const BulkPackets& bulkPackets);
 		BulkPackets& addPtr();
 		BulkPackets& reducePtr();
 		int getPtr();
+		int getSourceNodeId() const;
+		int getSinkNodeId() const;
+		double getStartTime() const;
 };
 #endif

@@ -241,6 +241,10 @@ void BulkFile::getlines(char** buff, int nSize, string filePath)
 {
 	int n = 0;
 	this->_fileHandle = fopen(filePath.c_str(), "r");
+	if (this->_fileHandle == NULL) {
+		fprintf(stderr, "The filePath is error");
+		abort();
+	}
 	while (!feof(this->_fileHandle) && n < nSize) {
 		 fgets(buff[n], 50, this->_fileHandle);
 		 n++;

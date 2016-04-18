@@ -42,5 +42,9 @@ class RandomGenerator
 
 		//This function returns a random variate from the truncated Pareto distribution of order a.
 		static double genTruncatedParetoDouble(double a, double b);
+
+		static double genGaussianDouble(double x, double sigma);
+
+		static double genGaussianDouble(double sigma);
 };
 #endif

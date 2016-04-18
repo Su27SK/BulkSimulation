@@ -183,3 +183,28 @@ double RandomGenerator::genTruncatedParetoDouble(double a, double b)
 
 	return a * c / (a - 1);
 }
+
+/**
+ * @brief genGaussianDouble 
+ * 产生高斯分布(计算x处的概率密度值)
+ * @param {double} x
+ * @param {double} sigma
+ *
+ * @return {double}
+ */
+double RandomGenerator::genGaussianDouble(double x, double sigma)
+{
+	return gsl_ran_gaussian_pdf(x, sigma);
+}
+
+/**
+ * @brief genGaussianDouble 
+ * 产生高丝分布，返回期望为0， 标准差为sigma的正态分布随机数
+ * @param {double} sigma
+ *
+ * @return {double}
+ */
+double RandomGenerator::genGaussianDouble(double sigma)
+{
+	return gsl_ran_gaussian(r, sigma);
+}

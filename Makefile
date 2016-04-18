@@ -1,5 +1,5 @@
 BulkTest: RandomGenerator.o NumericalComp.o BulkNode.o BulkLink.o BulkSession.o BulkGraphEdge.o BulkGraphNode.o BulkFile.o Graph.o BulkPacket.o BulkPackets.o BulkPool.o Scheduler.o TimerHandler.o BulkNetwork.o Timer.o BulkBackHandle.o BulkBackPressure.o 
-	g++  -L/usr/local/lib RandomGenerator.o NumericalComp.o BulkNode.o BulkLink.o BulkSession.o BulkGraphEdge.o BulkGraphNode.o BulkFile.o Graph.o BulkPacket.o BulkPackets.o BulkPool.o Scheduler.o TimerHandler.o BulkNetwork.o Timer.o  BulkBackHandle.o BulkBackPressure.o -o BulkTest -g BulkTest.c -lgsl -lgslcblas -lm
+	g++ -g -L/usr/local/lib RandomGenerator.o NumericalComp.o BulkNode.o BulkLink.o BulkSession.o BulkGraphEdge.o BulkGraphNode.o BulkFile.o Graph.o BulkPacket.o BulkPackets.o BulkPool.o Scheduler.o TimerHandler.o BulkNetwork.o Timer.o  BulkBackHandle.o BulkBackPressure.o -o BulkTest -g BulkTest.c -lgsl -lgslcblas -lm
 
 NumericalComp.o: NumericalComp.h NumericalComp.cpp
 	g++ -Wall -c -g NumericalComp.cpp

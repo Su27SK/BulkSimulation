@@ -1,5 +1,5 @@
 #include "BulkPackets.h"
-BulkPackets::BulkPackets(double number, BulkPacket* packet):_sourceId(-1), _sinkId(-1), _ptr(1)
+BulkPackets::BulkPackets(double number, BulkPacket* packet):_sourceId(-1), _sinkId(-1), _ptr(1), _startTime(-1)
 {
 	this->_transmitNum = number;
 	if (packet != NULL) {
@@ -23,6 +23,7 @@ BulkPackets::BulkPackets(double number, int source, int sink, BulkPacket* packet
 	this->_sinkId = sink;
 	this->_transmitNum = number;
 	this->_ptr = 1;
+	this->_startTime = -1;
 	if (packet != NULL) {
 		this->_model = new BulkPacket(*packet);
 	} else {
@@ -41,6 +42,7 @@ BulkPackets::BulkPackets(const BulkPackets& P)
 	this->_sourceId = P._sourceId;
 	this->_sinkId = P._sinkId;
 	this->_ptr = P._ptr;
+	this->_startTime = P._startTime;
 	this->_model = new BulkPacket(*P._model);
 }
 
@@ -55,6 +57,7 @@ BulkPackets::BulkPackets(BulkPackets& P)
 	this->_sourceId = P._sourceId;
 	this->_sinkId = P._sinkId;
 	this->_ptr = P._ptr;
+	this->_startTime = P._startTime;
 	this->_model = new BulkPacket(*P._model);
 }
 
@@ -94,6 +97,19 @@ BulkPackets& BulkPackets::setSourceNode(int source)
 BulkPackets& BulkPackets::setSinkNode(int sink)
 {
 	this->_sinkId = sink;
+	return *this;
+}
+
+/**
+ * @brief setStartTime 
+ * 设置起始时间
+ * @param {double} time
+ *
+ * @return {BulkPackets}
+ */
+BulkPackets& BulkPackets::setStartTime(double time)
+{
+	this->_startTime = time;
 	return *this;
 }
 
@@ -171,6 +187,7 @@ BulkPackets& BulkPackets::operator = (const BulkPackets& bulkPackets)
 		this->_sourceId = bulkPacketsTemp._sourceId;
 		this->_sinkId = bulkPacketsTemp._sinkId;
 		this->_ptr = bulkPacketsTemp._ptr;
+		this->_startTime = bulkPacketsTemp._startTime;
 
 		BulkPacket* pModel = bulkPacketsTemp._model;
 		bulkPacketsTemp._model = this->_model;
@@ -209,6 +226,31 @@ BulkPackets& BulkPackets::reducePtr()
 int BulkPackets::getPtr()
 {
 	return _ptr;
+}
+
+/**
+ * @brief getSourceNodeId 
+ *
+ * @return {interge}
+ */
+int BulkPackets::getSourceNodeId() const
+{
+	return _sourceId;
+}
+
+/**
+ * @brief getSinkNodeId 
+ *
+ * @return {interge}
+ */
+int BulkPackets::getSinkNodeId() const
+{
+	return _sinkId;
+}
+
+double BulkPackets::getStartTime() const
+{
+	return _startTime;
 }
 
 BulkPackets::~BulkPackets()

@@ -18,7 +18,7 @@ class BulkSession
 		BulkNode* sinkNode_;
 		int id_;       //该session中的id
 		double flow_;  //该session传输flow_大小(packets num)
-		double time_;
+		double time_;  //设置log时间
 		static void initPool(BulkPackets& model) {
 			bulkPool.setPacketsType(&model);
 			bulkPool.init(); //内存池初始化
@@ -28,8 +28,8 @@ class BulkSession
 		bool isSessionEqualLink(int bId, int eId, int sId);
 		BulkSession& setDemand(double demand);
 		double getDemand();
-		virtual void send(int npackets, BulkLink& link);
-		virtual void recv(int npackets);
+		virtual void send(int npackets, BulkLink& link, FILE* fp, FILE* flowFp);
+		virtual void recv(int npackets, double time, FILE* fp);
 		void start();
 		void stop();
 	protected:

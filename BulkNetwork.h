@@ -1,6 +1,6 @@
 #ifndef  _BULKNETWORK_H_ 
 #define  _BULKNETWORK_H_
-#define MAXNODE 100
+#define MAXNODE 300
 #include "Graph.h"
 #include "BulkNode.h"
 #include "RandomGenerator.h"
@@ -11,6 +11,8 @@ class BulkSession;
 using namespace std;
 class BulkNetwork
 {
+	private:
+		FILE* _sourceHandle;
 	protected:
 		int _nSource; //有几个Source流入点
 		int _nSink;   //有几个Sink流出点
@@ -25,6 +27,7 @@ class BulkNetwork
 			this->_lSinkList = new map<int, BulkNode>;
 			this->_topology = NULL;
 			nList_ = NULL;
+			_sourceHandle = NULL;
 		}
 		void init();
 		void setGraph(Graph* graph);

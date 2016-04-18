@@ -24,13 +24,50 @@ void BulkBackPressure::handle()
  */
 void BulkBackPressure::_realloc()
 {
+	if (_nodeHandle == NULL) {
+		_nodeHandle = fopen("Bulk_Log/NodeInfo.txt", "w+");
+	}
 	if (this->_topology != NULL) {
 		int N = this->_topology->getVertices();
 		for (int nodeId = 1; nodeId <= N; nodeId++) {
 			BulkNode* pNode = nList_[nodeId];
-			pNode->reallocAll();
+			pNode->time_ = timer.getTime();
+			pNode->reallocAll(_nodeHandle);
 		}
 	}
+}
+
+double BulkBackPressure::getCapacityFromFile(double time, int source, int sink)
+{
+	char buff[1024];
+	if (_lHandle == NULL) {
+		_lHandle = fopen("Bulk_Log/dealedLinkInfo_2.txt", "r");
+	}
+	int curTime = int(time / 60);
+	while (!feof(_lHandle)) {
+		fgets(buff, 1024, _lHandle);
+		string message(buff);
+		int len = message.find(" ");
+		int ftime = atoi(message.substr(0, len).c_str());
+		message = message.substr(len + 1);
+		
+		len = message.find(" ");
+		int iSource = atoi(message.substr(0, len).c_str());
+		message = message.substr(len + 1);
+
+		len = message.find(" ");
+		int iSink = atoi(message.substr(0, len).c_str());
+		message = message.substr(len + 1);
+
+		len = message.find(" ");
+		double capacity = atoi(message.substr(0, len).c_str());
+		message = message.substr(len + 1);
+		if ((curTime == ftime) && (source == iSource) && (sink == iSink)) {
+			fseek(_lHandle, 0l, 0);
+			return capacity;
+		}
+	}
+	return 0;
 }
 
 /**
@@ -41,14 +78,36 @@ void BulkBackPressure::_realloc()
 //void BulkBackPressure::dynamicPush(BulkLink& link)
 float BulkBackPressure::dynamicPush(BulkLink& link)
 {
+	int iSource = link.getGraphEdgeSource();
+	int iSink = link.getGraphEdgeSink();
 	slist<BulkSession*>* pSession = link.session_;
 	slist<BulkSession*>::iterator iter;
+	double time = timer.getTime();
 	int M = this->_topology->getVertices();
-	double nowCapacity = link.getVaryCapacity();
+	double nowCapacity;
+	if (_lHandle == NULL) {
+		_lHandle = fopen("Bulk_Log/LinkInfo.txt", "w+"); 
+	}
+	if (!((int)time % 60)) {
+		nowCapacity = link.getVaryCapacity();
+		double linktime = (int)time / 60;
+		fprintf(_lHandle, "time:%f, iSource:%d, iSink:%d, capacity:%f\n", linktime, iSource, iSink, nowCapacity);
+	} else {
+		nowCapacity = link.getCapacity();
+	}
+	//double nowCapacity = getCapacityFromFile(time, iSource, iSink);
+	//if (nowCapacity != 0) {
+		//cout<<"nowCapacity:"<<nowCapacity<<endl;
+		//cout<<"time:"<<time<<endl;
+	//}
+	if (_packetHandle == NULL) {
+		_packetHandle = fopen("Bulk_Log/PacketsInfo.txt", "w+"); 
+	}
 	double fiNum = 0;
 	map<double, int> sorted;
 	//遍历session
 	for (iter = pSession->begin(); iter != pSession->end(); iter++) {
+		(*iter)->time_ = time;
 		double difference = link.diffPackets((*iter)->id_);
 		double demand = (*iter)->getDemand();
 		double value;
@@ -76,7 +135,10 @@ float BulkBackPressure::dynamicPush(BulkLink& link)
 				fiNum--;
 			}
 		    fsum += fi * (difference - fi) / pow (demand, 2);
-			qSession->send(fi, link);
+			if (_sinkHandle == NULL) {
+				_sinkHandle = fopen("Bulk_Log/SinkInfo.txt", "w+"); 
+			}
+			qSession->send(fi, link, _sinkHandle, _packetHandle);
 		}
 	}
 	return fsum;
@@ -106,7 +168,7 @@ double BulkBackPressure::_computeS(map<double, int>& sorted, BulkLink link, doub
 		demand[i] = p->getDemand();
 		i++;
 	}
-	int lowIndex = 0, highIndex = i - 1, mid;
+	int lowIndex = 0, highIndex = i - 1, mid = 0;
 	while (lowIndex <= highIndex) {  //二分查找法
 		mid = lowIndex + ((highIndex - lowIndex) / 2);
 		sum = 0.0; 
@@ -186,7 +248,6 @@ void BulkBackPressure::pushPacketsOut(int nodeId)
 		for (iterId = pSourceNode->sVector.begin(); iterId != pSourceNode->sVector.end(); iterId++) {
 			BulkSession* nSession = (*iterLink)->findSession(*iterId);
 			int nStore = pSourceNode->getStoreAmount(*iterId); //增加或者删除session
-			//cout<<"nStore:"<<nStore<<endl;
 			if (nStore != 0) {
 				if (nSession == NULL) {
 					nSession = new BulkSession(*iterId, pSourceNode, pSinkNode);
