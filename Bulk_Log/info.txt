@@ -1,0 +1,3 @@
+numNode:2, demand:10
+SourceId:22
+SourceId:7
