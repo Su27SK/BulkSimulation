@@ -24,15 +24,12 @@ void BulkBackPressure::handle()
  */
 void BulkBackPressure::_realloc()
 {
-	if (_nodeHandle == NULL) {
-		_nodeHandle = fopen("Bulk_Log/NodeInfo.txt", "w+");
-	}
 	if (this->_topology != NULL) {
 		int N = this->_topology->getVertices();
 		for (int nodeId = 1; nodeId <= N; nodeId++) {
 			BulkNode* pNode = nList_[nodeId];
 			pNode->time_ = timer.getTime();
-			pNode->reallocAll(_nodeHandle);
+			pNode->reallocAll();
 		}
 	}
 }
@@ -40,12 +37,10 @@ void BulkBackPressure::_realloc()
 double BulkBackPressure::getCapacityFromFile(double time, int source, int sink)
 {
 	char buff[1024];
-	if (_lHandle == NULL) {
-		_lHandle = fopen("Bulk_Log/dealedLinkInfo_2.txt", "r");
-	}
+	FILE* handle = fopen("Bulk_Config_File/vary_link.txt", "r");
 	int curTime = int(time / 60);
-	while (!feof(_lHandle)) {
-		fgets(buff, 1024, _lHandle);
+	while (!feof(handle)) {
+		fgets(buff, 1024, handle);
 		string message(buff);
 		int len = message.find(" ");
 		int ftime = atoi(message.substr(0, len).c_str());
@@ -63,10 +58,11 @@ double BulkBackPressure::getCapacityFromFile(double time, int source, int sink)
 		double capacity = atoi(message.substr(0, len).c_str());
 		message = message.substr(len + 1);
 		if ((curTime == ftime) && (source == iSource) && (sink == iSink)) {
-			fseek(_lHandle, 0l, 0);
+			fclose(handle);
 			return capacity;
 		}
 	}
+	fclose(handle);
 	return 0;
 }
 
@@ -85,13 +81,12 @@ float BulkBackPressure::dynamicPush(BulkLink& link)
 	double time = timer.getTime();
 	int M = this->_topology->getVertices();
 	double nowCapacity;
-	if (_lHandle == NULL) {
-		_lHandle = fopen("Bulk_Log/LinkInfo.txt", "w+"); 
-	}
 	if (!((int)time % 60)) {
+		FILE* handle = fopen("Bulk_Log/LinkInfo.txt", "a+"); 
 		nowCapacity = link.getVaryCapacity();
 		double linktime = (int)time / 60;
-		fprintf(_lHandle, "time:%f, iSource:%d, iSink:%d, capacity:%f\n", linktime, iSource, iSink, nowCapacity);
+		fprintf(handle, "time:%f, iSource:%d, iSink:%d, capacity:%f\n", linktime, iSource, iSink, nowCapacity);
+		fclose(handle);
 	} else {
 		nowCapacity = link.getCapacity();
 	}
@@ -100,9 +95,6 @@ float BulkBackPressure::dynamicPush(BulkLink& link)
 		//cout<<"nowCapacity:"<<nowCapacity<<endl;
 		//cout<<"time:"<<time<<endl;
 	//}
-	if (_packetHandle == NULL) {
-		_packetHandle = fopen("Bulk_Log/PacketsInfo.txt", "w+"); 
-	}
 	double fiNum = 0;
 	map<double, int> sorted;
 	//遍历session
@@ -135,10 +127,7 @@ float BulkBackPressure::dynamicPush(BulkLink& link)
 				fiNum--;
 			}
 		    fsum += fi * (difference - fi) / pow (demand, 2);
-			if (_sinkHandle == NULL) {
-				_sinkHandle = fopen("Bulk_Log/SinkInfo.txt", "w+"); 
-			}
-			qSession->send(fi, link, _sinkHandle, _packetHandle);
+			qSession->send(fi, link);
 		}
 	}
 	return fsum;
