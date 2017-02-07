@@ -7,16 +7,10 @@
 class BulkBackPressure: public BulkBackHandle, public BulkNetwork
 {
 	private:
-		FILE* _lHandle;
-		FILE* _nodeHandle;
-		FILE* _sinkHandle;
-		FILE* _packetHandle;
 		double _computeS(map<double, int>& sorted, BulkLink link, double capacity);
 		void _realloc();
 	public:
-		BulkBackPressure():BulkBackHandle(), BulkNetwork() {
-			_lHandle = _nodeHandle = _sinkHandle = _packetHandle = NULL;
-		}
+		BulkBackPressure():BulkBackHandle(), BulkNetwork() {}
 		virtual void handle();
 		//virtual void dynamicPush(BulkLink& link);
 		virtual float dynamicPush(BulkLink& link);
