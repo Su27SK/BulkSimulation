@@ -404,8 +404,9 @@ void BulkNode::initNodePackets(int sId, queue<BulkPackets>* recv)
 /**
  * @brief reallocAll 
  */
-void BulkNode::reallocAll(FILE* handle)
+void BulkNode::reallocAll()
 {
+	FILE* handle = fopen("Bulk_Log/NodeInfo.txt", "a+");
 	int id = getNodeId();
 	vector<int>::iterator iterId;
 	for (iterId = sVector.begin(); iterId != sVector.end(); iterId++) {
@@ -413,6 +414,7 @@ void BulkNode::reallocAll(FILE* handle)
 		int sum = reallocPackets(*iterId);
 		fprintf(handle, "time:%f, NodeId:%d, sId:%d, StoreNum:%d\n", time_, id, *iterId, sum);
 	}
+	fclose(handle);
 }
 
 /**

@@ -42,7 +42,7 @@ class BulkNode:public BulkGraphNode
 		void reallocSize(int sId);
 		int reallocPackets(int sId);
 		void initNodePackets(int sId, queue<BulkPackets> *recv);
-		void reallocAll(FILE* handle);
+		void reallocAll();
 		slist<BulkLink*>* getOutputLink();
 		slist<BulkLink*>* getInputLink();
 		void addOutputLink(BulkLink* link);

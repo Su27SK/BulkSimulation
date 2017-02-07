@@ -28,7 +28,7 @@ class BulkSession
 		bool isSessionEqualLink(int bId, int eId, int sId);
 		BulkSession& setDemand(double demand);
 		double getDemand();
-		virtual void send(int npackets, BulkLink& link, FILE* fp, FILE* flowFp);
+		virtual void send(int npackets, BulkLink& link);
 		virtual void recv(int npackets, double time, FILE* fp);
 		void start();
 		void stop();

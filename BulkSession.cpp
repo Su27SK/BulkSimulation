@@ -28,10 +28,8 @@ BulkSession::BulkSession(int id, BulkNode* source, BulkNode* sink) {
  * 该session每次从sourceNode向后推送npackets的数据
  * @param {interge} npackets
  * @param {BulkLink} link 
- * @param {FILE} fp 
- * @param {FILE} flowFp 
  */
-void BulkSession::send(int npackets, BulkLink& link, FILE* fp, FILE* flowFp)
+void BulkSession::send(int npackets, BulkLink& link)
 {
 	if (sinkNode_ == NULL || id_ == -1 || running_ == 0 || npackets <= 0) {
 		return;
@@ -41,23 +39,26 @@ void BulkSession::send(int npackets, BulkLink& link, FILE* fp, FILE* flowFp)
 		link.pushHeadToTail(npackets, id_);
 		*sourceNode_->demand_[id_] = *sinkNode_->demand_[id_] = _demand;  
 		if (flag) {
+			FILE* fp = fopen("Bulk_Log/SinkInfo.txt", "a+"); 
 			int id = sinkNode_->getNodeId(); 
 			int outSize, size = link.head_[id_]->size();
 			for (outSize = 0; outSize < size; outSize++) {
 				BulkPackets& packets = link.head_[id_]->front();
 				double startTime = packets.getStartTime();
 				if (packets.getSinkNodeId() == id) {
+					FILE* flowFp = fopen("Bulk_Log/PacketsInfo.txt", "a+"); 
 					bulkPool.placePacketsToPool(&packets);
 					link.head_[id_]->pop();
 					double intervalTime = time_ + 1 - startTime;
-					fprintf(flowFp, "IntervalTime:%f, sinkNodeId:%d, sId:%d, startTime:%f, arriveTime:%f\n",
-							intervalTime, id, id_, startTime, time_ + 1);
+					fprintf(flowFp, "IntervalTime:%f, sinkNodeId:%d, sId:%d, startTime:%f, arriveTime:%f\n", intervalTime, id, id_, startTime, time_ + 1);
+					fclose(flowFp);
 				} else if(!link.head_[id]->empty()) {
 					link.head_[id_]->pop();
 					link.head_[id_]->push(packets);
 				}
 			}
 			fprintf(fp, "time:%f, sinkNodeId:%d, sId:%d, number:%d\n",time_ + 1, id, id_, outSize);
+			fclose(fp);
 		}
 	}
 }
